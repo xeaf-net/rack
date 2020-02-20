@@ -24,7 +24,7 @@ use XEAF\Rack\API\Models\Results\DataResult;
 class HomeModule extends Module {
 
     /**
-     * Обработаывает обращение по методу GET
+     * Обрабатывает обращение по методу GET
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
