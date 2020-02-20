@@ -9,6 +9,10 @@
             <path value="file://$PROJECT_DIR$/src/ui/public" />
             <path value="file://$PROJECT_DIR$/src/db.pgsql/sql" />
             <path value="file://$PROJECT_DIR$/src/db.mysql/sql" />
+            <path value="file://$PROJECT_DIR$/src/gulp" />
+            <path value="file://$PROJECT_DIR$/npm" />
+            <path value="file://$PROJECT_DIR$/npm/gulp" />
+            <path value="file://$PROJECT_DIR$/src/ui/www/favicon" />
           </resourceRoots>
         </entryData>
       </entry>
