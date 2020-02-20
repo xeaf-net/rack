@@ -27,11 +27,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/api/utils/storage" isTestSource="false" packagePrefix="XEAF\Rack\API\Utils\Storage\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db" isTestSource="false" packagePrefix="XEAF\Rack\Db\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/models/results" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Models\Results\" />
-      <sourceFolder url="file://$MODULE_DIR$/src/www" isTestSource="false" packagePrefix="XEAF\Rack\WWW\" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="XEAF\Rack\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db/utils/exceptions" isTestSource="false" packagePrefix="XEAF\Rack\Db\Utils\Exceptions\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api" isTestSource="false" packagePrefix="XEAF\Rack\API\" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui/models/results" isTestSource="false" packagePrefix="XEAF\Rack\UI\Models\Results\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/www" isTestSource="false" packagePrefix="XEAF\Rack\WWW\" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui/core" isTestSource="false" packagePrefix="XEAF\Rack\UI\Core\" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/db.mysql/utils" isTestSource="false" packagePrefix="XEAF\Rack\Db\MySQL\Utils\" />
