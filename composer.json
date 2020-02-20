@@ -29,7 +29,6 @@
             "XEAF\\Rack\\API\\Utils\\Loggers\\"        : "src/api/utils/loggers/",
             "XEAF\\Rack\\API\\Utils\\Sessions\\"       : "src/api/utils/sessions/",
             "XEAF\\Rack\\API\\Utils\\Storage\\"        : "src/api/utils/storage/",
-            "XEAF\\Rack\\API\\WWW\\"                   : "src/api/www/",
             "XEAF\\Rack\\Db\\"                         : "src/db/",
             "XEAF\\Rack\\Db\\Core\\"                   : "src/db/core/",
             "XEAF\\Rack\\Db\\Interfaces\\"             : "src/db/interfaces/",
@@ -74,7 +73,7 @@
             "XEAF\\Rack\\UI\\Utils\\"                  : "src/ui/utils/",
             "XEAF\\Rack\\UI\\Utils\\Engines\\"         : "src/ui/utils/engines/",
             "XEAF\\Rack\\UI\\Utils\\Exceptions\\"      : "src/ui/utils/exceptions/",
-            "XEAF\\Rack\\UI\\WWW\\"                    : "src/ui/www/"
+            "XEAF\\Rack\\WWW\\"                        : "src/www/"
         },
         "files": [
             "src/autoload.php",
@@ -87,18 +86,18 @@
         ]
     },
     "require"          : {
-        "php"                        : ">=7.3",
-        "ext-curl"                   : "*",
-        "ext-gd"                     : "*",
-        "ext-json"                   : "*",
-        "ext-mbstring"               : "*",
-        "ext-pdo"                    : "*",
-        "ext-pdo_sqlite"             : "*",
-        "ext-pdo_mysql"              : "*",
-        "ext-pdo_pgsql"              : "*",
-        "ext-redis"                  : "*",
-        "ext-imagick"                : "*",
-        "ext-zip"                    : "*",
-        "smarty/smarty"              : "3.1.*"
+        "php"           : ">=7.3",
+        "ext-curl"      : "*",
+        "ext-gd"        : "*",
+        "ext-json"      : "*",
+        "ext-mbstring"  : "*",
+        "ext-pdo"       : "*",
+        "ext-pdo_sqlite": "*",
+        "ext-pdo_mysql" : "*",
+        "ext-pdo_pgsql" : "*",
+        "ext-redis"     : "*",
+        "ext-imagick"   : "*",
+        "ext-zip"       : "*",
+        "smarty/smarty" : "3.1.*"
     }
 }

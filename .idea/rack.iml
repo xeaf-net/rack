@@ -6,7 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/api/models" isTestSource="false" packagePrefix="XEAF\Rack\API\Models\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api/app" isTestSource="false" packagePrefix="XEAF\Rack\API\App\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db.pgsql" isTestSource="false" packagePrefix="XEAF\Rack\Db\PgSQL\" />
-      <sourceFolder url="file://$MODULE_DIR$/src/api/www" isTestSource="false" packagePrefix="XEAF\Rack\API\WWW\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/utils/parsers" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Utils\Parsers\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db.mysql/utils/providers" isTestSource="false" packagePrefix="XEAF\Rack\Db\MySQL\Utils\Providers\" />
       <sourceFolder url="file://$MODULE_DIR$/src/redis/utils/exceptions" isTestSource="false" packagePrefix="XEAF\Rack\Redis\Utils\Exceptions\" />
@@ -28,6 +27,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/api/utils/storage" isTestSource="false" packagePrefix="XEAF\Rack\API\Utils\Storage\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db" isTestSource="false" packagePrefix="XEAF\Rack\Db\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/models/results" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Models\Results\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/www" isTestSource="false" packagePrefix="XEAF\Rack\WWW\" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="XEAF\Rack\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db/utils/exceptions" isTestSource="false" packagePrefix="XEAF\Rack\Db\Utils\Exceptions\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api" isTestSource="false" packagePrefix="XEAF\Rack\API\" />
@@ -38,7 +38,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/orm/utils/exceptions" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Utils\Exceptions\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/interfaces" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Interfaces\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db/interfaces" isTestSource="false" packagePrefix="XEAF\Rack\Db\Interfaces\" />
-      <sourceFolder url="file://$MODULE_DIR$/src/ui/www" isTestSource="false" packagePrefix="XEAF\Rack\UI\WWW\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api/utils/exceptions" isTestSource="false" packagePrefix="XEAF\Rack\API\Utils\Exceptions\" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui" isTestSource="false" packagePrefix="XEAF\Rack\UI\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/models/properties" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Models\Properties\" />
