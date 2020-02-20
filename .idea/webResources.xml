@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebResourcesPaths">
+    <contentEntries>
+      <entry url="file://$PROJECT_DIR$">
+        <entryData>
+          <resourceRoots>
+            <path value="file://$PROJECT_DIR$/src/etc" />
+            <path value="file://$PROJECT_DIR$/src/ui/public" />
+            <path value="file://$PROJECT_DIR$/src/db.pgsql/sql" />
+            <path value="file://$PROJECT_DIR$/src/db.mysql/sql" />
+            <path value="file://$PROJECT_DIR$/src/gulp" />
+            <path value="file://$PROJECT_DIR$/npm" />
+            <path value="file://$PROJECT_DIR$/npm/gulp" />
+            <path value="file://$PROJECT_DIR$/src/ui/www/favicon" />
+            <path value="file://$PROJECT_DIR$/src/www/favicon" />
+          </resourceRoots>
+        </entryData>
+      </entry>
+    </contentEntries>
+  </component>
+</project>
