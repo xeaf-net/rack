@@ -59,8 +59,11 @@ class Migration implements IMigration {
      * Возвращает текст SQL запроса получения номера версии
      *
      * @return string
+     * @noinspection RedundantSuppression
      */
     private function getVersionSQL(): string {
+        /** @noinspection SqlNoDataSourceInspection */
+        /** @noinspection SqlResolve */
         return '
             select migration_version 
                 from 

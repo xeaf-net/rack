@@ -193,8 +193,11 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
      * Возвращает текст SQL запроса выбора записей
      *
      * @return string
+     * @noinspection RedundantSuppression
      */
     private function getSelectSQL(): string {
+        /** @noinspection SqlNoDataSourceInspection */
+        /** @noinspection SqlResolve */
         return '
             select * from xeaf_storage
                 where storage_name = :name';
@@ -204,8 +207,11 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
      * Возвращает текст SQL команды добавления записи
      *
      * @return string
+     * @noinspection RedundantSuppression
      */
     private function getInsertSQL(): string {
+        /** @noinspection SqlNoDataSourceInspection */
+        /** @noinspection SqlResolve */
         return '
             insert into xeaf_storage (
                 storage_name, 
@@ -224,8 +230,11 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
      * Возвращает текст SQL команды изменения записей
      *
      * @return string
+     * @noinspection RedundantSuppression
      */
     private function getUpdateSQL(): string {
+        /** @noinspection SqlNoDataSourceInspection */
+        /** @noinspection SqlResolve */
         return '
             update xeaf_storage
                 set
@@ -240,8 +249,11 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
      * Возвращает текст SQL команды удаления записи
      *
      * @return string
+     * @noinspection RedundantSuppression
      */
     private function getDeleteSQL(): string {
+        /** @noinspection SqlNoDataSourceInspection */
+        /** @noinspection SqlResolve */
         return '
             delete from xeaf_storage
                 where
