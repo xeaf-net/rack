@@ -30,7 +30,7 @@ class HomeModule extends Module {
      */
     protected function processGet(): ?IActionResult {
         $data = [
-            'title'     => 'XEAF Rack API',
+            'title'     => 'XEAF Rack',
             'version'   => __XEAF_RACK_VERSION__,
             'debugMode' => __XEAF_RACK_DEBUG_MODE__
         ];
