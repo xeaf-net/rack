@@ -18,5 +18,5 @@
 Thumbs.db
 composer.phar
 composer.lock
-package-lock.json 
+package-lock.json
 !.gitignore
