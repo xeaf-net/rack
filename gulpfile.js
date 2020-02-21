@@ -16,7 +16,6 @@ gulp.task('clean', () => {
 gulp.task("compile", function () {
     const srcFiles = glob.sync('./src/ui/public/**/*.ts');
     return browserify({
-        //basedir: '.',
         debug       : true,
         entries     : srcFiles,
         cache       : {},
