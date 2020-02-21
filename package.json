@@ -1,0 +1,29 @@
+{
+    "name": "rack",
+    "description": "Каркас для быстрой разработки приложений на PHP",
+    "version": "1.0.2",
+    "main": "",
+    "scripts": {
+        "clean": "gulp clean",
+        "build": "gulp build",
+        "compile": "gulp compile",
+        "minify": "gulp minify"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/xeaf-net/xeaf-space"
+    },
+    "author": "Nick V. Anokhin",
+    "license": "MIT",
+    "devDependencies": {
+        "browserify": "^16.5.0",
+        "glob": "^7.1.6",
+        "gulp": "^4.0.2",
+        "gulp-clean": "^0.4.0",
+        "gulp-minify": "^3.1.0",
+        "tsify": "^4.0.1",
+        "typescript": "^3.8.2",
+        "vinyl-source-stream": "^2.0.0"
+    },
+    "dependencies": {}
+}
