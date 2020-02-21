@@ -1,14 +1,14 @@
 const gulp         = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
 const clean        = require('gulp-clean');
-const cssmin       = require('gulp-cssmin');
+const cssmin       = require('gulp-clean-css');
 const minify       = require('gulp-minify');
 const rename       = require('gulp-rename');
 const requireDir   = require('require-dir');
 const sass         = require('gulp-sass');
 const ts           = require('gulp-typescript');
 
-requireDir('./gulp');
+requireDir('./vendor/xeaf-net/rack/npm/gulp');
 
 gulp.task('clean-local', () => {
     return gulp.src([

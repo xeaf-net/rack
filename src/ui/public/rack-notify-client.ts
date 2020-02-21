@@ -1,4 +1,9 @@
 /**
+ * Внешняя ссылка на socket.io-client
+ */
+declare var io: any;
+
+/**
  * Клиент сервера отправки нотификационных сообщений
  */
 class RackNotifyClient {
