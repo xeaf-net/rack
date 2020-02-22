@@ -49,4 +49,13 @@ abstract class Plugin extends LayoutExtension {
     public function getDataObject(array $params = []): ?DataObject {
         return null;
     }
+
+    /**
+     * Возвращет HTML код плагина
+     *
+     * @return string|null
+     */
+    public function generateHTML(): ?string {
+        return null; // Использовать .tpl файл
+    }
 }
