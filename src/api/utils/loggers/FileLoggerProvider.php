@@ -17,8 +17,6 @@ use XEAF\Rack\API\Interfaces\ILoggerProvider;
 use XEAF\Rack\API\Models\Config\FileLoggerConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Calendar;
-use XEAF\Rack\API\Utils\Formatter;
-use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 
 /**
