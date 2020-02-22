@@ -32,7 +32,6 @@ class Calendar implements ICalendar {
      */
     public const UTC = "UTC";
 
-
     /**
      * Количество секунд в часе
      */
@@ -66,12 +65,12 @@ class Calendar implements ICalendar {
     /**
      * Формат нормализованного представления даты
      */
-    protected const NORM_DATE = 'Y-m-d';
+    protected const NORMALIZE_DATE = 'Y-m-d';
 
     /**
      * Формат нормализованного представления даты и времени
      */
-    protected const NORM_DATETIME = 'Y-m-d H:i:s';
+    protected const NORMALIZE_DATETIME = 'Y-m-d H:i:s';
 
     /**
      * Конструктор класса
@@ -146,7 +145,7 @@ class Calendar implements ICalendar {
      */
     public function parseDateTime(int $dateTime = null): array {
         $dt = $this->normalizeDateTime($dateTime);
-        return date_parse_from_format(self::NORM_DATETIME, $dt);
+        return date_parse_from_format(self::NORMALIZE_DATETIME, $dt);
     }
 
     /**
@@ -201,19 +200,23 @@ class Calendar implements ICalendar {
      * @inheritDoc
      */
     public function dateTimeToDate(int $dateTime): int {
-        return strtotime(date(self::NORM_DATE, $dateTime));
+        return strtotime(date(self::NORMALIZE_DATE, $dateTime));
     }
 
     /**
-     * Возвращает нормализованное представления даты и времени
-     *
-     * @param int|null $dateTime Дата и время
-     *
-     * @return string
+     * @inheritDoc
      */
-    protected function normalizeDateTime(int $dateTime = null): string {
+    public function normalizeDate(int $date = null): string {
+        $d = $date == null ? $this->today() : $date;
+        return date(self::NORMALIZE_DATE, $d);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function normalizeDateTime(int $dateTime = null): string {
         $dt = $dateTime == null ? $this->now() : $dateTime;
-        return date(self::NORM_DATETIME, $dt);
+        return date(self::NORMALIZE_DATETIME, $dt);
     }
 
     /**
