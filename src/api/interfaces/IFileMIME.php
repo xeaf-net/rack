@@ -83,6 +83,17 @@ interface IFileMIME extends IFactoryObject {
     function isSupported(string $fileType): bool;
 
     /**
+     * Возвращает признак типа файла ресурса расширения
+     *
+     * @param string $fileType Тип файла
+     *
+     * @return bool
+     *
+     * @since 1.0.2
+     */
+    function isExtensionResource(string $fileType): bool;
+
+    /**
      * Регистрирует тип файла изображения
      *
      * @param string $fileType Тип файла

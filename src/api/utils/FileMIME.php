@@ -160,6 +160,13 @@ class FileMIME implements IFileMIME {
     /**
      * @inheritDoc
      */
+    public function isExtensionResource(string $fileType): bool {
+        return $this->isResource($fileType) || $this->isImage($fileType) || $this->isAudio($fileType) || $this->isVideo($fileType);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function registerImageFileType(string $fileType, string $mime): void {
         $this->unregisterFileType($fileType);
         $this->_knownImages[$fileType]   = $mime;
