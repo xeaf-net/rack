@@ -12,13 +12,14 @@
  */
 namespace XEAF\Rack\UI\Plugins\ResourceLink;
 
-use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Core\DataObject;
-use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Utils\FileSystem;
+use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Reflection;
 use XEAF\Rack\UI\Core\Plugin;
+use XEAF\Rack\UI\Core\Template;
+use XEAF\Rack\UI\Models\Results\HtmlResult;
 
 /**
  * Контроллер плагины вывода ссылок на ресурсы модуля
@@ -33,84 +34,86 @@ class ResourceLinkPlugin extends Plugin {
     public const PLUGIN_NAME = 'tagResourceLink';
 
     /**
-     * Список загружаемых ссылок
-     * @var array
+     * Объект модуле работы с файловой системой
+     * @var \XEAF\Rack\API\Utils\FileSystem
      */
-    protected $_links = [];
+    private $_fs = null;
 
     /**
-     * Возвращает объект данных плагина
+     * Объект методов работы с рефлексией
+     * @var \XEAF\Rack\API\Utils\Reflection
+     */
+    private $_ref = null;
+
+    /**
+     * Параметры вызова приложения
+     * @var \XEAF\Rack\API\Utils\Parameters
+     */
+    private $_args = null;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(HtmlResult $actionResult, Template $template = null) {
+        parent::__construct($actionResult, $template);
+        $this->_fs   = FileSystem::getInstance();
+        $this->_ref  = Reflection::getInstance();
+        $this->_args = Parameters::getInstance();
+    }
+
+    /**
+     * @inheritDoc
      *
-     * @param array $params Параметры вызова плагина
-     *
-     * @return \XEAF\Rack\API\Core\DataObject|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     public function getDataObject(array $params = []): ?DataObject {
+        $link = '';
         $type = $params['type'] ?? null;
-        if ($type == 'css' || $type == 'js') {
-            $this->checkActionLink($type);
+        switch ($type) {
+            case ResourceModule::CSS_FILE_TYPE:
+            case ResourceModule::JS_FILE_TYPE:
+                $link = $this->resourceLink($type);
+                break;
+            default:
+                break;
         }
         return DataObject::fromArray([
-            'type'  => $type,
-            'links' => $this->_links
+            'type' => $type,
+            'link' => $link
         ]);
     }
 
     /**
-     * Добавляет ссылку на ресурс модуля
+     * Возвращает ссылку на ресурс
      *
-     * @param string $type Тип ссылки
+     * @param string $type Тип ресурса
      *
-     * @return void
+     * @return string|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    protected function checkActionLink(string $type) {
-        $reflection    = Reflection::getInstance();
-        $actionPath    = $this->getActionArgs()->getActionPath();
-        $actionMode    = $this->getActionArgs()->getActionMode();
-        $classFileName = $reflection->moduleClassFileName();
-        if (!$actionPath) {
-            $actionPath = Router::ROOT_NODE;
+    protected function resourceLink(string $type): ?string {
+        $result   = null;
+        $fileName = $this->resourceFileName($type);
+        if ($this->_fs->fileExists($fileName)) {
+            $path = $this->_args->getActionPath();
+            if (!$path) {
+                $path = '/' . ResourceModule::HOME_MODULE_NAME;
+            }
+            $result = "$path/module.$type";
         }
-        $this->checkActionFileLink($classFileName, $actionPath, '', $type);
-        if ($actionMode) {
-            $layoutFileName = $this->getActionResult()->getLayoutFile();
-            $this->checkActionFileLink($layoutFileName, $actionPath, $actionMode, $type);
-        }
+        return $result;
     }
 
     /**
-     * Добавляет ссылку на ресурс режима исполнения действия модуля
+     * Возвращает имя файла предполагаемого ресурса
      *
-     * @param string $fileName   Базовое имя проверяемого файла
-     * @param string $actionPath Путь к модулю
-     * @param string $actionMode Режим исполнения действия
-     * @param string $type       Тип ссылки
+     * @param string $type Тип ресурса
      *
-     * @return void
+     * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    protected function checkActionFileLink(string $fileName, string $actionPath, string $actionMode, string $type) {
-        $extMap     = ResourceModule::RESOURCE_TYPE_MAP[$type];
-        $fileSystem = FileSystem::getInstance();
-        foreach ($extMap as $ext) {
-            $checkedName = $fileSystem->changeFileNameExt($fileName, $ext);
-            if ($fileSystem->fileExists($checkedName)) {
-                $config = PortalConfig::getInstance();
-                $link   = $prefix = $config->getUrl() . '/resource' . $actionPath;
-                if ($actionPath == Router::ROOT_NODE) {
-                    $link .= ResourceModule::HOME_MODULE_NAME;
-                }
-                if ($actionMode) {
-                    $link .= '.' . $actionMode;
-                }
-                $link .= '.' . $type;
-                // $link = rtrim($prefix . $actionMode, '/') . '.' . $type;
-                if (!in_array($link, $this->_links)) {
-                    $this->_links[] = $link;
-                }
-            }
-        }
+    protected function resourceFileName(string $type): string {
+        $fileName = $this->_ref->moduleClassFileName();
+        return $this->_fs->changeFileNameExt($fileName, $type);
     }
-
 }
