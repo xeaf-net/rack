@@ -71,7 +71,7 @@ class Application extends Extension {
             ResourceModule::PUBLIC_PATH   => ResourceModule::class,
             ResourceModule::VENDOR_PATH   => ResourceModule::class,
             ResourceModule::NODE_MODULES  => ResourceModule::class,
-            ResourceModule::RESOURCE_PATH => ResourceModule::class
+            ResourceModule::TEMPLATE_PATH => ResourceModule::class
         ];
     }
 

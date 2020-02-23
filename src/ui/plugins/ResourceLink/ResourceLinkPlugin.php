@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\UI\Plugins\ResourceLink;
 
+use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Utils\FileSystem;
@@ -97,7 +98,7 @@ class ResourceLinkPlugin extends Plugin {
         if ($this->_fs->fileExists($fileName)) {
             $path = $this->_args->getActionPath();
             if (!$path) {
-                $path = '/' . ResourceModule::HOME_MODULE_NAME;
+                $path = Router::HOME_NODE;
             }
             $result = "$path/module.$type";
         }
