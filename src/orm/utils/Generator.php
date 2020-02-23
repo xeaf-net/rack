@@ -145,6 +145,7 @@ class Generator implements IGenerator {
 
     /**
      * @inheritDoc
+     * @noinspection RedundantSuppression
      */
     public function insertSQL(Entity $entity): string {
         $storage = EntityStorage::getInstance();
@@ -200,6 +201,7 @@ class Generator implements IGenerator {
 
     /**
      * @inheritDoc
+     * @noinspection RedundantSuppression
      */
     public function deleteSQL(Entity $entity): string {
         $storage = EntityStorage::getInstance();
