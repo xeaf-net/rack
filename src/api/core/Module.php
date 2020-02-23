@@ -18,6 +18,7 @@ use XEAF\Rack\API\Models\Results\DataResult;
 use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
+use XEAF\Rack\API\Utils\Assets;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\Localization;
@@ -30,21 +31,6 @@ use XEAF\Rack\API\Utils\Reflection;
  * @package XEAF\Rack\API\Core
  */
 class Module extends Extension implements IModule {
-
-    /**
-     * Режим отправки информации о локализации
-     */
-    protected const MODULE_L10N = 'l10n';
-
-    /**
-     * Режим отправки CSS модуля
-     */
-    protected const MODULE_CSS = 'module.css';
-
-    /**
-     * Режим отправки JS модуля
-     */
-    protected const MODULE_JS = 'module.js';
 
     /**
      * Префикс метода исполнения действия модуля
@@ -62,11 +48,11 @@ class Module extends Extension implements IModule {
      */
     public function execute(): ?IActionResult {
         $actionMode = $this->getActionArgs()->getActionMode();
-        if ($actionMode == self::MODULE_L10N) {
+        if ($actionMode == Assets::MODULE_L10N) {
             $result = $this->sendLocaleData();
-        } else if ($actionMode == self::MODULE_CSS) {
+        } else if ($actionMode == Assets::MODULE_CSS) {
             $result = $this->sendModuleResource(ResourceModule::CSS_FILE_TYPE);
-        } else if ($actionMode == self::MODULE_JS) {
+        } else if ($actionMode == Assets::MODULE_JS) {
             $result = $this->sendModuleResource(ResourceModule::JS_FILE_TYPE);
         } else {
             $methodName = $this->getActionArgs()->getMethodName();

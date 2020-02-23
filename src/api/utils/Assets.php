@@ -23,6 +23,21 @@ use XEAF\Rack\API\Interfaces\IAssets;
 class Assets implements IAssets {
 
     /**
+     * Ссылка на режим отправки информации о локализации
+     */
+    public const MODULE_L10N = 'l10n';
+
+    /**
+     * Ссылка на режим отправки CSS модуля
+     */
+    public const MODULE_CSS = 'module.css';
+
+    /**
+     * Ссылка на режим отправки JS модуля
+     */
+    public const MODULE_JS = 'module.js';
+
+    /**
      * Список папок публичных ресурсов
      * @var array
      */
