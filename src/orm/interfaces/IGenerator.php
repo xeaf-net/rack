@@ -33,6 +33,15 @@ interface IGenerator extends IFactoryObject {
     function selectSQL(EntityQuery $query): string;
 
     /**
+     * Возвращает текст SQL запроса для выбора и фильтрации записей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     *
+     * @return string
+     */
+    function selectFilteredSQL(EntityQuery $query): string;
+
+    /**
      * Возвращает текст SQL запроса для выбора количества записей
      *
      * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
@@ -40,6 +49,15 @@ interface IGenerator extends IFactoryObject {
      * @return string
      */
     function selectCountSQL(EntityQuery $query): string;
+
+    /**
+     * Возвращает текст SQL запроса для выбора количества отфильтрованных записей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     *
+     * @return string
+     */
+    function selectFilteredCountSQL(EntityQuery $query): string;
 
     /**
      * Возвращает текст SQL команды для вставки записи

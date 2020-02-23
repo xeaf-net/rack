@@ -22,6 +22,7 @@ use XEAF\Rack\ORM\Interfaces\IGenerator;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -67,8 +68,23 @@ class Generator implements IGenerator {
         $this->_aliases->clear();
         $this->_entities = $query->getEntityManager()->getEntities();
         $model           = $query->getModel();
+        $condition       = $this->selectSQLConditions($query, false);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
-        return 'select ' . $aliasSQL . ' ' . $this->selectSQLConditions($query);
+        return 'select ' . $aliasSQL . ' ' . $condition;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function selectFilteredSQL(EntityQuery $query): string {
+        $this->_aliases->clear();
+        $this->_entities = $query->getEntityManager()->getEntities();
+        $model           = $query->getModel();
+        $condition       = $this->selectSQLConditions($query, true);
+        $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
+        return 'select ' . $aliasSQL . ' ' . $condition;
     }
 
     /**
@@ -79,23 +95,46 @@ class Generator implements IGenerator {
     public function selectCountSQL(EntityQuery $query): string {
         $this->_aliases->clear();
         $this->_entities = $query->getEntityManager()->getEntities();
-        /** @noinspection SqlNoDataSourceInspection */
-        return 'select count(*) as _count from ' . $this->selectSQLConditions($query);
+        $condition       = $this->selectSQLConditions($query, false);
+        return 'select count(*) as _count ' . $condition;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function selectFilteredCountSQL(EntityQuery $query): string {
+        $this->_aliases->clear();
+        $this->_entities = $query->getEntityManager()->getEntities();
+        $condition       = $this->selectSQLConditions($query, true);
+        return 'select count(*) as _count ' . $condition;
     }
 
     /**
      * Возвращает SQL код условий отбора записей
      *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
+     * @param bool                            $useFilter Признак использования условий фильтрации
      *
      * @return string
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function selectSQLConditions(EntityQuery $query): string {
+    protected function selectSQLConditions(EntityQuery $query, bool $useFilter): string {
         $model    = $query->getModel();
         $fromSQL  = $this->generateFromSQL($model->getFromModels());
         $joinSQL  = $this->generateJoinSQL($model->getJoinModels());
         $whereSQL = $this->generateWhereSQL($model->getWhereModels(), $model->getParameters());
+        if ($useFilter) {
+            $filterSQL = $this->generateFilterSQL($model->getFilterModels());
+            if ($filterSQL) {
+                if ($whereSQL) {
+                    $whereSQL .= " and ($filterSQL)";
+                } else {
+                    $whereSQL = "where ($filterSQL)";
+                }
+            }
+        }
         $orderSQL = $this->generateOrderSQL($model->getOrderModels());
         return implode(' ', [$fromSQL, $joinSQL, $whereSQL, $orderSQL]);
     }
@@ -352,6 +391,26 @@ class Generator implements IGenerator {
             $result[] = ')';
         }
         return (!$result) ? '' : 'where ' . implode(' ', $result);
+    }
+
+    /**
+     * Генерирует SQL для конструкции FILTER
+     *
+     * @param \XEAF\Rack\API\Interfaces\ICollection $filterModels Список моделей данных
+     *
+     * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function generateFilterSQL(ICollection $filterModels): string {
+        $result = [];
+        foreach ($filterModels as $filterModel) {
+            assert($filterModel instanceof FilterModel);
+            $tableName = $this->tableNameByAlias($filterModel->getAlias());
+            $fieldName = $this->fieldNameByAlias($filterModel->getAlias(), $filterModel->getProperty());
+
+            $result[]  = "$tableName.$fieldName";
+        }
+        return '';
     }
 
     /**
