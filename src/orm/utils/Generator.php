@@ -66,15 +66,38 @@ class Generator implements IGenerator {
     public function selectSQL(EntityQuery $query): string {
         $this->_aliases->clear();
         $this->_entities = $query->getEntityManager()->getEntities();
+        $model           = $query->getModel();
+        $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
+        return 'select ' . $aliasSQL . ' ' . $this->selectSQLConditions($query);
+    }
 
+    /**
+     * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function selectCountSQL(EntityQuery $query): string {
+        $this->_aliases->clear();
+        $this->_entities = $query->getEntityManager()->getEntities();
+        /** @noinspection SqlNoDataSourceInspection */
+        return 'select count(*) as _count from ' . $this->selectSQLConditions($query);
+    }
+
+    /**
+     * Возвращает SQL код условий отбора записей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     *
+     * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function selectSQLConditions(EntityQuery $query): string {
         $model    = $query->getModel();
         $fromSQL  = $this->generateFromSQL($model->getFromModels());
         $joinSQL  = $this->generateJoinSQL($model->getJoinModels());
         $whereSQL = $this->generateWhereSQL($model->getWhereModels(), $model->getParameters());
         $orderSQL = $this->generateOrderSQL($model->getOrderModels());
-        $aliasSQL = $this->generateAliasSQL($model->getAliasModels());
-
-        return 'select ' . implode(' ', [$aliasSQL, $fromSQL, $joinSQL, $whereSQL, $orderSQL]);
+        return implode(' ', [$fromSQL, $joinSQL, $whereSQL, $orderSQL]);
     }
 
     /**
@@ -96,6 +119,7 @@ class Generator implements IGenerator {
                     $fields[] = $property->getFieldName();
                 }
             }
+            /** @noinspection SqlNoDataSourceInspection */
             $result = 'insert into ' . $tableName . '(' . implode(',', $fields) . ') values (' . implode(',', $params) . ')';
             $storage->putInsertSQL($entity->getClassName(), $result);
         }
@@ -150,6 +174,7 @@ class Generator implements IGenerator {
                     $keys[] = "$fieldName=$paramName";
                 }
             }
+            /** @noinspection SqlNoDataSourceInspection */
             $result = 'delete from ' . $tableName . ' where ' . implode(' and ', $keys);
             $storage->putUpdateSQL($entity->getClassName(), $result);
         }

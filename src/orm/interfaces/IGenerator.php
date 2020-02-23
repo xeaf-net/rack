@@ -33,6 +33,15 @@ interface IGenerator extends IFactoryObject {
     function selectSQL(EntityQuery $query): string;
 
     /**
+     * Возвращает текст SQL запроса для выбора количества записей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     *
+     * @return string
+     */
+    function selectCountSQL(EntityQuery $query): string;
+
+    /**
      * Возвращает текст SQL команды для вставки записи
      *
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности

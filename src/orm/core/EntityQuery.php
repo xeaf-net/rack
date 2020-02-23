@@ -306,6 +306,26 @@ class EntityQuery extends DataModel {
     }
 
     /**
+     * Возвращает количество сущностей удовляетворяющих условию отбора
+     *
+     * @param array $params Параметры запроса
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getCount(array $params = []): int {
+        try {
+            $sql    = $this->generateCountSQL();
+            $prm    = $this->processParameters($params);
+            $data   = $this->_em->getDb()->selectFirst($sql, $prm);
+            $result = array_shift($data);
+        } catch (Throwable $exception) {
+            throw EntityException::internalError($exception);
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает текст SQL запроса
      *
      * @return string
@@ -316,7 +336,17 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Обрабатывае параметры запроса
+     * Возвращает текст SQL запроса для выбора количества записей
+     *
+     * @return string
+     */
+    public function generateCountSQL(): string {
+        $gen = Generator::getInstance();
+        return $gen->selectCountSQL($this);
+    }
+
+    /**
+     * Обрабатывает параметры запроса
      *
      * @param array $params Массив значений параметров
      *

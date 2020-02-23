@@ -61,6 +61,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/redis" isTestSource="false" packagePrefix="XEAF\Rack\Redis\" />
       <sourceFolder url="file://$MODULE_DIR$/src/db.mysql" isTestSource="false" packagePrefix="XEAF\Rack\Db\MySQL\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api/utils/sessions" isTestSource="false" packagePrefix="XEAF\Rack\API\Utils\Sessions\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/orm/models/filters" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Models\Filters\" />
       <sourceFolder url="file://$MODULE_DIR$/src/orm/core" isTestSource="false" packagePrefix="XEAF\Rack\ORM\Core\" />
       <sourceFolder url="file://$MODULE_DIR$/src/ui/plugins" isTestSource="false" packagePrefix="XEAF\Rack\UI\Plugins\" />
       <sourceFolder url="file://$MODULE_DIR$/src/api/models/results" isTestSource="false" packagePrefix="XEAF\Rack\API\Models\Results\" />
