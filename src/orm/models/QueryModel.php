@@ -18,6 +18,7 @@ use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -63,6 +64,12 @@ class QueryModel extends DataModel {
     protected $_whereModels = null;
 
     /**
+     * Сущности конструкции FILTER
+     * @var \XEAF\Rack\API\Interfaces\ICollection
+     */
+    protected $_filterModels = null;
+
+    /**
      * Сущности конструкции ORDER
      * @var \XEAF\Rack\API\Interfaces\ICollection
      */
@@ -79,12 +86,13 @@ class QueryModel extends DataModel {
      */
     public function __construct() {
         parent::__construct();
-        $this->_aliasModels = new Collection();
-        $this->_fromModels  = new Collection();
-        $this->_joinModels  = new Collection();
-        $this->_whereModels = new Collection();
-        $this->_orderModels = new Collection();
-        $this->_parameters  = new KeyValue();
+        $this->_aliasModels  = new Collection();
+        $this->_fromModels   = new Collection();
+        $this->_joinModels   = new Collection();
+        $this->_whereModels  = new Collection();
+        $this->_filterModels = new Collection();
+        $this->_orderModels  = new Collection();
+        $this->_parameters   = new KeyValue();
     }
 
     /**
@@ -165,6 +173,26 @@ class QueryModel extends DataModel {
      */
     public function addWhereModel(WhereModel $whereModel): void {
         $this->_whereModels->push($whereModel);
+    }
+
+    /**
+     * Возвращает коллекцию моделей данных конструкции FILTER
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     */
+    public function getFilterModels(): ICollection {
+        return $this->_filterModels;
+    }
+
+    /**
+     * Добавляет в коллекцию модель данных конструкции FILTER
+     *
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель конструкции WHERE
+     *
+     * @return void
+     */
+    public function addFilterModel(FilterModel $filterModel): void {
+        $this->_whereModels->push($filterModel);
     }
 
     /**

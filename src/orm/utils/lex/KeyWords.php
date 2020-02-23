@@ -50,6 +50,11 @@ class KeyWords {
     public const FALSE = 'false';
 
     /**
+     * Ключевое слово FILTER
+     */
+    public const FILTER = 'filter';
+
+    /**
      * Ключевое слово FROM
      */
     public const FROM = 'from';
@@ -114,6 +119,7 @@ class KeyWords {
         self::DESC,
         self::DESCENDING,
         self::FALSE,
+        self::FILTER,
         self::FROM,
         self::INNER,
         self::JOIN,
