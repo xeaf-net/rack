@@ -26,38 +26,22 @@ interface IGenerator extends IFactoryObject {
     /**
      * Возвращает текст SQL запроса для выбора записей
      *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
+     * @param bool                            $useFilter Признак использования условий фильтрации
      *
      * @return string
      */
-    function selectSQL(EntityQuery $query): string;
-
-    /**
-     * Возвращает текст SQL запроса для выбора и фильтрации записей
-     *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
-     *
-     * @return string
-     */
-    function selectFilteredSQL(EntityQuery $query): string;
+    function selectSQL(EntityQuery $query, bool $useFilter): string;
 
     /**
      * Возвращает текст SQL запроса для выбора количества записей
      *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
+     * @param bool                            $useFilter Признак использования условий фильтрации
      *
      * @return string
      */
-    function selectCountSQL(EntityQuery $query): string;
-
-    /**
-     * Возвращает текст SQL запроса для выбора количества отфильтрованных записей
-     *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
-     *
-     * @return string
-     */
-    function selectFilteredCountSQL(EntityQuery $query): string;
+    function selectCountSQL(EntityQuery $query, bool $useFilter): string;
 
     /**
      * Возвращает текст SQL команды для вставки записи

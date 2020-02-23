@@ -64,27 +64,11 @@ class Generator implements IGenerator {
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function selectSQL(EntityQuery $query): string {
+    public function selectSQL(EntityQuery $query, bool $useFilter): string {
         $this->_aliases->clear();
         $this->_entities = $query->getEntityManager()->getEntities();
         $model           = $query->getModel();
-        $condition       = $this->selectSQLConditions($query, false);
-        $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
-        return 'select ' . $aliasSQL . ' ' . $condition;
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     *
-     * @since 1.0.2
-     */
-    public function selectFilteredSQL(EntityQuery $query): string {
-        $this->_aliases->clear();
-        $this->_entities = $query->getEntityManager()->getEntities();
-        $model           = $query->getModel();
-        $condition       = $this->selectSQLConditions($query, true);
+        $condition       = $this->selectSQLConditions($query, $useFilter);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
         return 'select ' . $aliasSQL . ' ' . $condition;
     }
@@ -94,24 +78,10 @@ class Generator implements IGenerator {
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function selectCountSQL(EntityQuery $query): string {
+    public function selectCountSQL(EntityQuery $query, bool $useFilter): string {
         $this->_aliases->clear();
         $this->_entities = $query->getEntityManager()->getEntities();
-        $condition       = $this->selectSQLConditions($query, false);
-        return 'select count(*) as _count ' . $condition;
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     *
-     * @since 1.0.2
-     */
-    public function selectFilteredCountSQL(EntityQuery $query): string {
-        $this->_aliases->clear();
-        $this->_entities = $query->getEntityManager()->getEntities();
-        $condition       = $this->selectSQLConditions($query, true);
+        $condition       = $this->selectSQLConditions($query, $useFilter);
         return 'select count(*) as _count ' . $condition;
     }
 
@@ -431,7 +401,7 @@ class Generator implements IGenerator {
                     $filterSQL = $database->upperCaseExpression($field);
                     break;
             }
-            $result[] = $filterSQL;
+            $result[] = "$filterSQL like " . $database->upperCaseExpression(':_filter');
         }
         return implode(' and ', $result);
     }

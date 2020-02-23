@@ -321,8 +321,37 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function get(array $params = [], int $count = 0, int $offset = 0): ICollection {
+        return $this->internalGet($params, $count, $offset, false);
+    }
+
+    /**
+     * Возвращает набор сущностей удовляетворяющих условию отбора и фильтру
+     *
+     * @param array $params Параметры запроса
+     * @param int   $count  Количество отбираемых сущностей
+     * @param int   $offset Смещение от начала выбора
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getFiltered(array $params = [], int $count = 0, int $offset = 0): ICollection {
+        return $this->internalGet($params, $count, $offset, true);
+    }
+
+    /**
+     * Внутренняя реализация метода получения данных
+     *
+     * @param array $params    Параметры запроса
+     * @param int   $count     Количество отбираемых сущностей
+     * @param int   $offset    Смещение от начала выбора
+     * @param bool  $useFilter Признак использования условий фильтрации
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function internalGet(array $params, int $count, int $offset, bool $useFilter): ICollection {
         try {
-            $sql   = $this->generateSQL();
+            $sql   = $this->generateSQL($useFilter);
             $prm   = $this->processParameters($params);
             $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
             $multi = $this->_model->getAliasModels()->count() > 1;
@@ -346,8 +375,33 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function getCount(array $params = []): int {
+        return $this->internalGetCount($params, false);
+    }
+
+    /**
+     * Возвращает количество сущностей удовляетворяющих условиям отбора и фильтрации
+     *
+     * @param array $params Параметры запроса
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getFilteredCount(array $params = []): int {
+        return $this->internalGetCount($params, true);
+    }
+
+    /**
+     * Внутренняя реализация методв получения количества записей
+     *
+     * @param array $params    Параметры запроса
+     * @param bool  $useFilter Признак использования условий фильтрации
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function internalGetCount(array $params, bool $useFilter): int {
         try {
-            $sql    = $this->generateCountSQL();
+            $sql    = $this->generateCountSQL($useFilter);
             $prm    = $this->processParameters($params);
             $data   = $this->_em->getDb()->selectFirst($sql, $prm);
             $result = array_shift($data);
@@ -360,21 +414,25 @@ class EntityQuery extends DataModel {
     /**
      * Возвращает текст SQL запроса
      *
+     * @param bool $useFilter Признак использования условий фильтрации
+     *
      * @return string
      */
-    public function generateSQL(): string {
+    public function generateSQL(bool $useFilter): string {
         $gen = Generator::getInstance();
-        return $gen->selectSQL($this);
+        return $gen->selectSQL($this, $useFilter);
     }
 
     /**
      * Возвращает текст SQL запроса для выбора количества записей
      *
+     * @param bool $useFilter Признак использования условий фильтрации
+     *
      * @return string
      */
-    public function generateCountSQL(): string {
+    public function generateCountSQL(bool $useFilter): string {
         $gen = Generator::getInstance();
-        return $gen->selectCountSQL($this);
+        return $gen->selectCountSQL($this, $useFilter);
     }
 
     /**
@@ -417,7 +475,7 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFirst(array $params): ?DataObject {
+    public function getFirst(array $params = []): ?DataObject {
         $result = null;
         $list   = $this->get($params, 1);
         if (!$list->isEmpty()) {
