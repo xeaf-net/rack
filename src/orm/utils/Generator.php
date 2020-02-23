@@ -386,9 +386,8 @@ class Generator implements IGenerator {
         foreach ($filterModels as $filterModel) {
             assert($filterModel instanceof FilterModel);
             $alias    = $filterModel->getAlias();
-            $table    = $this->tableNameByAlias($alias);
             $property = $filterModel->getProperty();
-            $field    = $table . '.' . $this->fieldNameByAlias($alias, $property);
+            $field    = $alias . '.' . $this->fieldNameByAlias($alias, $property);
             $model    = $this->propertyModelByAlias($alias, $property);
             switch ($model->getDataType()) {
                 case DataTypes::DT_DATE:
