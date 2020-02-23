@@ -47,7 +47,6 @@
             "XEAF\\Rack\\ORM\\Core\\"                  : "src/orm/core/",
             "XEAF\\Rack\\ORM\\Interfaces\\"            : "src/orm/interfaces/",
             "XEAF\\Rack\\ORM\\Models\\"                : "src/orm/models/",
-            "XEAF\\Rack\\ORM\\Models\\Filters\\"       : "src/orm/models/filters/",
             "XEAF\\Rack\\ORM\\Models\\Parsers\\"       : "src/orm/models/parsers/",
             "XEAF\\Rack\\ORM\\Models\\Properties\\"    : "src/orm/models/properties/",
             "XEAF\\Rack\\ORM\\Models\\Results\\"       : "src/orm/models/results/",
