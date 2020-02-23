@@ -142,7 +142,7 @@ class Module extends Extension implements IModule {
                 $fileName = $fs->changeFileNameExt($moduleFile, $type);
                 break;
             default:
-                $mime = FileMIME::getInsance();
+                $mime     = FileMIME::getInsance();
                 $path     = $this->getActionArgs()->getObjectPath();
                 $dir      = $fs->fileDir($moduleFile);
                 $fileName = $dir . '/' . $type;
@@ -154,6 +154,12 @@ class Module extends Extension implements IModule {
                     $fileName = null;
                 }
                 break;
+        }
+        if ($fileName != null) {
+            $minFileName = $fs->minimizedFilePath($fileName);
+            if ($fs->fileExists($minFileName)) {
+                $fileName = $minFileName;
+            }
         }
         return $fs->fileExists($fileName) ? new FileResult($fileName, false, true) : StatusResult::notFound();
     }
