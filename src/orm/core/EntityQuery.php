@@ -22,6 +22,7 @@ use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -211,6 +212,37 @@ class EntityQuery extends DataModel {
         $tokenizer   = Tokenizer::getInstance();
         $whereParser = new WhereParser($this->_model);
         $whereParser->parse($tokenizer->tokenize('where ' . $where));
+        return $this;
+    }
+
+    /**
+     * Задает условие фильтрации
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Имя свойства
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     *
+     * @since 1.0.2
+     */
+    public function filterBy(string $alias, string $property): EntityQuery {
+        $this->_model->getFilterModels()->clear();
+        return $this->andFilterBy($alias, $property);
+    }
+
+    /**
+     * Добавляет условие фильтрации
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Имя свойства
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     *
+     * @since 1.0.2
+     */
+    public function andFilterBy(string $alias, string $property): EntityQuery {
+        $filterModel = new FilterModel($alias, $property);
+        $this->_model->getFilterModels()->push($filterModel);
         return $this;
     }
 

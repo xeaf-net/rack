@@ -77,6 +77,8 @@ class Generator implements IGenerator {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     *
+     * @since 1.0.2
      */
     public function selectFilteredSQL(EntityQuery $query): string {
         $this->_aliases->clear();
@@ -103,6 +105,8 @@ class Generator implements IGenerator {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     *
+     * @since 1.0.2
      */
     public function selectFilteredCountSQL(EntityQuery $query): string {
         $this->_aliases->clear();
@@ -400,6 +404,8 @@ class Generator implements IGenerator {
      *
      * @return string
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     *
+     * @since 1.0.2
      */
     protected function generateFilterSQL(EntityQuery $query): string {
         $result       = [];

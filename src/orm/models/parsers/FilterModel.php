@@ -21,6 +21,8 @@ use XEAF\Rack\API\Core\DataModel;
  * @property-read string $property  Имя свойства
  *
  * @package XEAF\Rack\ORM\Models\Parsers
+ *
+ * @since 1.0.2
  */
 class FilterModel extends DataModel {
 
