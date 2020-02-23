@@ -268,7 +268,7 @@ class ResourceModule extends Module {
         $result   = null;
         $fileMIME = FileMIME::getInsance();
         $fileType = $this->_fs->fileNameExt($fileName);
-        if ($fileMIME->isExtensionResource($fileName)) {
+        if ($fileMIME->isExtensionResource($fileType)) {
             if ($fileType != self::EXTERNAL_LANG_TYPE) {
                 if ($this->_fs->fileExists($fileName)) {
                     $result = new FileResult($fileName, false, true);
