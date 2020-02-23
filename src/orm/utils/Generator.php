@@ -126,7 +126,7 @@ class Generator implements IGenerator {
         $joinSQL  = $this->generateJoinSQL($model->getJoinModels());
         $whereSQL = $this->generateWhereSQL($model->getWhereModels(), $model->getParameters());
         if ($useFilter) {
-            $filterSQL = $this->generateFilterSQL($model->getFilterModels());
+            $filterSQL = $this->generateFilterSQL($query);
             if ($filterSQL) {
                 if ($whereSQL) {
                     $whereSQL .= " and ($filterSQL)";
@@ -396,21 +396,36 @@ class Generator implements IGenerator {
     /**
      * Генерирует SQL для конструкции FILTER
      *
-     * @param \XEAF\Rack\API\Interfaces\ICollection $filterModels Список моделей данных
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
      *
      * @return string
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function generateFilterSQL(ICollection $filterModels): string {
-        $result = [];
+    protected function generateFilterSQL(EntityQuery $query): string {
+        $result       = [];
+        $database     = $query->getEntityManager()->getDb();
+        $filterModels = $query->getModel()->getFilterModels();
         foreach ($filterModels as $filterModel) {
             assert($filterModel instanceof FilterModel);
-            $tableName = $this->tableNameByAlias($filterModel->getAlias());
-            $fieldName = $this->fieldNameByAlias($filterModel->getAlias(), $filterModel->getProperty());
-
-            $result[]  = "$tableName.$fieldName";
+            $alias    = $filterModel->getAlias();
+            $table    = $this->tableNameByAlias($alias);
+            $property = $filterModel->getProperty();
+            $field    = $table . '.' . $this->fieldNameByAlias($alias, $property);
+            $model    = $this->propertyModelByAlias($alias, $property);
+            switch ($model->getDataType()) {
+                case DataTypes::DT_DATE:
+                    $filterSQL = $database->dateExpression($field);
+                    break;
+                case DataTypes::DT_DATETIME:
+                    $filterSQL = $database->dateTimeExpression($field);
+                    break;
+                default:
+                    $filterSQL = $database->upperCaseExpression($field);
+                    break;
+            }
+            $result[] = $filterSQL;
         }
-        return '';
+        return implode(' and ', $result);
     }
 
     /**
