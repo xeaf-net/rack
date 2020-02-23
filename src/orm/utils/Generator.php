@@ -400,7 +400,8 @@ class Generator implements IGenerator {
                     $filterSQL = $database->upperCaseExpression($field);
                     break;
             }
-            $result[] = "$filterSQL like " . $database->upperCaseExpression(':_filter');
+            $parameter = $filterModel->getParameter();
+            $result[]  = "$filterSQL like " . $database->upperCaseExpression(':' . $parameter);
         }
         return implode(' and ', $result);
     }

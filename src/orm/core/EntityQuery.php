@@ -321,38 +321,39 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function get(array $params = [], int $count = 0, int $offset = 0): ICollection {
-        return $this->internalGet($params, $count, $offset, false);
+        return $this->internalGet([], $params, $count, $offset);
     }
 
     /**
      * Возвращает набор сущностей удовляетворяющих условию отбора и фильтру
      *
-     * @param array $params Параметры запроса
-     * @param int   $count  Количество отбираемых сущностей
-     * @param int   $offset Смещение от начала выбора
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
+     * @param int   $count   Количество отбираемых сущностей
+     * @param int   $offset  Смещение от начала выбора
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFiltered(array $params = [], int $count = 0, int $offset = 0): ICollection {
-        return $this->internalGet($params, $count, $offset, true);
+    public function getFiltered(array $filters, array $params = [], int $count = 0, int $offset = 0): ICollection {
+        return $this->internalGet($filters, $params, $count, $offset);
     }
 
     /**
      * Внутренняя реализация метода получения данных
      *
-     * @param array $params    Параметры запроса
-     * @param int   $count     Количество отбираемых сущностей
-     * @param int   $offset    Смещение от начала выбора
-     * @param bool  $useFilter Признак использования условий фильтрации
+     * @param array $filters Условия фильтрации
+     * @param array $params  Параметры запроса
+     * @param int   $count   Количество отбираемых сущностей
+     * @param int   $offset  Смещение от начала выбора
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function internalGet(array $params, int $count, int $offset, bool $useFilter): ICollection {
+    protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
-            $sql   = $this->generateSQL($useFilter);
-            $prm   = $this->processParameters($params);
+            $sql   = $this->generateSQL(count($filters) > 0);
+            $prm   = $this->processParameters($params, $filters);
             $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
             $multi = $this->_model->getAliasModels()->count() > 1;
             if (!$multi) {
@@ -375,34 +376,35 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function getCount(array $params = []): int {
-        return $this->internalGetCount($params, false);
+        return $this->internalGetCount([], $params);
     }
 
     /**
      * Возвращает количество сущностей удовляетворяющих условиям отбора и фильтрации
      *
-     * @param array $params Параметры запроса
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
      *
      * @return int
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFilteredCount(array $params = []): int {
-        return $this->internalGetCount($params, true);
+    public function getFilteredCount(array $filters, array $params = []): int {
+        return $this->internalGetCount($filters, $params);
     }
 
     /**
      * Внутренняя реализация методв получения количества записей
      *
-     * @param array $params    Параметры запроса
-     * @param bool  $useFilter Признак использования условий фильтрации
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
      *
      * @return int
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function internalGetCount(array $params, bool $useFilter): int {
+    protected function internalGetCount(array $filters, array $params): int {
         try {
-            $sql    = $this->generateCountSQL($useFilter);
-            $prm    = $this->processParameters($params);
+            $sql    = $this->generateCountSQL(count($filters) > 0);
+            $prm    = $this->processParameters($params, $filters);
             $data   = $this->_em->getDb()->selectFirst($sql, $prm);
             $result = array_shift($data);
         } catch (Throwable $exception) {
@@ -438,12 +440,13 @@ class EntityQuery extends DataModel {
     /**
      * Обрабатывает параметры запроса
      *
-     * @param array $params Массив значений параметров
+     * @param array $params  Массив значений параметров
+     * @param array $filters Условия фильтрации
      *
      * @return array
      */
-    protected function processParameters(array $params): array {
-        $result = [];
+    protected function processParameters(array $params, array $filters): array {
+        $result = $filters;
         $db     = $this->_em->getDb();
         foreach ($this->_model->getParameters() as $name => $parameter) {
             assert($parameter instanceof ParameterModel);

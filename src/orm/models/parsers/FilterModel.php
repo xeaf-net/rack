@@ -19,12 +19,18 @@ use XEAF\Rack\API\Core\DataModel;
  *
  * @property-read string $alias     Псевдоним
  * @property-read string $property  Имя свойства
+ * @property-read string $parameter Имя параметра фильтрации
  *
  * @package XEAF\Rack\ORM\Models\Parsers
  *
- * @since 1.0.2
+ * @since   1.0.2
  */
 class FilterModel extends DataModel {
+
+    /**
+     * Имя параметра фильтрации по умолчанию
+     */
+    public const FILTER_PARAMETER = '_filter';
 
     /**
      * Псевдоним
@@ -39,15 +45,23 @@ class FilterModel extends DataModel {
     protected $_property = '';
 
     /**
+     * Имя параметра фильтрации
+     * @var string
+     */
+    protected $_parameter = '';
+
+    /**
      * Конструктор класса
      *
      * @param string $alias     Псевдоним
      * @param string $property  Имя свойства
+     * @param string $parameter Имя параметра фильтрации
      */
-    public function __construct(string $alias, string $property) {
+    public function __construct(string $alias, string $property, string $parameter = self::FILTER_PARAMETER) {
         parent::__construct();
         $this->_alias     = $alias;
         $this->_property  = $property;
+        $this->_parameter = $parameter;
     }
 
     /**
@@ -66,6 +80,15 @@ class FilterModel extends DataModel {
      */
     public function getProperty(): string {
         return $this->_property;
+    }
+
+    /**
+     * Возвращает имя параметра фильтрации
+     *
+     * @return string
+     */
+    public function getParameter(): string {
+        return $this->_parameter;
     }
 }
 
