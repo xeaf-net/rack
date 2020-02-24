@@ -41,6 +41,12 @@ use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 class Generator implements IGenerator {
 
     /**
+     * Менеджер сущностей
+     * @var \XEAF\Rack\ORM\Core\EntityManager
+     */
+    private $_em = null;
+
+    /**
      * Хранилище разрешенных псевдонимов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
@@ -66,7 +72,8 @@ class Generator implements IGenerator {
      */
     public function selectSQL(EntityQuery $query, bool $useFilter): string {
         $this->_aliases->clear();
-        $this->_entities = $query->getEntityManager()->getEntities();
+        $this->_em       = $query->getEntityManager();
+        $this->_entities = $this->_em->getEntities();
         $model           = $query->getModel();
         $condition       = $this->selectSQLConditions($query, $useFilter);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
@@ -80,7 +87,8 @@ class Generator implements IGenerator {
      */
     public function selectCountSQL(EntityQuery $query, bool $useFilter): string {
         $this->_aliases->clear();
-        $this->_entities = $query->getEntityManager()->getEntities();
+        $this->_em       = $query->getEntityManager();
+        $this->_entities = $this->_em->getEntities();
         $condition       = $this->selectSQLConditions($query, $useFilter);
         return 'select count(*) as _count ' . $condition;
     }
@@ -339,7 +347,7 @@ class Generator implements IGenerator {
                     case TokenTypes::ID_PARAMETER:
                         $paramName = $token->getText();
                         if ($parameters->get($paramName) == null) {
-                            $paramModel = new ParameterModel($dataType, null);
+                            $paramModel = new ParameterModel($dataType, null, false);
                             $parameters->put($paramName, $paramModel);
                         }
                         $result[count($result) - 1] .= $paramName;
@@ -381,29 +389,86 @@ class Generator implements IGenerator {
      */
     protected function generateFilterSQL(EntityQuery $query): string {
         $result       = [];
-        $database     = $query->getEntityManager()->getDb();
-        $filterModels = $query->getModel()->getFilterModels();
+        $queryModel   = $query->getModel();
+        $filterModels = $queryModel->getFilterModels();
         foreach ($filterModels as $filterModel) {
             assert($filterModel instanceof FilterModel);
             $alias    = $filterModel->getAlias();
             $property = $filterModel->getProperty();
             $field    = $alias . '.' . $this->fieldNameByAlias($alias, $property);
             $model    = $this->propertyModelByAlias($alias, $property);
-            switch ($model->getDataType()) {
-                case DataTypes::DT_DATE:
-                    $filterSQL = $database->dateExpression($field);
+            switch ($filterModel->getFilterType()) {
+                case FilterModel::FILTER_LIKE:
+                    $filterSQL = $this->processLikeFilterModel($field, $model->getDataType(), $filterModel, $queryModel->getParameters());
                     break;
-                case DataTypes::DT_DATETIME:
-                    $filterSQL = $database->dateTimeExpression($field);
+                case FilterModel::FILTER_BETWEEN:
+                    $filterSQL = $this->processBetweenFilterModel($field, $model->getDataType(), $filterModel, $queryModel->getParameters());
                     break;
                 default:
-                    $filterSQL = $database->upperCaseExpression($field);
+                    $filterSQL = '';
                     break;
             }
-            $parameter = $filterModel->getParameter();
-            $result[]  = "$filterSQL like " . $database->upperCaseExpression(':' . $parameter);
+            if ($filterSQL) {
+                $result[] = $filterSQL;
+            }
         }
         return implode(' and ', $result);
+    }
+
+    /**
+     * Обрабатывает модель данных фильтра типа LIKE
+     *
+     * @param string                                    $field       Имя поля SQL
+     * @param int                                       $dataType    Тип данных
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель данных
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
+     *
+     * @return string
+     *
+     * @since 1.0.2
+     */
+    protected function processLikeFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters): string {
+        $db = $this->_em->getDb();
+        $filterModel->setType(DataTypes::DT_STRING);
+        switch ($dataType) {
+            case DataTypes::DT_DATE:
+                $left = $db->upperCaseExpression($db->dateExpression($field));
+                break;
+            case DataTypes::DT_DATETIME:
+                $left = $db->upperCaseExpression($db->dateTimeExpression($field));
+                break;
+            default:
+                $left = $db->upperCaseExpression($field);
+                break;
+        }
+        $parameter = $filterModel->getParameter();
+        if ($parameters->get($parameter) == null) {
+            $paramModel = new ParameterModel(DataTypes::DT_STRING, null, true);
+            $parameters->put($parameter, $paramModel);
+        }
+        $right = $db->upperCaseExpression(':' . $parameter);
+        return "$left like $right";
+    }
+
+    /**
+     * Обрабатывает модель данных фильтра типа BETWEEN
+     *
+     * @param string                                    $field       Имя поля SQL
+     * @param int                                       $dataType    Тип данных
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель данных
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
+     *
+     * @return string
+     *
+     * @since 1.0.2
+     */
+    protected function processBetweenFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters) {
+        $filterModel->setType($dataType);
+        $minParameter = FilterModel::MIN_FILTER_PREFIX . $filterModel->getParameter();
+        $maxParameter = FilterModel::MAX_FILTER_PREFIX . $filterModel->getParameter();
+        $parameters->put($minParameter, new ParameterModel($dataType, null, true));
+        $parameters->put($maxParameter, new ParameterModel($dataType, null, true));
+        return "$field >= :$minParameter and $field <= :$maxParameter";
     }
 
     /**

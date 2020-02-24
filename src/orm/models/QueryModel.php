@@ -234,11 +234,12 @@ class QueryModel extends DataModel {
      * @param string     $name     Имя параметра
      * @param int        $dataType Тип данных
      * @param mixed|null $value    Значение
+     * @param bool       $filter   Признак параметра фильтрации
      *
      * @return void
      */
-    public function addParameter(string $name, int $dataType = DataTypes::DT_STRING, $value = null): void {
-        $parameter = new ParameterModel($dataType, $value);
+    public function addParameter(string $name, int $dataType = DataTypes::DT_STRING, $value = null, bool $filter = false): void {
+        $parameter = new ParameterModel($dataType, $value, $filter);
         $this->_parameters->put($name, $parameter);
     }
 }

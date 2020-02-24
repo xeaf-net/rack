@@ -218,30 +218,34 @@ class EntityQuery extends DataModel {
     /**
      * Задает условие фильтрации
      *
-     * @param string $alias    Псевдоним
-     * @param string $property Имя свойства
+     * @param string $alias      Псевдоним
+     * @param string $property   Имя свойства
+     * @param string $parameter  Имя параметра
+     * @param int    $filterType Тип фильтрации
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      *
      * @since 1.0.2
      */
-    public function filterBy(string $alias, string $property): EntityQuery {
+    public function filterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
         $this->_model->getFilterModels()->clear();
-        return $this->andFilterBy($alias, $property);
+        return $this->andFilterBy($alias, $property, $parameter, $filterType);
     }
 
     /**
      * Добавляет условие фильтрации
      *
-     * @param string $alias    Псевдоним
-     * @param string $property Имя свойства
+     * @param string $alias      Псевдоним
+     * @param string $property   Имя свойства
+     * @param string $parameter  Имя параметра
+     * @param int    $filterType Тип фильтрации
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      *
      * @since 1.0.2
      */
-    public function andFilterBy(string $alias, string $property): EntityQuery {
-        $filterModel = new FilterModel($alias, $property);
+    public function andFilterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
+        $filterModel = new FilterModel($alias, $property, $parameter, $filterType);
         $this->_model->getFilterModels()->push($filterModel);
         return $this;
     }
@@ -353,7 +357,7 @@ class EntityQuery extends DataModel {
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
             $sql   = $this->generateSQL(count($filters) > 0);
-            $prm   = $this->processParameters($params, $filters);
+            $prm   = $this->processParameters($filters, $params);
             $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
             $multi = $this->_model->getAliasModels()->count() > 1;
             if (!$multi) {
@@ -404,7 +408,7 @@ class EntityQuery extends DataModel {
     protected function internalGetCount(array $filters, array $params): int {
         try {
             $sql    = $this->generateCountSQL(count($filters) > 0);
-            $prm    = $this->processParameters($params, $filters);
+            $prm    = $this->processParameters($filters, $params);
             $data   = $this->_em->getDb()->selectFirst($sql, $prm);
             $result = array_shift($data);
         } catch (Throwable $exception) {
@@ -440,17 +444,18 @@ class EntityQuery extends DataModel {
     /**
      * Обрабатывает параметры запроса
      *
-     * @param array $params  Массив значений параметров
      * @param array $filters Условия фильтрации
+     * @param array $params  Массив значений параметров
      *
      * @return array
      */
-    protected function processParameters(array $params, array $filters): array {
+    protected function processParameters(array $filters, array $params): array {
         $result = $filters;
         $db     = $this->_em->getDb();
+        $values = $filters + $params;
         foreach ($this->_model->getParameters() as $name => $parameter) {
             assert($parameter instanceof ParameterModel);
-            $value = $params[$name] ?? $parameter->getValue();
+            $value = $values[$name] ?? $parameter->getValue();
             if ($value != null) {
                 switch ($parameter->getType()) {
                     case  DataTypes::DT_BOOL:

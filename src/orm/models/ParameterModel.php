@@ -18,8 +18,9 @@ use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 /**
  * Описывает свойства модели данных параметра запроса
  *
- * @property int   $type  Тип Параметра
- * @property mixed $value Значение параметра
+ * @property int   $type   Тип Параметра
+ * @property mixed $value  Значение параметра
+ * @property bool  $filter Признак параметра фильтрации
  *
  * @package XEAF\Rack\ORM\Models
  */
@@ -38,15 +39,23 @@ class ParameterModel extends DataModel {
     protected $_value = null;
 
     /**
+     * Признак параметра фильтрации
+     * @var bool
+     */
+    protected $_filter = false;
+
+    /**
      * Конструктор класса
      *
-     * @param int    $type  Тип параметра
-     * @param string $value Значение
+     * @param int        $type   Тип параметра
+     * @param mixed|null $value  Значение
+     * @param bool       $filter Признак параметра фильтрации
      */
-    public function __construct(int $type, string $value = null) {
+    public function __construct(int $type, $value, bool $filter) {
         parent::__construct();
-        $this->_type  = $type;
-        $this->_value = $value;
+        $this->_type   = $type;
+        $this->_value  = $value;
+        $this->_filter = $filter;
     }
 
     /**
@@ -87,5 +96,25 @@ class ParameterModel extends DataModel {
      */
     public function setValue($value): void {
         $this->_value = $value;
+    }
+
+    /**
+     * Возвращает признак параметра фильтрации
+     *
+     * @return bool
+     */
+    public function getFilter(): bool {
+        return $this->_filter;
+    }
+
+    /**
+     * Задает признак параметра фильтрации
+     *
+     * @param bool $filter Признак параметра фильтрации
+     *
+     * @return void
+     */
+    public function setFilter(bool $filter): void {
+        $this->_filter = $filter;
     }
 }
