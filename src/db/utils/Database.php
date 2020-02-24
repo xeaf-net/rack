@@ -19,7 +19,6 @@ use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 use XEAF\Rack\Db\Interfaces\IDatabase;
 use XEAF\Rack\Db\Interfaces\IDatabaseProvider;
 use XEAF\Rack\Db\Models\Config\DatabaseConfig;
-use XEAF\Rack\Db\Models\MigrationModel;
 
 /**
  * Реализует методы работы с базой данных
@@ -234,39 +233,6 @@ class Database implements IDatabase {
      */
     public function sqlBool(string $flag): bool {
         return $this->_provider->sqlBool($flag);
-    }
-
-    /**
-     * Возвращает модель данных последней миграции
-     *
-     * @param string $product Идентификатор продукта
-     *
-     * @return \XEAF\Rack\Db\Models\MigrationModel|null
-     * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
-     *
-     * @since 1.0.3
-     * @noinspection RedundantSuppression
-     */
-    public function getMigration(string $product = Database::MIGRATION_PRODUCT): ?MigrationModel {
-        $result = null;
-        /** @noinspection SqlNoDataSourceInspection */
-        /** @noinspection SqlResolve */
-        $sql  = '
-            select * from xeaf_migrations 
-                where 
-                    migration_product = :product 
-                order by 
-                    migration_timestamp desc';
-        $data = $this->selectFirst($sql, ['product' => $product]);
-        if ($data) {
-            $result = new MigrationModel([
-                'product'   => $data->{'migration_product'},
-                'version'   => $data->{'migration_version'},
-                'timestamp' => $this->sqlDateTime($data->{'migration_timestamp'}),
-                'comment'   => $data->{'migration_comment'}
-            ]);
-        }
-        return $result;
     }
 
     /**
