@@ -245,6 +245,7 @@ class Database implements IDatabase {
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      *
      * @since 1.0.3
+     * @noinspection RedundantSuppression
      */
     public function getMigration(string $product = Database::MIGRATION_PRODUCT): ?MigrationModel {
         $result = null;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MigratonModel.php
+ * MigrationModel.php
  *
  * Файл является неотъемлемой частью проекта RACK
  *
