@@ -44,6 +44,7 @@ class WhereParser extends Parser {
         ],
         '01' => [
             TokenTypes::ID_STOP     => 'ST',
+            TokenTypes::KW_FILTER   => 'ST',
             TokenTypes::KW_ORDER    => 'ST',
             TokenTypes::ID_UNKNOWN  => '01',
             TokenTypes::ID_CONSTANT => '01',
@@ -133,6 +134,9 @@ class WhereParser extends Parser {
                 }
                 $this->_queryModel->addWhereModel($this->_whereModel);
                 switch ($this->_current->getType()) {
+                    case  TokenTypes::KW_FILTER:
+                        $this->_phase = QueryParser::FILTER_PHASE;
+                        break;
                     case  TokenTypes::KW_ORDER:
                         $this->_phase = QueryParser::ORDER_PHASE;
                         break;

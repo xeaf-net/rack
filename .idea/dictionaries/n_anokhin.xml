@@ -2,10 +2,12 @@
   <dictionary name="n.anokhin">
     <words>
       <w>algo</w>
+      <w>browserify</w>
       <w>dbindex</w>
       <w>mbstring</w>
       <w>pgsql</w>
       <w>postgre</w>
+      <w>tsify</w>
       <w>unpop</w>
       <w>unpush</w>
       <w>unserialization</w>

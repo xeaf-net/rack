@@ -158,4 +158,27 @@ interface ICalendar extends IFactoryObject {
      * @return int
      */
     function dateTimeToDate(int $dateTime): int;
+
+
+    /**
+     * Возвращает нормализованное представления даты
+     *
+     * @since 1.0.2
+     *
+     * @param int|null $date Дата
+     *
+     * @return string
+     */
+    function normalizeDate(int $date = null): string;
+
+    /**
+     * Возвращает нормализованное представления даты и времени
+     *
+     * @since 1.0.2
+     *
+     * @param int|null $dateTime Дата и время
+     *
+     * @return string
+     */
+    function normalizeDateTime(int $dateTime = null): string;
 }

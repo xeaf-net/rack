@@ -32,14 +32,15 @@ class FromParser extends Parser {
         '01' => [TokenTypes::ID_UNKNOWN => '02'],
         '02' => [TokenTypes::ID_UNKNOWN => '03'],
         '03' => [
-            TokenTypes::ID_STOP  => 'ST',
-            TokenTypes::SP_COMMA => '01',
-            TokenTypes::KW_LEFT  => 'ST',
-            TokenTypes::KW_RIGHT => 'ST',
-            TokenTypes::KW_INNER => 'ST',
-            TokenTypes::KW_OUTER => 'ST',
-            TokenTypes::KW_WHERE => 'ST',
-            TokenTypes::KW_ORDER => 'ST',
+            TokenTypes::ID_STOP   => 'ST',
+            TokenTypes::SP_COMMA  => '01',
+            TokenTypes::KW_LEFT   => 'ST',
+            TokenTypes::KW_RIGHT  => 'ST',
+            TokenTypes::KW_INNER  => 'ST',
+            TokenTypes::KW_OUTER  => 'ST',
+            TokenTypes::KW_WHERE  => 'ST',
+            TokenTypes::KW_ORDER  => 'ST',
+            TokenTypes::KW_FILTER => 'ST'
         ]
     ];
 
@@ -68,6 +69,9 @@ class FromParser extends Parser {
                     case TokenTypes::KW_INNER:
                     case TokenTypes::KW_OUTER:
                         $this->_phase = QueryParser::JOIN_PHASE;
+                        break;
+                    case TokenTypes::KW_FILTER:
+                        $this->_phase = QueryParser::FILTER_PHASE;
                         break;
                     case  TokenTypes::KW_WHERE:
                         $this->_phase = QueryParser::WHERE_PHASE;

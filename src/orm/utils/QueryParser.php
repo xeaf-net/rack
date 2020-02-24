@@ -16,6 +16,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\ORM\Interfaces\IQueryParser;
 use XEAF\Rack\ORM\Models\QueryModel;
 use XEAF\Rack\ORM\Utils\Parsers\AliasParser;
+use XEAF\Rack\ORM\Utils\Parsers\FilterParser;
 use XEAF\Rack\ORM\Utils\Parsers\FromParser;
 use XEAF\Rack\ORM\Utils\Parsers\JoinParser;
 use XEAF\Rack\ORM\Utils\Parsers\OrderParser;
@@ -34,29 +35,34 @@ class QueryParser implements IQueryParser {
     public const ALIAS_PHASE = 0;
 
     /**
-     * Фаза разбора конфигукции FROM
+     * Фаза разбора конструкции FROM
      */
     public const FROM_PHASE = 1;
 
     /**
-     * Фаза разбора конфигукции JOIN
+     * Фаза разбора конструкции JOIN
      */
     public const JOIN_PHASE = 2;
 
     /**
-     * Фаза разбора конфигукции WHERE
+     * Фаза разбора конструкции WHERE
      */
     public const WHERE_PHASE = 3;
 
     /**
-     * Фаза разбора конфигукции ORDER
+     * Фаза разбора конструкции FILTER
      */
-    public const ORDER_PHASE = 4;
+    public const FILTER_PHASE = 4;
+
+    /**
+     * Фаза разбора конструкции ORDER
+     */
+    public const ORDER_PHASE = 5;
 
     /**
      * Фаза завершения обработки
      */
-    public const END_PHASE = 5;
+    public const END_PHASE = 6;
 
     /**
      * Исходный код XQL запроса
@@ -125,6 +131,9 @@ class QueryParser implements IQueryParser {
                     break;
                 case self::WHERE_PHASE:
                     $parser = new WhereParser($this->_queryModel);
+                    break;
+                case self::FILTER_PHASE:
+                    $parser = new FilterParser($this->_queryModel);
                     break;
                 case self::ORDER_PHASE:
                     $parser = new OrderParser($this->_queryModel);

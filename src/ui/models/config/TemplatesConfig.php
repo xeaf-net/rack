@@ -105,6 +105,9 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
      * @return bool
      */
     public function getForceCompile(): bool {
+        if (__XEAF_RACK_DEBUG_MODE__){
+            return true;
+        }
         return $this->_forceCompile;
     }
 

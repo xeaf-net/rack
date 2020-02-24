@@ -24,6 +24,8 @@ use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Home\HomeModule;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Modules\Tools\SessionModule;
+use XEAF\Rack\API\Utils\Assets;
+use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Reflection;
@@ -71,7 +73,7 @@ class Application extends Extension {
             ResourceModule::PUBLIC_PATH   => ResourceModule::class,
             ResourceModule::VENDOR_PATH   => ResourceModule::class,
             ResourceModule::NODE_MODULES  => ResourceModule::class,
-            ResourceModule::RESOURCE_PATH => ResourceModule::class
+            ResourceModule::TEMPLATE_PATH => ResourceModule::class
         ];
     }
 
@@ -95,12 +97,31 @@ class Application extends Extension {
     }
 
     /**
+     * Регистрирует папку публичных ресурсов
+     *
+     * @return void
+     */
+    protected function registerPublicFolder(): void {
+        try {
+            $fs           = FileSystem::getInstance();
+            $classFile    = $this->getClassFileName();
+            $publicFolder = $fs->fileDir($classFile) . '/..' . ResourceModule::PUBLIC_PATH;
+            if ($fs->folderExists($publicFolder)) {
+                Assets::getInstance()->registerPublicFolder($publicFolder);
+            }
+        } catch (Throwable $exception) {
+            $this->defaultLogger()->exception($exception);
+        }
+    }
+
+    /**
      * Метод обработки события начала обработки действия
      *
      * @return void
      */
     protected function beforeExecute(): void {
         $this->defineExtensions();
+        $this->registerPublicFolder();
     }
 
     /**

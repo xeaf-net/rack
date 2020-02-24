@@ -30,6 +30,11 @@ class Router implements IRouter {
     public const ROOT_NODE = '/';
 
     /**
+     * Узел домашней страницы
+     */
+    public const HOME_NODE = '/home';
+
+    /**
      * Путь действия авторизации
      */
     public const LOGIN_PATH = '/login';
@@ -89,6 +94,9 @@ class Router implements IRouter {
      */
     public function registerRoute(string $path, string $className): void {
         $this->_routes->put($path, $className);
+        if ($path == self::ROOT_NODE) {
+            $this->_routes->put(self::HOME_NODE, $className);
+        }
     }
 
     /**

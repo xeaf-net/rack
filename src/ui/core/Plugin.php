@@ -49,4 +49,16 @@ abstract class Plugin extends LayoutExtension {
     public function getDataObject(array $params = []): ?DataObject {
         return null;
     }
+
+    /**
+     * Возвращет HTML код плагина
+     *
+     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Модель данных плагина
+     *
+     * @return string|null
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function generateHTML(DataObject $dataObject = null): ?string {
+        return null; // Использовать .tpl файл
+    }
 }

@@ -22,6 +22,7 @@ use XEAF\Rack\ORM\Interfaces\IGenerator;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -38,6 +39,12 @@ use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
  * @package XEAF\Rack\ORM\Utils
  */
 class Generator implements IGenerator {
+
+    /**
+     * Менеджер сущностей
+     * @var \XEAF\Rack\ORM\Core\EntityManager
+     */
+    private $_em = null;
 
     /**
      * Хранилище разрешенных псевдонимов
@@ -63,22 +70,60 @@ class Generator implements IGenerator {
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function selectSQL(EntityQuery $query): string {
+    public function selectSQL(EntityQuery $query, bool $useFilter): string {
         $this->_aliases->clear();
-        $this->_entities = $query->getEntityManager()->getEntities();
-
-        $model    = $query->getModel();
-        $fromSQL  = $this->generateFromSQL($model->getFromModels());
-        $joinSQL  = $this->generateJoinSQL($model->getJoinModels());
-        $whereSQL = $this->generateWhereSQL($model->getWhereModels(), $model->getParameters());
-        $orderSQL = $this->generateOrderSQL($model->getOrderModels());
-        $aliasSQL = $this->generateAliasSQL($model->getAliasModels());
-
-        return 'select ' . implode(' ', [$aliasSQL, $fromSQL, $joinSQL, $whereSQL, $orderSQL]);
+        $this->_em       = $query->getEntityManager();
+        $this->_entities = $this->_em->getEntities();
+        $model           = $query->getModel();
+        $condition       = $this->selectSQLConditions($query, $useFilter);
+        $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
+        return 'select ' . $aliasSQL . ' ' . $condition;
     }
 
     /**
      * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function selectCountSQL(EntityQuery $query, bool $useFilter): string {
+        $this->_aliases->clear();
+        $this->_em       = $query->getEntityManager();
+        $this->_entities = $this->_em->getEntities();
+        $condition       = $this->selectSQLConditions($query, $useFilter);
+        return 'select count(*) as _count ' . $condition;
+    }
+
+    /**
+     * Возвращает SQL код условий отбора записей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
+     * @param bool                            $useFilter Признак использования условий фильтрации
+     *
+     * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function selectSQLConditions(EntityQuery $query, bool $useFilter): string {
+        $model    = $query->getModel();
+        $fromSQL  = $this->generateFromSQL($model->getFromModels());
+        $joinSQL  = $this->generateJoinSQL($model->getJoinModels());
+        $whereSQL = $this->generateWhereSQL($model->getWhereModels(), $model->getParameters());
+        if ($useFilter) {
+            $filterSQL = $this->generateFilterSQL($query);
+            if ($filterSQL) {
+                if ($whereSQL) {
+                    $whereSQL .= " and ($filterSQL)";
+                } else {
+                    $whereSQL = "where ($filterSQL)";
+                }
+            }
+        }
+        $orderSQL = $this->generateOrderSQL($model->getOrderModels());
+        return implode(' ', [$fromSQL, $joinSQL, $whereSQL, $orderSQL]);
+    }
+
+    /**
+     * @inheritDoc
+     * @noinspection RedundantSuppression
      */
     public function insertSQL(Entity $entity): string {
         $storage = EntityStorage::getInstance();
@@ -96,6 +141,7 @@ class Generator implements IGenerator {
                     $fields[] = $property->getFieldName();
                 }
             }
+            /** @noinspection SqlNoDataSourceInspection */
             $result = 'insert into ' . $tableName . '(' . implode(',', $fields) . ') values (' . implode(',', $params) . ')';
             $storage->putInsertSQL($entity->getClassName(), $result);
         }
@@ -133,6 +179,7 @@ class Generator implements IGenerator {
 
     /**
      * @inheritDoc
+     * @noinspection RedundantSuppression
      */
     public function deleteSQL(Entity $entity): string {
         $storage = EntityStorage::getInstance();
@@ -150,6 +197,7 @@ class Generator implements IGenerator {
                     $keys[] = "$fieldName=$paramName";
                 }
             }
+            /** @noinspection SqlNoDataSourceInspection */
             $result = 'delete from ' . $tableName . ' where ' . implode(' and ', $keys);
             $storage->putUpdateSQL($entity->getClassName(), $result);
         }
@@ -299,7 +347,7 @@ class Generator implements IGenerator {
                     case TokenTypes::ID_PARAMETER:
                         $paramName = $token->getText();
                         if ($parameters->get($paramName) == null) {
-                            $paramModel = new ParameterModel($dataType, null);
+                            $paramModel = new ParameterModel($dataType, null, false);
                             $parameters->put($paramName, $paramModel);
                         }
                         $result[count($result) - 1] .= $paramName;
@@ -327,6 +375,100 @@ class Generator implements IGenerator {
             $result[] = ')';
         }
         return (!$result) ? '' : 'where ' . implode(' ', $result);
+    }
+
+    /**
+     * Генерирует SQL для конструкции FILTER
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery $query Объект запроса
+     *
+     * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     *
+     * @since 1.0.2
+     */
+    protected function generateFilterSQL(EntityQuery $query): string {
+        $result       = [];
+        $queryModel   = $query->getModel();
+        $filterModels = $queryModel->getFilterModels();
+        foreach ($filterModels as $filterModel) {
+            assert($filterModel instanceof FilterModel);
+            $alias    = $filterModel->getAlias();
+            $property = $filterModel->getProperty();
+            $field    = $alias . '.' . $this->fieldNameByAlias($alias, $property);
+            $model    = $this->propertyModelByAlias($alias, $property);
+            switch ($filterModel->getFilterType()) {
+                case FilterModel::FILTER_LIKE:
+                    $filterSQL = $this->processLikeFilterModel($field, $model->getDataType(), $filterModel, $queryModel->getParameters());
+                    break;
+                case FilterModel::FILTER_BETWEEN:
+                    $filterSQL = $this->processBetweenFilterModel($field, $model->getDataType(), $filterModel, $queryModel->getParameters());
+                    break;
+                default:
+                    $filterSQL = '';
+                    break;
+            }
+            if ($filterSQL) {
+                $result[] = $filterSQL;
+            }
+        }
+        return implode(' and ', $result);
+    }
+
+    /**
+     * Обрабатывает модель данных фильтра типа LIKE
+     *
+     * @param string                                    $field       Имя поля SQL
+     * @param int                                       $dataType    Тип данных
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель данных
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
+     *
+     * @return string
+     *
+     * @since 1.0.2
+     */
+    protected function processLikeFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters): string {
+        $db = $this->_em->getDb();
+        $filterModel->setType(DataTypes::DT_STRING);
+        switch ($dataType) {
+            case DataTypes::DT_DATE:
+                $left = $db->upperCaseExpression($db->dateExpression($field));
+                break;
+            case DataTypes::DT_DATETIME:
+                $left = $db->upperCaseExpression($db->dateTimeExpression($field));
+                break;
+            default:
+                $left = $db->upperCaseExpression($field);
+                break;
+        }
+        $parameter = $filterModel->getParameter();
+        if ($parameters->get($parameter) == null) {
+            $paramModel = new ParameterModel(DataTypes::DT_STRING, null, true);
+            $parameters->put($parameter, $paramModel);
+        }
+        $right = $db->upperCaseExpression(':' . $parameter);
+        return "$left like $right";
+    }
+
+    /**
+     * Обрабатывает модель данных фильтра типа BETWEEN
+     *
+     * @param string                                    $field       Имя поля SQL
+     * @param int                                       $dataType    Тип данных
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель данных
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
+     *
+     * @return string
+     *
+     * @since 1.0.2
+     */
+    protected function processBetweenFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters) {
+        $filterModel->setType($dataType);
+        $minParameter = FilterModel::MIN_FILTER_PREFIX . $filterModel->getParameter();
+        $maxParameter = FilterModel::MAX_FILTER_PREFIX . $filterModel->getParameter();
+        $parameters->put($minParameter, new ParameterModel($dataType, null, true));
+        $parameters->put($maxParameter, new ParameterModel($dataType, null, true));
+        return "$field >= :$minParameter and $field <= :$maxParameter";
     }
 
     /**

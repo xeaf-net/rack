@@ -85,49 +85,54 @@ class TokenTypes {
     public const KW_DESCENDING = 203;
 
     /**
+     * Ключевое слово FILTER
+     */
+    public const KW_FILTER = 204;
+
+    /**
      * Ключевое слово FROM
      */
-    public const KW_FROM = 204;
+    public const KW_FROM = 205;
 
     /**
      * Ключевое слово INNER
      */
-    public const KW_INNER = 205;
+    public const KW_INNER = 206;
 
     /**
      * Ключевое слово JOIN
      */
-    public const KW_JOIN = 206;
+    public const KW_JOIN = 207;
 
     /**
      * Ключевое слово LEFT
      */
-    public const KW_LEFT = 207;
+    public const KW_LEFT = 208;
 
     /**
      * Ключевое слово ON
      */
-    public const KW_ON = 208;
+    public const KW_ON = 209;
 
     /**
      * Ключевое слово ORDER
      */
-    public const KW_ORDER = 209;
+    public const KW_ORDER = 210;
 
     /**
      * Ключевое слово OUTER
      */
-    public const KW_OUTER = 210;
+    public const KW_OUTER = 211;
 
     /**
      * Ключевое слово RIGHT
      */
-    public const KW_RIGHT = 211;
+    public const KW_RIGHT = 212;
 
     /**
      * Ключевое слово WHERE
      */
-    public const KW_WHERE = 212;
+    public const KW_WHERE = 213;
 
     /**
      * Оператор Открытая скобка
@@ -234,6 +239,7 @@ class TokenTypes {
         KeyWords::DESC       => self::KW_DESCENDING,
         KeyWords::DESCENDING => self::KW_DESCENDING,
         KeyWords::FALSE      => self::ID_FALSE,
+        KeyWords::FILTER     => self::KW_FILTER,
         KeyWords::FROM       => self::KW_FROM,
         KeyWords::INNER      => self::KW_INNER,
         KeyWords::JOIN       => self::KW_JOIN,

@@ -16,8 +16,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ILoggerProvider;
 use XEAF\Rack\API\Models\Config\FileLoggerConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
-use XEAF\Rack\API\Utils\Formatter;
-use XEAF\Rack\API\Utils\Localization;
+use XEAF\Rack\API\Utils\Calendar;
 use XEAF\Rack\API\Utils\Logger;
 
 /**
@@ -97,8 +96,8 @@ class FileLoggerProvider implements ILoggerProvider {
      * @return string
      */
     protected function getFileName(string $path, string $prefix): string {
-        $fmt  = Formatter::getInstance();
-        $date = $fmt->formatDate(time(), Localization::DEFAULT_LOCALE);
+        $cal  = Calendar::getInstance();
+        $date = $cal->normalizeDate();
         return "$path/$prefix-$date." . self::FILE_NAME_EXT;
     }
 

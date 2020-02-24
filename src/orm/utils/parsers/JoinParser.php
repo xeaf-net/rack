@@ -89,13 +89,14 @@ class JoinParser extends Parser {
         '10' => [TokenTypes::SP_DOT => '11'],
         '11' => [TokenTypes::ID_UNKNOWN => '12'],
         '12' => [
-            TokenTypes::ID_STOP  => 'ST',
-            TokenTypes::KW_LEFT  => '01',
-            TokenTypes::KW_RIGHT => '01',
-            TokenTypes::KW_INNER => '01',
-            TokenTypes::KW_OUTER => '01',
-            TokenTypes::KW_WHERE => 'ST',
-            TokenTypes::KW_ORDER => 'ST'
+            TokenTypes::ID_STOP   => 'ST',
+            TokenTypes::KW_LEFT   => '01',
+            TokenTypes::KW_RIGHT  => '01',
+            TokenTypes::KW_INNER  => '01',
+            TokenTypes::KW_OUTER  => '01',
+            TokenTypes::KW_WHERE  => 'ST',
+            TokenTypes::KW_FILTER => 'ST',
+            TokenTypes::KW_ORDER  => 'ST'
         ]
     ];
 
@@ -146,6 +147,9 @@ class JoinParser extends Parser {
                 switch ($this->_current->getType()) {
                     case TokenTypes::ID_STOP:
                         $this->_phase = QueryParser::END_PHASE;
+                        break;
+                    case  TokenTypes::KW_FILTER:
+                        $this->_phase = QueryParser::FILTER_PHASE;
                         break;
                     case  TokenTypes::KW_WHERE:
                         $this->_phase = QueryParser::WHERE_PHASE;

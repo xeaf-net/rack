@@ -13,7 +13,6 @@
 namespace XEAF\Rack\API\Modules\Tools;
 
 use Throwable;
-use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\DataResult;
@@ -35,6 +34,11 @@ use XEAF\Rack\UI\Utils\TemplateEngine;
 class ResourceModule extends Module {
 
     /**
+     * Путь к модулю для обработки компилированных ресурсов
+     */
+    public const DIST_PATH = '/dist';
+
+    /**
      * Путь к модулю для обработки ресурсов из папки public
      */
     public const PUBLIC_PATH = '/public';
@@ -50,9 +54,9 @@ class ResourceModule extends Module {
     public const VENDOR_PATH = '/vendor';
 
     /**
-     * Путь к модулю для обработки ресурсов исполняемых элементов
+     * Путь к модулю для обработки ресурсов шаблонов
      */
-    public const RESOURCE_PATH = '/resource';
+    public const TEMPLATE_PATH = '/template';
 
     /**
      * Тип файла Таблица стилей
@@ -65,17 +69,9 @@ class ResourceModule extends Module {
     public const JS_FILE_TYPE = 'js';
 
     /**
-     * Карта типов ресурсов
+     * Тип файла Внешний языковой ресурс
      */
-    public const RESOURCE_TYPE_MAP = [
-        self::CSS_FILE_TYPE => ['scss', 'css', 'min.css'],
-        self::JS_FILE_TYPE  => ['ts', 'js', 'js.min']
-    ];
-
-    /**
-     * Имя модуля домашней страницы
-     */
-    public const HOME_MODULE_NAME = 'home';
+    public const EXTERNAL_LANG_TYPE = 'lang';
 
     /**
      * Объект методов доступа к файловой системе
@@ -98,6 +94,9 @@ class ResourceModule extends Module {
         $actionName = $this->getActionArgs()->getActionPath();
         try {
             switch ($actionName) {
+                case self::DIST_PATH:
+                    $result = $this->processGetDist();
+                    break;
                 case self::PUBLIC_PATH:
                     $result = $this->processGetPublic();
                     break;
@@ -107,8 +106,8 @@ class ResourceModule extends Module {
                 case self::VENDOR_PATH:
                     $result = $this->processGetVendor();
                     break;
-                case self::RESOURCE_PATH:
-                    $result = $this->processGetResource();
+                case self::TEMPLATE_PATH:
+                    $result = $this->processGetTemplate();
                     break;
                 default:
                     $result = null;
@@ -125,33 +124,36 @@ class ResourceModule extends Module {
     }
 
     /**
+     * Обрабатывает обращение к ресурсам из папки dist
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     */
+    protected function processGetDist(): ?IActionResult {
+        $result   = null;
+        $rootPath = Assets::getInstance()->getDistRootFolder();
+        $fileName = $this->resourcePath($rootPath);
+        if ($this->_fs->fileExists($fileName)) {
+            $result = $this->sendResourceFile($fileName);
+        }
+        return $result;
+    }
+
+    /**
      * Обрабатывает обращение к ресурсам из папки public
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
     protected function processGetPublic(): ?IActionResult {
-        $result    = null;
-        $assets    = Assets::getInstance();
-        $fileName  = $this->resourcePath('');
-        $fileType  = $this->_fs->fileNameExt($fileName);
-        $filePaths = [];
-
-        if ($fileType == self::CSS_FILE_TYPE || $fileType == self::JS_FILE_TYPE) {
-            $distDir = $assets->getDistPublicFolder($fileType);
-            $filePaths[] = $distDir . $this->_fs->minimizedFilePath($fileName);
-            $filePaths[] = $distDir . $fileName;
-        }
+        $result   = null;
+        $assets   = Assets::getInstance();
+        $fileName = $this->resourcePath('');
         foreach ($assets->getPublicFolders() as $publicFolder) {
-            $filePaths[] = $publicFolder . '/' . $fileName;
-        }
-
-        foreach ($filePaths as $filePath) {
-            if ($this->_fs->fileExists($filePath)) {
-                $result = $this->sendResourceFile($filePath);
+            $checked = $this->checkMinimizedFile($publicFolder . '/' . $fileName);
+            if ($this->_fs->fileExists($checked)) {
+                $result = $this->sendResourceFile($checked);
                 break;
             }
         }
-
         return $result;
     }
 
@@ -185,109 +187,38 @@ class ResourceModule extends Module {
     }
 
     /**
-     * Обрабатывает обращение к ресурсам исполняемых элементов
-     *
-     * @return \XEAF\Rack\API\Interfaces\IActionResult|null
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
-     * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
-     */
-    protected function processGetResource(): ?IActionResult {
-        $result     = null;
-        $actionMode = $this->getActionArgs()->getActionMode();
-        $objectPath = $this->getActionArgs()->getObjectPath();
-        if ($actionMode == 'template') {
-            $result = $this->processTemplateResource($objectPath);
-        } else {
-            $objectPath = rtrim("/$actionMode/$objectPath", '/');
-            $result     = $this->processModuleResource($objectPath);
-        }
-        return $result;
-    }
-
-    /**
-     * Обрабатывает запрос к ресурсам модуля
-     *
-     * @param string|null $objectPath Путь
-     *
-     * @return \XEAF\Rack\API\Interfaces\IActionResult
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
-     */
-    protected function processModuleResource(?string $objectPath): IActionResult {
-        $ref        = Reflection::getInstance();
-        $router     = Router::getInstance();
-        $fileName   = null;
-        $fileType   = $this->_fs->fileNameExt($objectPath);
-        $modulePath = $this->extractModulePath($objectPath);
-        $moduleMode = '';
-
-        $arr = explode('.', $modulePath);
-        if (count($arr) == 1) {
-            $moduleMode = '';
-        } else if ($fileType == self::CSS_FILE_TYPE || $fileType == self::JS_FILE_TYPE) {
-            $modulePath = $arr[0];
-            $moduleMode = $arr[1];
-        }
-
-        $objectWork  = substr($objectPath, strlen($modulePath));
-        $moduleClass = $router->routeClassName($modulePath);
-
-        if ($moduleClass) {
-            $moduleFile = $ref->classFileName($moduleClass);
-            if ($objectWork == ('.' . self::CSS_FILE_TYPE)) {
-                $fileName = $this->_fs->changeFileNameExt($moduleFile, self::CSS_FILE_TYPE);
-            } else if ($objectWork == ('.' . self::JS_FILE_TYPE)) {
-                $fileName = $this->_fs->changeFileNameExt($moduleFile, self::JS_FILE_TYPE);
-            } else if ($moduleMode != '' && $fileType == self::CSS_FILE_TYPE) {
-                $fileName = $this->_fs->trimFileNameExt($moduleFile) . '-' . ucfirst($moduleMode) . '.' . self::CSS_FILE_TYPE;
-            } else if ($moduleMode != '' && $fileType == self::JS_FILE_TYPE) {
-                $fileName = $this->_fs->trimFileNameExt($moduleFile) . '-' . ucfirst($moduleMode) . '.' . self::JS_FILE_TYPE;
-            } else if ($modulePath == Router::ROOT_NODE && $objectWork == self::HOME_MODULE_NAME . '.' . self::CSS_FILE_TYPE) {
-                $fileName = $this->_fs->changeFileNameExt($moduleFile, self::CSS_FILE_TYPE);
-            } else if ($modulePath == Router::ROOT_NODE && $objectWork == self::HOME_MODULE_NAME . '.' . self::JS_FILE_TYPE) {
-                $fileName = $this->_fs->changeFileNameExt($moduleFile, self::JS_FILE_TYPE);
-            } else {
-                $moduleDir = $this->_fs->fileDir($moduleFile);
-                $fileName  = $moduleDir . $objectWork;
-            }
-        }
-
-        if ($fileName) {
-            $fileName = $this->checkMinimizedFile($fileName);
-            return $this->sendResourceFile($fileName);
-        }
-        return null;
-    }
-
-    /**
      * Обрабатывает запрос к ресурсам шаблона
      *
-     * @param string|null $objectPath Путь
-     *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    protected function processTemplateResource(?string $objectPath): IActionResult {
+    protected function processGetTemplate(): IActionResult {
         $te  = TemplateEngine::getInstance();
         $ref = Reflection::getInstance();
 
-        $arr          = explode('/', $objectPath);
-        $template     = $this->_fs->fileName($arr[0]);
-        $className    = $te->getRegisteredTemplate($template);
-        $templateFile = $ref->classFileName($className);
-        $fileType     = $this->_fs->fileNameExt($objectPath);
+        $path          = $this->resourcePath('');
+        $parts         = explode('/', ltrim($this->resourcePath(''), '/'));
+        $fileName      = null;
+        $templateName  = $this->_fs->fileName($parts[0]);
+        $templateClass = $te->getRegisteredTemplate($templateName);
+        $templateFile  = $ref->classFileName($templateClass);
 
-        if (count($arr) == 1 && ($fileType == self::CSS_FILE_TYPE || $fileType == self::JS_FILE_TYPE)) {
-            $fileName = $this->_fs->changeFileNameExt($templateFile, $fileType);
-        } else {
-            unset($arr[0]);
-            $fileDir  = $this->_fs->fileDir($templateFile);
-            $fileName = $fileDir . '/' . implode('/', $arr);
-        }
-        if ($fileType == self::CSS_FILE_TYPE || $fileType == self::JS_FILE_TYPE) {
-            $fileName = $this->checkMinimizedFile($fileName);
+        switch ($path) {
+            case '/' . $templateName . '.' . self::CSS_FILE_TYPE:
+                $fileName = $this->_fs->changeFileNameExt($templateFile, self::CSS_FILE_TYPE);
+                break;
+            case '/' . $templateName . '.' . self::JS_FILE_TYPE:
+                $fileName = $this->_fs->changeFileNameExt($templateFile, self::JS_FILE_TYPE);
+                break;
+            default:
+                unset($parts[0]);
+                $templateDir = $this->_fs->fileDir($templateFile);
+                $fileName    = $templateDir . '/' . implode('/', $parts);
+                break;
         }
 
+        $fileName = $this->checkMinimizedFile($fileName);
         return $this->sendResourceFile($fileName);
     }
 
@@ -307,29 +238,6 @@ class ResourceModule extends Module {
             if ($objectPath) {
                 $result .= '/' . $objectPath;
             }
-        }
-        return $result;
-    }
-
-    /**
-     * Извлекает из полного пути путь модуля
-     *
-     * @param string $objectPath Полный путь
-     *
-     * @return string
-     */
-    protected function extractModulePath(string $objectPath): string {
-        $trimPath = ltrim($objectPath, '/');
-        if ($trimPath == self::HOME_MODULE_NAME . '.' . self::CSS_FILE_TYPE) {
-            $result = Router::ROOT_NODE;
-        } else if ($trimPath == self::HOME_MODULE_NAME . '.' . self::JS_FILE_TYPE) {
-            $result = Router::ROOT_NODE;
-        } else {
-            $objectName = '/' . ltrim($this->_fs->trimFileNameExt($trimPath), './');
-            $moduleNode = Router::getInstance()->extractPathNode($objectName);
-            $modulePath = substr($objectName, strlen($moduleNode));
-            $moduleName = explode('/', ltrim($modulePath, '/'))[0];
-            $result     = rtrim($moduleNode, '/') . '/' . $moduleName;
         }
         return $result;
     }
@@ -358,10 +266,10 @@ class ResourceModule extends Module {
      */
     protected function sendResourceFile(string $fileName): IActionResult {
         $result   = null;
+        $fileMIME = FileMIME::getInsance();
         $fileType = $this->_fs->fileNameExt($fileName);
-        $mimeType = FileMIME::getInsance()->getMIME($fileType);
-        if ($mimeType != FileMIME::DEFAULT_MIME_TYPE) {
-            if ($fileType != 'lang') {
+        if ($fileMIME->isExtensionResource($fileType)) {
+            if ($fileType != self::EXTERNAL_LANG_TYPE) {
                 if ($this->_fs->fileExists($fileName)) {
                     $result = new FileResult($fileName, false, true);
                 }
@@ -379,4 +287,5 @@ class ResourceModule extends Module {
         }
         return $result;
     }
+
 }

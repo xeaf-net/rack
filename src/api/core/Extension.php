@@ -22,13 +22,7 @@ use XEAF\Rack\API\Utils\Session;
 /**
  * Реализует базовые методы для всех расширений проекта
  *
- * @property-read \XEAF\Rack\API\Models\Config\PortalConfig $portalConfig Параметры конфигурации портала
  * @property-read \XEAF\Rack\API\Interfaces\IActionArgs     $actionArgs   Параметры вызова приложения
- * @property-read \XEAF\Rack\API\Interfaces\ISession        $session      Объект методов доступа к параметрам сессии
- * @property-read \XEAF\Rack\API\Utils\Localization         $l10n         Объект методов локализации
- * @property-read \XEAF\Rack\API\Interfaces\ISerializer     $serializer   Объект методов сериализации
- * @property-read \XEAF\Rack\API\Interfaces\IFileSystem     $fileSystem   Объект методов работы с файловой системой
- * @property-read \XEAF\Rack\API\Interfaces\ILogger         $logger       Объект записи в журнал операций
  *
  * @package XEAF\Rack\API\Core
  */

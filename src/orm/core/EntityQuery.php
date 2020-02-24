@@ -22,6 +22,7 @@ use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -215,6 +216,41 @@ class EntityQuery extends DataModel {
     }
 
     /**
+     * Задает условие фильтрации
+     *
+     * @param string $alias      Псевдоним
+     * @param string $property   Имя свойства
+     * @param string $parameter  Имя параметра
+     * @param int    $filterType Тип фильтрации
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     *
+     * @since 1.0.2
+     */
+    public function filterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
+        $this->_model->getFilterModels()->clear();
+        return $this->andFilterBy($alias, $property, $parameter, $filterType);
+    }
+
+    /**
+     * Добавляет условие фильтрации
+     *
+     * @param string $alias      Псевдоним
+     * @param string $property   Имя свойства
+     * @param string $parameter  Имя параметра
+     * @param int    $filterType Тип фильтрации
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     *
+     * @since 1.0.2
+     */
+    public function andFilterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
+        $filterModel = new FilterModel($alias, $property, $parameter, $filterType);
+        $this->_model->getFilterModels()->push($filterModel);
+        return $this;
+    }
+
+    /**
      * Задает условие сортировки сущностей
      *
      * @param string $alias    Псевдоним сущности
@@ -289,9 +325,39 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function get(array $params = [], int $count = 0, int $offset = 0): ICollection {
+        return $this->internalGet([], $params, $count, $offset);
+    }
+
+    /**
+     * Возвращает набор сущностей удовляетворяющих условию отбора и фильтру
+     *
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
+     * @param int   $count   Количество отбираемых сущностей
+     * @param int   $offset  Смещение от начала выбора
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getFiltered(array $filters, array $params = [], int $count = 0, int $offset = 0): ICollection {
+        return $this->internalGet($filters, $params, $count, $offset);
+    }
+
+    /**
+     * Внутренняя реализация метода получения данных
+     *
+     * @param array $filters Условия фильтрации
+     * @param array $params  Параметры запроса
+     * @param int   $count   Количество отбираемых сущностей
+     * @param int   $offset  Смещение от начала выбора
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
-            $sql   = $this->generateSQL();
-            $prm   = $this->processParameters($params);
+            $sql   = $this->generateSQL(count($filters) > 0);
+            $prm   = $this->processParameters($filters, $params);
             $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
             $multi = $this->_model->getAliasModels()->count() > 1;
             if (!$multi) {
@@ -306,28 +372,90 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Возвращает текст SQL запроса
+     * Возвращает количество сущностей удовляетворяющих условию отбора
      *
-     * @return string
+     * @param array $params Параметры запроса
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function generateSQL(): string {
-        $gen = Generator::getInstance();
-        return $gen->selectSQL($this);
+    public function getCount(array $params = []): int {
+        return $this->internalGetCount([], $params);
     }
 
     /**
-     * Обрабатывае параметры запроса
+     * Возвращает количество сущностей удовляетворяющих условиям отбора и фильтрации
      *
-     * @param array $params Массив значений параметров
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getFilteredCount(array $filters, array $params = []): int {
+        return $this->internalGetCount($filters, $params);
+    }
+
+    /**
+     * Внутренняя реализация методв получения количества записей
+     *
+     * @param array $filters Параметры фильтрации
+     * @param array $params  Параметры запроса
+     *
+     * @return int
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function internalGetCount(array $filters, array $params): int {
+        try {
+            $sql    = $this->generateCountSQL(count($filters) > 0);
+            $prm    = $this->processParameters($filters, $params);
+            $data   = $this->_em->getDb()->selectFirst($sql, $prm);
+            $result = array_shift($data);
+        } catch (Throwable $exception) {
+            throw EntityException::internalError($exception);
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает текст SQL запроса
+     *
+     * @param bool $useFilter Признак использования условий фильтрации
+     *
+     * @return string
+     */
+    protected function generateSQL(bool $useFilter): string {
+        $gen = Generator::getInstance();
+        return $gen->selectSQL($this, $useFilter);
+    }
+
+    /**
+     * Возвращает текст SQL запроса для выбора количества записей
+     *
+     * @param bool $useFilter Признак использования условий фильтрации
+     *
+     * @return string
+     */
+    public function generateCountSQL(bool $useFilter): string {
+        $gen = Generator::getInstance();
+        return $gen->selectCountSQL($this, $useFilter);
+    }
+
+    /**
+     * Обрабатывает параметры запроса
+     *
+     * @param array $filters Условия фильтрации
+     * @param array $params  Массив значений параметров
      *
      * @return array
      */
-    protected function processParameters(array $params): array {
-        $result = [];
+    protected function processParameters(array $filters, array $params): array {
+        $result = $filters;
         $db     = $this->_em->getDb();
+        $values = $filters + $params;
         foreach ($this->_model->getParameters() as $name => $parameter) {
             assert($parameter instanceof ParameterModel);
-            $value = $params[$name] ?? $parameter->getValue();
+            $value = $values[$name] ?? $parameter->getValue();
             if ($value != null) {
                 switch ($parameter->getType()) {
                     case  DataTypes::DT_BOOL:
@@ -355,7 +483,7 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFirst(array $params): ?DataObject {
+    public function getFirst(array $params = []): ?DataObject {
         $result = null;
         $list   = $this->get($params, 1);
         if (!$list->isEmpty()) {

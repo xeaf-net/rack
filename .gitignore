@@ -5,12 +5,7 @@
 .idea/**/workspace.xml
 .idea/**/dataSources
 .idea/**/httpRequests
-/src/**/*.js
-/src/**/*.css
-/src.lib/**/*.js
-/src.lib/**/*.css
 /components
-/dist
 /node_modules
 /tests/_output
 /vendor

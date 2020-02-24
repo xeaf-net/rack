@@ -124,6 +124,14 @@ class FileSystem implements IFileSystem {
     /**
      * @inheritDoc
      */
+    public function minimizedFileExists(string $filePath): bool {
+        $minFileName = $this->minimizedFilePath($filePath);
+        return $this->fileExists($minFileName);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function fileDir(string $filePath): string {
         return pathinfo($filePath, PATHINFO_DIRNAME);
     }

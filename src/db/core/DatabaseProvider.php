@@ -15,6 +15,7 @@ namespace XEAF\Rack\Db\Core;
 use PDO;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Core\StdObject;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
@@ -28,7 +29,7 @@ use XEAF\Rack\Db\Utils\Exceptions\DatabaseException;
  *
  * @package XEAF\Rack\Db\Core
  */
-abstract class DatabaseProvider implements IDatabaseProvider {
+abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
 
     use NamedObjectTrait;
 
@@ -71,7 +72,7 @@ abstract class DatabaseProvider implements IDatabaseProvider {
         $this->_name         = $name;
         $this->_config       = DatabaseConfig::getInstance($name);
         $this->_localization = Localization::getInstance();
-        $this->_localization->registerLanguageClass($this->getName());
+        $this->_localization->registerLanguageClass($this->getClassName());
         $this->connect();
     }
 

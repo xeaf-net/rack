@@ -18,6 +18,7 @@ use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
+use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
@@ -63,6 +64,12 @@ class QueryModel extends DataModel {
     protected $_whereModels = null;
 
     /**
+     * Сущности конструкции FILTER
+     * @var \XEAF\Rack\API\Interfaces\ICollection
+     */
+    protected $_filterModels = null;
+
+    /**
      * Сущности конструкции ORDER
      * @var \XEAF\Rack\API\Interfaces\ICollection
      */
@@ -79,12 +86,13 @@ class QueryModel extends DataModel {
      */
     public function __construct() {
         parent::__construct();
-        $this->_aliasModels = new Collection();
-        $this->_fromModels  = new Collection();
-        $this->_joinModels  = new Collection();
-        $this->_whereModels = new Collection();
-        $this->_orderModels = new Collection();
-        $this->_parameters  = new KeyValue();
+        $this->_aliasModels  = new Collection();
+        $this->_fromModels   = new Collection();
+        $this->_joinModels   = new Collection();
+        $this->_whereModels  = new Collection();
+        $this->_filterModels = new Collection();
+        $this->_orderModels  = new Collection();
+        $this->_parameters   = new KeyValue();
     }
 
     /**
@@ -168,6 +176,30 @@ class QueryModel extends DataModel {
     }
 
     /**
+     * Возвращает коллекцию моделей данных конструкции FILTER
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     *
+     * @since 1.0.2
+     */
+    public function getFilterModels(): ICollection {
+        return $this->_filterModels;
+    }
+
+    /**
+     * Добавляет в коллекцию модель данных конструкции FILTER
+     *
+     * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель конструкции WHERE
+     *
+     * @return void
+     *
+     * @since 1.0.2
+     */
+    public function addFilterModel(FilterModel $filterModel): void {
+        $this->_whereModels->push($filterModel);
+    }
+
+    /**
      * Возвращает коллекцию моделей данных конструкции ORDER
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
@@ -202,11 +234,12 @@ class QueryModel extends DataModel {
      * @param string     $name     Имя параметра
      * @param int        $dataType Тип данных
      * @param mixed|null $value    Значение
+     * @param bool       $filter   Признак параметра фильтрации
      *
      * @return void
      */
-    public function addParameter(string $name, int $dataType = DataTypes::DT_STRING, $value = null): void {
-        $parameter = new ParameterModel($dataType, $value);
+    public function addParameter(string $name, int $dataType = DataTypes::DT_STRING, $value = null, bool $filter = false): void {
+        $parameter = new ParameterModel($dataType, $value, $filter);
         $this->_parameters->put($name, $parameter);
     }
 }

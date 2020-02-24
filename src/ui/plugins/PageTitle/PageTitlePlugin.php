@@ -35,4 +35,11 @@ class PageTitlePlugin extends Plugin {
             'pageTitle' => $this->_template->getPageTitle()
         ]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function generateHTML(DataObject $dataObject = null): ?string {
+        return $dataObject->{'pageTitle'}??'';
+    }
 }

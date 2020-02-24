@@ -105,6 +105,11 @@ class RackNotifyClient {
         let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
         return (match) ? unescape(match[2]) : null;
     }
-}
 
-(new RackNotifyClient());
+    /**
+     * Статический метод инициализации
+     */
+    public static init(): RackNotifyClient {
+        return new RackNotifyClient();
+    }
+}
