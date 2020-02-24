@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\API\Core;
 
+use XEAF\Rack\API\Utils\Exceptions\CoreException;
+
 /**
  * Реализует базовые методы моделей данных
  *
@@ -22,7 +24,7 @@ abstract class DataModel extends DataObject {
     /**
      * @inheritDoc
      */
-    public function __set(string $name, $value): void {
-        $this->undefinedSetter($name, $value);
+    public function undefinedSetter(string $name, $value): void {
+        throw CoreException::propertyIsNotWritable($this->getClassName(), $name);
     }
 }

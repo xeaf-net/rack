@@ -26,7 +26,7 @@ comment on column xeaf_migrations.migration_timestamp is 'Дата и время
 comment on column xeaf_migrations.migration_comment   is 'Комментарий';
 
 -- Инициализация --------------------------------------------------------------------
-insert into xeaf_migrations values ('XEAF-RACK-DB', '0.0.1', now(), '');
+insert into xeaf_migrations values ('XEAF-RACK', '1.0.0', now(), '');
 
 -- ----------------------------------------------------------------------------------
 -- Хранилище данных
