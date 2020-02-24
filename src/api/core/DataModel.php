@@ -23,6 +23,22 @@ abstract class DataModel extends DataObject {
 
     /**
      * @inheritDoc
+     *
+     * @since 1.0.3
+     */
+    public function __construct(array $data = []) {
+        $values     = $data;
+        $properties = $this->getProperties();
+        foreach ($values as $name => $value) {
+            if (!in_array($name, $properties)) {
+                unset($values[$name]);
+            }
+        }
+        parent::__construct($values);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function undefinedSetter(string $name, $value): void {
         throw CoreException::propertyIsNotWritable($this->getClassName(), $name);
