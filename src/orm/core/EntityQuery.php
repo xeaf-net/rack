@@ -424,7 +424,7 @@ class EntityQuery extends DataModel {
      *
      * @return string
      */
-    public function generateSQL(bool $useFilter): string {
+    protected function generateSQL(bool $useFilter): string {
         $gen = Generator::getInstance();
         return $gen->selectSQL($this, $useFilter);
     }
