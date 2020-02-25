@@ -31,6 +31,11 @@ class Database implements IDatabase {
     use ProviderFactoryTrait;
 
     /**
+     * Идентификатор продукта миграции
+     */
+    public const MIGRATION_PRODUCT = 'XEAF-RACK';
+
+    /**
      * Объект провайдера подкючения к базе данных
      * @var \XEAF\Rack\Db\Interfaces\IDatabaseProvider|null
      */

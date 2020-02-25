@@ -63,8 +63,9 @@ class DataObject extends StdObject {
      * @inheritDoc
      */
     public function __set(string $name, $value): void {
-        if (self::$initialization > 0) {
-            $this->{$name} = $value;
+        $methodName = self::propertySetter($name);
+        if (method_exists($this, $methodName)) {
+            $this->$methodName($value);
         } else {
             $this->undefinedSetter($name, $value);
         }
@@ -149,9 +150,8 @@ class DataObject extends StdObject {
      * @inheritDoc
      */
     protected function undefinedSetter(string $name, $value): void {
-        $methodName = self::propertySetter($name);
-        if (method_exists($this, $methodName)) {
-            $this->$methodName($value);
+        if (self::$initialization > 0) {
+            $this->{$name} = $value;
         } else {
             parent::undefinedSetter($name, $value);
         }

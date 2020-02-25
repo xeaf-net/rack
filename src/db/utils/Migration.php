@@ -26,7 +26,7 @@ class Migration implements IMigration {
     /**
      * Имя продукта по умолчанию
      */
-    public const DEFAULT_PRODUCT = 'XEAF-RACK-DB';
+    public const DEFAULT_PRODUCT = 'XEAF-RACK';
 
     /**
      * @inheritDoc
