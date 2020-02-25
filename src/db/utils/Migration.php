@@ -26,7 +26,7 @@ class Migration implements IMigration {
     /**
      * Имя продукта по умолчанию
      */
-    public const DEFAULT_PRODUCT = 'XEAF-RACK';
+    public const XEAF_RACK_PRODUCT = 'xeaf-net/rack';
 
     /**
      * @inheritDoc
@@ -39,7 +39,7 @@ class Migration implements IMigration {
      *
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    public function version(IDatabase $database, string $product = Migration::DEFAULT_PRODUCT): ?string {
+    public function version(IDatabase $database, string $product = Migration::XEAF_RACK_PRODUCT): ?string {
         $sql  = $this->getVersionSQL();
         $data = $database->selectFirst($sql, ['product' => $product]);
         return ($data) ? $data['migration_version'] : null;
@@ -50,7 +50,7 @@ class Migration implements IMigration {
      *
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    public function checkVersion(IDatabase $database, string $version, string $product = Migration::DEFAULT_PRODUCT): bool {
+    public function checkVersion(IDatabase $database, string $version, string $product = Migration::XEAF_RACK_PRODUCT): bool {
         $mv = $this->version($database, $product);
         return version_compare($mv, $version, '>=');
     }
