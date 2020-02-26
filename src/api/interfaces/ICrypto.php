@@ -122,6 +122,13 @@ interface ICrypto extends IFactoryObject {
     function jwtPublicKey(): string;
 
     /**
+     * Возвращает JWT из заголовка запроса
+     *
+     * @return string|null
+     */
+    function requestHeaderJWT(): ?string;
+
+    /**
      * Кодирует и подписывает новый JWT
      *
      * ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key

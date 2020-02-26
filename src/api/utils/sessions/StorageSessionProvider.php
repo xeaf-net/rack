@@ -18,7 +18,6 @@ use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Utils\Crypto;
 use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 use XEAF\Rack\API\Utils\Logger;
-use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Session;
 use XEAF\Rack\API\Utils\Storage;
 use XEAF\Rack\API\Utils\Strings;
@@ -87,10 +86,8 @@ class StorageSessionProvider extends StaticSessionProvider {
      */
     protected function resolveSessionId(): void {
         $crypto = Crypto::getInstance();
-        $params = Parameters::getInstance();
         try {
-            $authorization = $params->getHeader(Session::SESSION_AUTH);
-            $encodedJWT    = substr($authorization, strlen('Bearer'));
+            $encodedJWT = $crypto->requestHeaderJWT();
             if ($encodedJWT) {
                 $decodedJWT = $crypto->decodeJWT($encodedJWT);
                 if ($crypto->validateJWT($decodedJWT)) {

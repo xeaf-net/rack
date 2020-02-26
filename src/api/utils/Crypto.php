@@ -181,6 +181,19 @@ class Crypto implements ICrypto {
     /**
      * @inheritDoc
      */
+    public function requestHeaderJWT(): ?string {
+        $result = null;
+        $params = Parameters::getInstance();
+        $auth   = $params->getHeader(Session::SESSION_AUTH);
+        if ($auth) {
+            $result = substr($auth, strlen('Bearer') + 1);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string {
         $result = null;
         if ($jwt) {
