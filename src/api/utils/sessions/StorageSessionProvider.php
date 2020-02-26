@@ -95,9 +95,11 @@ class StorageSessionProvider extends StaticSessionProvider {
             }
             if ($encodedJWT) {
                 $decodedJWT = $crypto->decodeJWT($encodedJWT);
-                $sessionId  = $decodedJWT->getPayload()[Session::SESSION_ID] ?? null;
-                if ($sessionId) {
-                    $this->setId($sessionId);
+                if ($crypto->validateJWT($decodedJWT)) {
+                    $sessionId = $decodedJWT->getPayload()[Session::SESSION_ID] ?? null;
+                    if ($sessionId) {
+                        $this->setId($sessionId);
+                    }
                 }
             }
         } catch (CryptoException $exception) {
