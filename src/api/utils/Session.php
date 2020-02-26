@@ -36,7 +36,7 @@ class Session implements ISession {
     /**
      * Переменная идентификатора JWT сессии
      */
-    public const SESSION_JWT = 'X-JWT';
+    public const SESSION_AUTH = 'Authorization';
 
     /**
      * Переменная установленной локали

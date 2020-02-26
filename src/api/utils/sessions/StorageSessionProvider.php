@@ -89,10 +89,8 @@ class StorageSessionProvider extends StaticSessionProvider {
         $crypto = Crypto::getInstance();
         $params = Parameters::getInstance();
         try {
-            $encodedJWT = $params->get(strtolower(Session::SESSION_JWT));
-            if (!$encodedJWT) {
-                $encodedJWT = $params->getHeader(Session::SESSION_JWT);
-            }
+            $authorization = $params->getHeader(Session::SESSION_AUTH);
+            $encodedJWT    = substr($authorization, strlen('Bearer'));
             if ($encodedJWT) {
                 $decodedJWT = $crypto->decodeJWT($encodedJWT);
                 if ($crypto->validateJWT($decodedJWT)) {
