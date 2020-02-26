@@ -140,10 +140,7 @@ class Parameters extends ActionArgs {
         $l10n       = Localization::getInstance();
         $localeName = $this->get('locale');
         if (!$localeName) {
-            $localeName = Session::getInstance()->getLocale();
-            if (!$localeName) {
-                $localeName = PortalConfig::getInstance()->getLocale();
-            }
+            $localeName = PortalConfig::getInstance()->getLocale();
         }
         $this->_locale = ($localeName) ? $localeName : $l10n->getDefaultLocale()->getName();
     }
