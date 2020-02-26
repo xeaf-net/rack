@@ -240,10 +240,9 @@ class Crypto implements ICrypto {
      * @inheritDoc
      */
     public function validateJWT(JsonWebToken $jwt): bool {
-        $now  = Calendar::getInstance()->now();
-        $url  = PortalConfig::getInstance()->getUrl();
-        $host = parse_url($url, PHP_URL_HOST);
-        if (!in_array($host, $jwt->getAud())) {
+        $now = Calendar::getInstance()->now();
+        $url = PortalConfig::getInstance()->getUrl();
+        if (!in_array($url, $jwt->getAud())) {
             return false;
         }
         if ($jwt->getExp() < $now) {
