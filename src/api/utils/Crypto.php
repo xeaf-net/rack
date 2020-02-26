@@ -16,6 +16,7 @@ use Firebase\JWT\JWT;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ICrypto;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\JsonWebToken;
 use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 
@@ -156,7 +157,7 @@ class Crypto implements ICrypto {
         if (!$this->_jwtPrivateKey) {
             $fileName             = __XEAF_RACK_CONFIG_DIR__ . '/' . self::JWT_PRIVATE_FILE_NAME;
             $this->_jwtPrivateKey = file_get_contents($fileName);
-            if ($this->_jwtPrivateKey) {
+            if (!$this->_jwtPrivateKey) {
                 throw CryptoException::jwtPrivateKeyNotFound();
             }
         }
@@ -168,9 +169,9 @@ class Crypto implements ICrypto {
      */
     public function jwtPublicKey(): string {
         if (!$this->_jwtPublicKey) {
-            $fileName             = __XEAF_RACK_CONFIG_DIR__ . '/' . self::JWT_PUBLIC_FILE_NAME;
+            $fileName            = __XEAF_RACK_CONFIG_DIR__ . '/' . self::JWT_PUBLIC_FILE_NAME;
             $this->_jwtPublicKey = file_get_contents($fileName);
-            if ($this->_jwtPublicKey) {
+            if (!$this->_jwtPublicKey) {
                 throw CryptoException::jwtPublicKeyNotFound();
             }
         }
@@ -182,7 +183,7 @@ class Crypto implements ICrypto {
      */
     public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string {
         $result = null;
-        if ($jwt && $privateKey) {
+        if ($jwt) {
             try {
                 $data   = $jwt->toArray();
                 $key    = ($privateKey) ? $privateKey : $this->jwtPrivateKey();
@@ -201,11 +202,18 @@ class Crypto implements ICrypto {
      */
     public function decodeJWT(?string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken {
         $result = null;
-        if ($encodedJWT && $publicKey) {
+        if ($encodedJWT) {
             try {
                 $key    = ($publicKey) ? $publicKey : $this->jwtPublicKey();
-                $data   = (array)JWT::decode($encodedJWT, $key, [$algo]);
-                $result = new JsonWebToken($data);
+                $data   = JWT::decode($encodedJWT, $key, [$algo]);
+                $result = new JsonWebToken((array)$data->{'payload'} ?? []);
+                $result->setIss($data->{'iss'} ?? '');
+                $result->setSub($data->{'sub'} ?? '');
+                $result->setAud($data->{'aud'} ?? []);
+                $result->setExp($data->{'exp'} ?? 0);
+                $result->setNbf($data->{'nbf'} ?? 0);
+                $result->setIat($data->{'iat'} ?? 0);
+                $result->setJti($data->{'jti'} ?? '');
             } catch (Throwable $exception) {
                 $result = null;
                 Logger::getInstance()->exception($exception);
@@ -213,6 +221,25 @@ class Crypto implements ICrypto {
             }
         }
         return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateJWT(JsonWebToken $jwt): bool {
+        $now  = Calendar::getInstance()->now();
+        $url  = PortalConfig::getInstance()->getUrl();
+        $host = parse_url($url, PHP_URL_HOST);
+        if (!in_array($host, $jwt->getAud())) {
+            return false;
+        }
+        if ($jwt->getExp() < $now) {
+            return false;
+        }
+        if ($jwt->getNbf() > $now) {
+            return false;
+        }
+        return true;
     }
 
     /**

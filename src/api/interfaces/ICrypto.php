@@ -154,4 +154,13 @@ interface ICrypto extends IFactoryObject {
      * @since 1.0.4
      */
     function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken;
+
+    /**
+     * Проверяет корректность данных JWT
+     *
+     * @param \XEAF\Rack\API\Models\JsonWebToken $jwt Объект JWT
+     *
+     * @return bool
+     */
+    function validateJWT(JsonWebToken $jwt): bool;
 }
