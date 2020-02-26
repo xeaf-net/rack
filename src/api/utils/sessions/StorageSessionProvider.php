@@ -18,6 +18,7 @@ use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Utils\Crypto;
 use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 use XEAF\Rack\API\Utils\Logger;
+use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Session;
 use XEAF\Rack\API\Utils\Storage;
 use XEAF\Rack\API\Utils\Strings;
@@ -39,6 +40,12 @@ class StorageSessionProvider extends StaticSessionProvider {
      * @var \XEAF\Rack\API\Interfaces\IStorage
      */
     private $_storage = null;
+
+    /**
+     * Признак использования JWT
+     * @var bool
+     */
+    private $_useJWT = false;
 
     /**
      * @inheritDoc
@@ -74,6 +81,7 @@ class StorageSessionProvider extends StaticSessionProvider {
             $config         = PortalConfig::getInstance();
             $data           = Strings::getInstance()->parseDSN($config->getSession());
             $name           = $data['name'] ?? Factory::DEFAULT_NAME;
+            $this->_useJWT  = $data['jwt'] ?? false;
             $this->_storage = Storage::getInstance($name);
         }
         return $this->_storage;
@@ -85,6 +93,26 @@ class StorageSessionProvider extends StaticSessionProvider {
      * @return void
      */
     protected function resolveSessionId(): void {
+        if (!$this->_useJWT) {
+            $params = Parameters::getInstance();
+            $id     = $params->get(strtolower(Session::SESSION_ID));
+            if (!$id) {
+                $id = $params->getHeader(Session::SESSION_ID);
+            }
+            if ($id) {
+                $this->setId($id);
+            }
+        } else {
+            $this->resolveJWT();
+        }
+    }
+
+    /**
+     * Устанавливает значение идентификатора сессии из JWT
+     *
+     * @return void
+     */
+    protected function resolveJWT(): void {
         $crypto = Crypto::getInstance();
         try {
             $encodedJWT = $crypto->requestHeaderJWT();
