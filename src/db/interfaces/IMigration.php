@@ -30,7 +30,7 @@ interface IMigration extends IFactoryObject {
      *
      * @return string|null
      */
-    function version(IDatabase $database, string $product = Migration::DEFAULT_PRODUCT): ?string;
+    function version(IDatabase $database, string $product = Migration::XEAF_RACK_PRODUCT): ?string;
 
     /**
      * Проверяет наличие требуемой версии миграции
@@ -41,5 +41,5 @@ interface IMigration extends IFactoryObject {
      *
      * @return bool
      */
-    function checkVersion(IDatabase $database, string $version, string $product = Migration::DEFAULT_PRODUCT): bool;
+    function checkVersion(IDatabase $database, string $version, string $product = Migration::XEAF_RACK_PRODUCT): bool;
 }

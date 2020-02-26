@@ -15,6 +15,9 @@ namespace XEAF\Rack\API\Utils\Sessions;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IStorage;
 use XEAF\Rack\API\Models\Config\PortalConfig;
+use XEAF\Rack\API\Utils\Crypto;
+use XEAF\Rack\API\Utils\Exceptions\CryptoException;
+use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Session;
 use XEAF\Rack\API\Utils\Storage;
@@ -37,6 +40,12 @@ class StorageSessionProvider extends StaticSessionProvider {
      * @var \XEAF\Rack\API\Interfaces\IStorage
      */
     private $_storage = null;
+
+    /**
+     * Признак использования JWT
+     * @var bool
+     */
+    private $_useJWT = false;
 
     /**
      * @inheritDoc
@@ -69,27 +78,55 @@ class StorageSessionProvider extends StaticSessionProvider {
      */
     protected function storage(): IStorage {
         if ($this->_storage == null) {
-            $config = PortalConfig::getInstance();
-            $data   = Strings::getInstance()->parseDSN($config->getSession());
-            $name   = $data['name'] ?? Factory::DEFAULT_NAME;
+            $config         = PortalConfig::getInstance();
+            $data           = Strings::getInstance()->parseDSN($config->getSession());
+            $name           = $data['name'] ?? Factory::DEFAULT_NAME;
+            $this->_useJWT  = $data['jwt'] ?? false;
             $this->_storage = Storage::getInstance($name);
         }
         return $this->_storage;
     }
 
     /**
-     * Получает значение переменной сессии
+     * Устанавливает значение идентификатора сессии
      *
      * @return void
      */
     protected function resolveSessionId(): void {
-        $params = Parameters::getInstance();
-        $id     = $params->get(strtolower(Session::SESSION_ID));
-        if (!$id) {
-            $id = $params->getHeader(Session::SESSION_ID);
+        if (!$this->_useJWT) {
+            $params = Parameters::getInstance();
+            $id     = $params->get(strtolower(Session::SESSION_ID));
+            if (!$id) {
+                $id = $params->getHeader(Session::SESSION_ID);
+            }
+            if ($id) {
+                $this->setId($id);
+            }
+        } else {
+            $this->resolveJWT();
         }
-        if ($id) {
-            $this->setId($id);
+    }
+
+    /**
+     * Устанавливает значение идентификатора сессии из JWT
+     *
+     * @return void
+     */
+    protected function resolveJWT(): void {
+        $crypto = Crypto::getInstance();
+        try {
+            $encodedJWT = $crypto->requestHeaderJWT();
+            if ($encodedJWT) {
+                $decodedJWT = $crypto->decodeJWT($encodedJWT);
+                if ($crypto->validateJWT($decodedJWT)) {
+                    $sessionId = $decodedJWT->getPayload()[Session::SESSION_ID] ?? null;
+                    if ($sessionId) {
+                        $this->setId($sessionId);
+                    }
+                }
+            }
+        } catch (CryptoException $exception) {
+            Logger::getInstance()->exception($exception);
         }
     }
 

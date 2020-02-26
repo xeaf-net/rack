@@ -17,6 +17,7 @@ use XEAF\Rack\API\Interfaces\ISession;
 use XEAF\Rack\API\Interfaces\ISessionProvider;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Config\ProviderConfig;
+use XEAF\Rack\API\Models\Config\SessionConfig;
 use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 
 /**
@@ -32,6 +33,11 @@ class Session implements ISession {
      * Переменная идентификатора сессии
      */
     public const SESSION_ID = 'X-Session';
+
+    /**
+     * Переменная идентификатора JWT сессии
+     */
+    public const SESSION_AUTH = 'Authorization';
 
     /**
      * Переменная установленной локали

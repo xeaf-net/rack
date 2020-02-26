@@ -22,6 +22,7 @@ use XEAF\Rack\API\Utils\Parameters;
  * Модель данных конфигурации портала
  *
  * @property-read string $url       URL портала
+ * @property-read string $host      Имя хоста портала
  * @property-read string $origin    URL источника запросов
  * @property-read string $session   Провайдер сессии
  * @property-read string $locale    Имя локали
@@ -107,6 +108,16 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      */
     public function getUrl(): string {
         return $this->_url;
+    }
+
+    /**
+     * Возвращает имя хоста портала
+     *
+     * @return string
+     */
+    public function getHost(): string {
+        $url = $this->getUrl();
+        return parse_url($url, PHP_URL_HOST);
     }
 
     /**

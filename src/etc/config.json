@@ -2,8 +2,8 @@
     "portal"     : {
         "url"     : "http://localhost",
         "origin"  : "*",
-        "session" : "native",
         "locale"  : "en_GB",
+        "session" : "native",
         "tempPath": "/tmp"
     },
     "storage"    : {
