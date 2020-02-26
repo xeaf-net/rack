@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\API\Interfaces;
 
+use XEAF\Rack\API\Models\JsonWebToken;
+
 /**
  * Описывает методы работы со случаными и шифрованными данными
  *
@@ -98,4 +100,58 @@ interface ICrypto extends IFactoryObject {
      * @return string
      */
     function securityToken(): string;
+
+    /**
+     * Загружает данные приватного ключа JWT
+     *
+     * @return string
+     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     *
+     * @since 1.0.4
+     */
+    function jwtPrivateKey(): string;
+
+    /**
+     * Загружает данные публичного ключа JWT
+     *
+     * @return string
+     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     *
+     * @since 1.0.4
+     */
+    function jwtPublicKey(): string;
+
+    /**
+     * Кодирует и подписывает новый JWT
+     *
+     * ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
+     * # Don't add passphrase
+     * openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+     * cat jwtRS256.key
+     * cat jwtRS256.key.pub
+     *
+     * @param \XEAF\Rack\API\Models\JsonWebToken $jwt        Объект JWT
+     * @param string|null                        $privateKey Закрытый ключ
+     * @param string                             $algo       Алгоритм
+     *
+     * @return string|null
+     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     *
+     * @since 1.0.4
+     */
+    function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string;
+
+    /**
+     * Расшифровывает и проверят подпись JWT
+     *
+     * @param string      $encodedJWT Текст зашифрованного JWT
+     * @param string|null $publicKey  Открытый ключ
+     * @param string      $algo       Алгоритм
+     *
+     * @return \XEAF\Rack\API\Models\JsonWebToken|null
+     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     *
+     * @since 1.0.4
+     */
+    function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken;
 }

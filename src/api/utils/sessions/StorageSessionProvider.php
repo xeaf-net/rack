@@ -15,10 +15,13 @@ namespace XEAF\Rack\API\Utils\Sessions;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IStorage;
 use XEAF\Rack\API\Models\Config\PortalConfig;
+use XEAF\Rack\API\Utils\Crypto;
+use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Session;
 use XEAF\Rack\API\Utils\Storage;
 use XEAF\Rack\API\Utils\Strings;
+use XEAF\Rack\Db\Utils\Exceptions\CryptoException;
 
 /**
  * Реализует методы использования хранилищ для сохранения переменных сессии
@@ -69,27 +72,36 @@ class StorageSessionProvider extends StaticSessionProvider {
      */
     protected function storage(): IStorage {
         if ($this->_storage == null) {
-            $config = PortalConfig::getInstance();
-            $data   = Strings::getInstance()->parseDSN($config->getSession());
-            $name   = $data['name'] ?? Factory::DEFAULT_NAME;
+            $config         = PortalConfig::getInstance();
+            $data           = Strings::getInstance()->parseDSN($config->getSession());
+            $name           = $data['name'] ?? Factory::DEFAULT_NAME;
             $this->_storage = Storage::getInstance($name);
         }
         return $this->_storage;
     }
 
     /**
-     * Получает значение переменной сессии
+     * Устанавливает значение идентификатора сессии
      *
      * @return void
      */
     protected function resolveSessionId(): void {
+        $crypto = Crypto::getInstance();
         $params = Parameters::getInstance();
-        $id     = $params->get(strtolower(Session::SESSION_ID));
-        if (!$id) {
-            $id = $params->getHeader(Session::SESSION_ID);
-        }
-        if ($id) {
-            $this->setId($id);
+        try {
+            $encodedJWT = $params->get(strtolower(Session::SESSION_JWT));
+            if (!$encodedJWT) {
+                $encodedJWT = $params->getHeader(Session::SESSION_JWT);
+            }
+            if ($encodedJWT) {
+                $decodedJWT = $crypto->decodeJWT($encodedJWT);
+                $sessionId  = $decodedJWT->getPayload()[Session::SESSION_ID] ?? null;
+                if ($sessionId) {
+                    $this->setId($sessionId);
+                }
+            }
+        } catch (CryptoException $exception) {
+            Logger::getInstance()->exception($exception);
         }
     }
 

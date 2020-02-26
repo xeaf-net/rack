@@ -5,8 +5,10 @@
       <w>browserify</w>
       <w>dbindex</w>
       <w>mbstring</w>
+      <w>outform</w>
       <w>pgsql</w>
       <w>postgre</w>
+      <w>pubout</w>
       <w>tsify</w>
       <w>unpop</w>
       <w>unpush</w>
