@@ -17,7 +17,7 @@ use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ICrypto;
 use XEAF\Rack\API\Models\JsonWebToken;
-use XEAF\Rack\Db\Utils\Exceptions\CryptoException;
+use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 
 /**
  * Реализует методы работы со случайными и шифрованными данными

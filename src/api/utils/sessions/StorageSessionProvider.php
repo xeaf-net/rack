@@ -16,12 +16,12 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IStorage;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Utils\Crypto;
+use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Session;
 use XEAF\Rack\API\Utils\Storage;
 use XEAF\Rack\API\Utils\Strings;
-use XEAF\Rack\Db\Utils\Exceptions\CryptoException;
 
 /**
  * Реализует методы использования хранилищ для сохранения переменных сессии

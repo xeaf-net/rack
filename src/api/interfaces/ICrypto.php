@@ -105,7 +105,7 @@ interface ICrypto extends IFactoryObject {
      * Загружает данные приватного ключа JWT
      *
      * @return string
-     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
      *
      * @since 1.0.4
      */
@@ -115,7 +115,7 @@ interface ICrypto extends IFactoryObject {
      * Загружает данные публичного ключа JWT
      *
      * @return string
-     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
      *
      * @since 1.0.4
      */
@@ -135,7 +135,7 @@ interface ICrypto extends IFactoryObject {
      * @param string                             $algo       Алгоритм
      *
      * @return string|null
-     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
      *
      * @since 1.0.4
      */
@@ -149,7 +149,7 @@ interface ICrypto extends IFactoryObject {
      * @param string      $algo       Алгоритм
      *
      * @return \XEAF\Rack\API\Models\JsonWebToken|null
-     * @throws \XEAF\Rack\Db\Utils\Exceptions\CryptoException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
      *
      * @since 1.0.4
      */
