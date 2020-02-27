@@ -13,10 +13,10 @@
 namespace XEAF\Rack\API\Utils\Sessions;
 
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ISessionProvider;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Crypto;
-use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Utils\Session;
 
 /**
@@ -41,6 +41,15 @@ class StaticSessionProvider extends KeyValue implements ISessionProvider {
     public function __construct(string $name = Factory::DEFAULT_NAME) {
         $this->_name = $name;
         $this->setId(Crypto::getInstance()->generateUUIDv4());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function clear(): void {
+        $sessionId = $this->getId();
+        parent::clear();
+        $this->setId($sessionId);
     }
 
     /**
