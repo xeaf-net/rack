@@ -162,11 +162,16 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     }
 
     /**
-     * Возвращает локаль
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getLocale(): string {
         return $this->_locale;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setLocale(string $locale): void {
+        $this->_locale = $locale;
     }
 }

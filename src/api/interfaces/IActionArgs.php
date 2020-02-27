@@ -101,4 +101,13 @@ interface IActionArgs extends IFactoryObject {
      * @return string
      */
     function getLocale(): string;
+
+    /**
+     * Задает локаль
+     *
+     * @param string $locale Локаль
+     *
+     * @return void
+     */
+    function setLocale(string $locale): void;
 }
