@@ -17,7 +17,6 @@ use XEAF\Rack\API\Interfaces\ISession;
 use XEAF\Rack\API\Interfaces\ISessionProvider;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Config\ProviderConfig;
-use XEAF\Rack\API\Models\Config\SessionConfig;
 use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 
 /**

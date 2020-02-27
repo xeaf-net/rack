@@ -127,40 +127,49 @@ class Module extends Extension implements IModule {
     /**
      * Отправляет файл ресурса
      *
-     * @param string $type Тип ресурса
+     * @param string|null $type Тип ресурса
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    protected function sendModuleResource(string $type): ?IActionResult {
-        $fileName   = null;
-        $fs         = FileSystem::getInstance();
-        $moduleFile = $this->getClassFileName();
-        switch ($type) {
-            case ResourceModule::CSS_FILE_TYPE:
-            case ResourceModule::JS_FILE_TYPE:
-                $fileName = $fs->changeFileNameExt($moduleFile, $type);
-                break;
-            default:
-                $mime     = FileMIME::getInsance();
-                $path     = $this->getActionArgs()->getObjectPath();
-                $dir      = $fs->fileDir($moduleFile);
-                $fileName = $dir . '/' . $type;
-                if ($path) {
-                    $fileName .= '/' . $path;
+    protected function sendModuleResource(?string $type): ?IActionResult {
+        $result = null;
+        if ($type != null) {
+            $fileName   = null;
+            $fs         = FileSystem::getInstance();
+            $moduleFile = $this->getClassFileName();
+            switch ($type) {
+                case ResourceModule::CSS_FILE_TYPE:
+                case ResourceModule::JS_FILE_TYPE:
+                    $fileName = $fs->changeFileNameExt($moduleFile, $type);
+                    break;
+                default:
+                    $mime     = FileMIME::getInsance();
+                    $path     = $this->getActionArgs()->getObjectPath();
+                    $dir      = $fs->fileDir($moduleFile);
+                    $fileName = $dir . '/' . $type;
+                    if ($path) {
+                        $fileName .= '/' . $path;
+                    }
+                    $fileType = $fs->fileNameExt($fileName);
+                    if (!$mime->isExtensionResource($fileType)) {
+                        $fileName = null;
+                    }
+                    break;
+            }
+            if ($fileName != null) {
+                $minFileName = $fs->minimizedFilePath($fileName);
+                if ($fs->fileExists($minFileName)) {
+                    $fileName = $minFileName;
                 }
-                $fileType = $fs->fileNameExt($fileName);
-                if (!$mime->isExtensionResource($fileType)) {
-                    $fileName = null;
-                }
-                break;
-        }
-        if ($fileName != null) {
-            $minFileName = $fs->minimizedFilePath($fileName);
-            if ($fs->fileExists($minFileName)) {
-                $fileName = $minFileName;
+            }
+            if ($fs->fileExists($fileName)) {
+                $result = new FileResult($fileName, false, true);
             }
         }
-        return $fs->fileExists($fileName) ? new FileResult($fileName, false, true) : StatusResult::notFound();
+        if (!$result) {
+            $result = StatusResult::notFound();
+        }
+        return $result;
     }
 }
