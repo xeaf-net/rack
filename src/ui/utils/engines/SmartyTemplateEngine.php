@@ -218,7 +218,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         $smarty->assign(self::VAR_PORTAL_URL, $config->getUrl());
         $smarty->assign(self::VAR_ACTION_NAME, $params->getActionPath());
         $smarty->assign(self::VAR_ACTION_MODE, $params->getActionMode());
-        $smarty->assign(self::VAR_LOCALE, $l10n->getLocale($params->getLocale()));
+        $smarty->assign(self::VAR_LOCALE, $l10n->getLocale($l10n->getDefaultLocale()->getName()));
         $smarty->assign(self::VAR_DEBUG_MODE, __XEAF_RACK_DEBUG_MODE__);
     }
 

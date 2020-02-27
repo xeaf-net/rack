@@ -86,12 +86,6 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     protected $_headers = [];
 
     /**
-     * Локаль
-     * @var string
-     */
-    protected $_locale = '';
-
-    /**
      * @inheritDoc
      */
     public function getMethodName(): string {
@@ -159,19 +153,5 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getHeaders(): array {
         return $this->_headers;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getLocale(): string {
-        return $this->_locale;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setLocale(string $locale): void {
-        $this->_locale = $locale;
     }
 }

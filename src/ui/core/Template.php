@@ -13,7 +13,7 @@
 namespace XEAF\Rack\UI\Core;
 
 use XEAF\Rack\API\Models\Config\PortalConfig;
-use XEAF\Rack\API\Utils\Parameters;
+use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\UI\Models\Results\PageResult;
 
 /**
@@ -91,10 +91,10 @@ abstract class Template extends LayoutExtension {
      */
     public function getDefaultPageMeta(): array {
         $config = PortalConfig::getInstance();
-        $args   = Parameters::getInstance();
+        $l10n   = Localization::getInstance();
         return [
             self::PORTAL_META_URL    => $config->getUrl(),
-            self::PORTAL_META_LOCALE => $args->getLocale()
+            self::PORTAL_META_LOCALE => $l10n->getDefaultLocale()->getName()
         ];
     }
 

@@ -74,14 +74,12 @@ class Parameters extends ActionArgs {
         switch ($this->_methodName) {
             case self::GET_METHOD_NAME:
                 $this->processRequestParameters($_GET);
-                $this->processLocale();
                 break;
             case self::POST_METHOD_NAME:
                 $this->processRequestParameters($_GET);
                 $this->processRequestParameters($_POST);
                 $this->processInputJsonStream();
                 $this->processRequestFiles();
-                $this->processLocale();
                 break;
             case self::DELETE_METHOD_NAME:
                 $this->processInputJsonStream();
@@ -130,17 +128,6 @@ class Parameters extends ActionArgs {
     protected function processRequestHeaders(): void {
         /** @noinspection PhpComposerExtensionStubsInspection */
         $this->_headers = getallheaders();
-    }
-
-    /**
-     * Получает значение локали
-     *
-     * @return void
-     */
-    protected function processLocale(): void {
-        $l10n          = Localization::getInstance();
-        $localeName    = PortalConfig::getInstance()->getLocale();
-        $this->_locale = ($localeName) ? $localeName : $l10n->getDefaultLocale()->getName();
     }
 
     /**

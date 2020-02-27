@@ -118,8 +118,11 @@ class Module extends Extension implements IModule {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      */
     protected function sendLocaleData(): IActionResult {
-        $locale   = $this->getActionArgs()->getLocale();
-        $l10n     = Localization::getInstance();
+        $l10n   = Localization::getInstance();
+        $locale = $this->getActionArgs()->get('locale');
+        if (!$locale) {
+            $locale = $l10n->getDefaultLocale()->getName();
+        }
         $l10nData = $l10n->getLocale($locale)->toArray();
         $landVars = $l10n->getLanguageVars($locale)->toArray();
         return DataResult::dataArray([
