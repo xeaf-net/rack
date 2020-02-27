@@ -47,16 +47,17 @@ class Module extends Extension implements IModule {
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     public function execute(): ?IActionResult {
+        $result     = null;
+        $methodName = $this->getActionArgs()->getMethodName();
         $actionMode = $this->getActionArgs()->getActionMode();
-        if ($actionMode == Assets::MODULE_L10N) {
+        if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_L10N) {
             $result = $this->sendLocaleData();
-        } else if ($actionMode == Assets::MODULE_CSS) {
+        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
             $result = $this->sendModuleResource(ResourceModule::CSS_FILE_TYPE);
-        } else if ($actionMode == Assets::MODULE_JS) {
+        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_JS) {
             $result = $this->sendModuleResource(ResourceModule::JS_FILE_TYPE);
         } else {
-            $methodName = $this->getActionArgs()->getMethodName();
-            $method     = $this->actionModeMethod($actionMode, $methodName);
+            $method = $this->actionModeMethod($actionMode, $methodName);
             if ($method) {
                 $this->beforeExecute();
                 $reflection = Reflection::getInstance();
@@ -65,9 +66,12 @@ class Module extends Extension implements IModule {
                     assert($result instanceof IActionResult);
                 }
                 $this->afterExecute();
-            } else {
+            } else if ($methodName == Parameters::GET_METHOD_NAME) {
                 $result = $this->sendModuleResource($actionMode);
             }
+        }
+        if ($result == null) {
+            $result = StatusResult::notFound();
         }
         return $result;
     }
@@ -166,9 +170,6 @@ class Module extends Extension implements IModule {
             if ($fs->fileExists($fileName)) {
                 $result = new FileResult($fileName, false, true);
             }
-        }
-        if (!$result) {
-            $result = StatusResult::notFound();
         }
         return $result;
     }
