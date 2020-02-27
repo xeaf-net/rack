@@ -13,6 +13,7 @@
 namespace XEAF\Rack\API\Models\Results;
 
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Serializer;
 
 /**
@@ -21,6 +22,18 @@ use XEAF\Rack\API\Utils\Serializer;
  * @package  XEAF\Rack\API\Models\Results
  */
 class FormResult extends ErrorResult {
+
+    /**
+     * Конструктор класса
+     *
+     * @param string $langFmt Имя языковой переменной с форматом сообщения
+     * @param array  $args    Аргументы сообщения
+     * @param int    $status  Код ошибки
+     */
+    public function __construct(string $langFmt = '', array $args = [], int $status = HttpResponse::OK) {
+        $message = Localization::getInstance()->fmtLanguageVar($langFmt, $args);
+        parent::__construct($message, $status);
+    }
 
     /**
      * @inheritDoc
@@ -34,5 +47,62 @@ class FormResult extends ErrorResult {
             $headers->contentJSON();
             print $serializer->jsonDataObjectEncode($this);
         }
+    }
+
+    /**
+     * Результат успешной операции
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function ok(): self {
+        return new FormResult();
+    }
+
+    /**
+     * Результат ошибочных параметров запроса
+     *
+     * @param string $langFmt Имя языковой переменной с форматом сообщения
+     * @param array  $args    Аргументы сообщения
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function badRequest(string $langFmt, array $args = []): self {
+        return new self($langFmt, $args, HttpResponse::BAD_REQUEST);
+    }
+
+    /**
+     * Результат - 401 UNAUTHORIZED
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function unauthorized(): self {
+        return new self('', [], HttpResponse::UNAUTHORIZED);
+    }
+
+    /**
+     * Результат - 403 FORBIDDEN
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function forbidden(): self {
+        return new self(HttpResponse::FORBIDDEN);
+    }
+
+    /**
+     * Результат - 404 NOT FOUND
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function notFound(): self {
+        return new self(HttpResponse::NOT_FOUND);
+    }
+
+    /**
+     * Результат - 500 INTERNAL SERVER ERROR
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function internalServerError(): self {
+        return new self(HttpResponse::FATAL_ERROR);
     }
 }
