@@ -31,7 +31,7 @@ class FormResult extends ErrorResult {
      * @param int    $status  Код ошибки
      */
     public function __construct(string $langFmt = '', array $args = [], int $status = HttpResponse::OK) {
-        $message = Localization::getInstance()->fmtLanguageVar($langFmt, $args);
+        $message = ($langFmt) ? Localization::getInstance()->fmtLanguageVar($langFmt, $args) : '';
         parent::__construct($message, $status);
     }
 
@@ -61,12 +61,33 @@ class FormResult extends ErrorResult {
     /**
      * Результат ошибочных параметров запроса
      *
+     * @param string $id      Идентификатор объекта
      * @param string $langFmt Имя языковой переменной с форматом сообщения
      * @param array  $args    Аргументы сообщения
      *
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
-    public static function badRequest(string $langFmt, array $args = []): self {
+    public static function argument(string $id, string $langFmt, array $args = []): self {
+        $l10n    = Localization::getInstance();
+        $message = $l10n->fmtLanguageVar($langFmt, $args);
+        if ($id == '') {
+            $result = self::badRequest($langFmt, $args);
+        } else {
+            $result = self::badRequest();
+            $result->addObjectError($id, $message);
+        }
+        return $result;
+    }
+
+    /**
+     * Результат - 400 BAD REQUEST
+     *
+     * @param string $langFmt Имя языковой переменной с форматом сообщения
+     * @param array  $args    Аргументы сообщения
+     *
+     * @return \XEAF\Rack\API\Models\Results\FormResult
+     */
+    public static function badRequest(string $langFmt = '', array $args = []): self {
         return new self($langFmt, $args, HttpResponse::BAD_REQUEST);
     }
 
