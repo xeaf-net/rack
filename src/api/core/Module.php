@@ -48,8 +48,8 @@ class Module extends Extension implements IModule {
      */
     public function execute(): ?IActionResult {
         $result     = null;
-        $methodName = $this->getActionArgs()->getMethodName();
-        $actionMode = $this->getActionArgs()->getActionMode();
+        $methodName = $this->args()->getMethodName();
+        $actionMode = $this->args()->getActionMode();
         if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_L10N) {
             $result = $this->sendLocaleData();
         } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
@@ -119,7 +119,7 @@ class Module extends Extension implements IModule {
      */
     protected function sendLocaleData(): IActionResult {
         $l10n   = Localization::getInstance();
-        $locale = $this->getActionArgs()->get('locale');
+        $locale = $this->args()->get('locale');
         if (!$locale) {
             $locale = $l10n->getDefaultLocale()->getName();
         }
@@ -152,7 +152,7 @@ class Module extends Extension implements IModule {
                     break;
                 default:
                     $mime     = FileMIME::getInsance();
-                    $path     = $this->getActionArgs()->getObjectPath();
+                    $path     = $this->args()->getObjectPath();
                     $dir      = $fs->fileDir($moduleFile);
                     $fileName = $dir . '/' . $type;
                     if ($path) {

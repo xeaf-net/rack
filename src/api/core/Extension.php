@@ -54,7 +54,7 @@ class Extension extends StdObject {
      *
      * @return \XEAF\Rack\API\Interfaces\IActionArgs
      */
-    protected function getActionArgs(): IActionArgs {
+    protected function args(): IActionArgs {
         return Parameters::getInstance();
     }
 
