@@ -81,6 +81,7 @@ class Parameters extends ActionArgs {
                 $this->processRequestParameters($_POST);
                 $this->processInputJsonStream();
                 $this->processRequestFiles();
+                $this->processLocale();
                 break;
             case self::DELETE_METHOD_NAME:
                 $this->processInputJsonStream();
@@ -137,11 +138,8 @@ class Parameters extends ActionArgs {
      * @return void
      */
     protected function processLocale(): void {
-        $l10n       = Localization::getInstance();
-        $localeName = $this->get('locale');
-        if (!$localeName) {
-            $localeName = PortalConfig::getInstance()->getLocale();
-        }
+        $l10n          = Localization::getInstance();
+        $localeName    = PortalConfig::getInstance()->getLocale();
         $this->_locale = ($localeName) ? $localeName : $l10n->getDefaultLocale()->getName();
     }
 
