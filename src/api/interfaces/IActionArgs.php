@@ -94,11 +94,4 @@ interface IActionArgs extends IFactoryObject {
      * @return array
      */
     function getHeaders(): array;
-
-    /**
-     * Возвращает локаль
-     *
-     * @return string
-     */
-    function getLocale(): string;
 }

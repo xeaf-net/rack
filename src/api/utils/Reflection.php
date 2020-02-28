@@ -113,9 +113,9 @@ class Reflection implements IReflection {
             $paramClass     = $param->getClass();
             $paramClassName = $paramClass->getName();
             if ($paramClass->implementsInterface(INamedObject::class)) {
-                $result[] = Factory::getFactoryObject($paramClassName);
-            } else if ($paramClass->implementsInterface(IFactoryObject::class)) {
                 $result[] = Factory::getFactoryNamedObject($paramClassName, Factory::DEFAULT_NAME);
+            } else if ($paramClass->implementsInterface(IFactoryObject::class)) {
+                $result[] = Factory::getFactoryObject($paramClassName);
             } else {
                 $result[] = new $paramClassName();
             }

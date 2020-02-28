@@ -91,7 +91,7 @@ class ResourceModule extends Module {
      * @inheritDoc
      */
     public function execute(): ?IActionResult {
-        $actionName = $this->getActionArgs()->getActionPath();
+        $actionName = $this->args()->getActionPath();
         try {
             switch ($actionName) {
                 case self::DIST_PATH:
@@ -231,8 +231,8 @@ class ResourceModule extends Module {
      */
     protected function resourcePath(string $rootDir): ?string {
         $result     = null;
-        $actionMode = $this->getActionArgs()->getActionMode();
-        $objectPath = $this->getActionArgs()->getObjectPath();
+        $actionMode = $this->args()->getActionMode();
+        $objectPath = $this->args()->getObjectPath();
         if ($actionMode) {
             $result = $rootDir . '/' . $actionMode;
             if ($objectPath) {

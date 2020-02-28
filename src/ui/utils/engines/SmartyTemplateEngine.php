@@ -52,6 +52,21 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     protected const FILE_NAME_EXT = 'tpl';
 
     /**
+     * Идентификатор плагина контента страницы
+     */
+    protected const CONTENT_PLUGIN_NAME = 'content';
+
+    /**
+     * Идентификатор плагина тега
+     */
+    protected const TAG_PLUGIN_NAME = 'plugin';
+
+    /**
+     * Псевдоним идентификатора плагина тегов
+     */
+    protected const TAG_PLUGIN_ALIAS = 'tag';
+
+    /**
      * Имя переменной URL портала
      */
     protected const VAR_PORTAL_URL = 'portalURL';
@@ -183,8 +198,9 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @throws \SmartyException
      */
     protected static function initSmartyPlugins(Smarty $smarty): void {
-        $smarty->registerPlugin("function", "content", self::class . "::printPageContent");
-        $smarty->registerPlugin("function", "plugin", self::class . "::printPluginContent");
+        $smarty->registerPlugin("function", self::CONTENT_PLUGIN_NAME, self::class . "::printPageContent");
+        $smarty->registerPlugin("function", self::TAG_PLUGIN_NAME, self::class . "::printPluginContent");
+        $smarty->registerPlugin("function", self::TAG_PLUGIN_ALIAS, self::class . "::printPluginContent");
     }
 
     /**
@@ -218,7 +234,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         $smarty->assign(self::VAR_PORTAL_URL, $config->getUrl());
         $smarty->assign(self::VAR_ACTION_NAME, $params->getActionPath());
         $smarty->assign(self::VAR_ACTION_MODE, $params->getActionMode());
-        $smarty->assign(self::VAR_LOCALE, $l10n->getLocale($params->getLocale()));
+        $smarty->assign(self::VAR_LOCALE, $l10n->getLocale($l10n->getDefaultLocale()->getName()));
         $smarty->assign(self::VAR_DEBUG_MODE, __XEAF_RACK_DEBUG_MODE__);
     }
 

@@ -47,16 +47,17 @@ class Module extends Extension implements IModule {
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     public function execute(): ?IActionResult {
-        $actionMode = $this->getActionArgs()->getActionMode();
-        if ($actionMode == Assets::MODULE_L10N) {
+        $result     = null;
+        $methodName = $this->args()->getMethodName();
+        $actionMode = $this->args()->getActionMode();
+        if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_L10N) {
             $result = $this->sendLocaleData();
-        } else if ($actionMode == Assets::MODULE_CSS) {
+        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
             $result = $this->sendModuleResource(ResourceModule::CSS_FILE_TYPE);
-        } else if ($actionMode == Assets::MODULE_JS) {
+        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_JS) {
             $result = $this->sendModuleResource(ResourceModule::JS_FILE_TYPE);
         } else {
-            $methodName = $this->getActionArgs()->getMethodName();
-            $method     = $this->actionModeMethod($actionMode, $methodName);
+            $method = $this->actionModeMethod($actionMode, $methodName);
             if ($method) {
                 $this->beforeExecute();
                 $reflection = Reflection::getInstance();
@@ -65,9 +66,12 @@ class Module extends Extension implements IModule {
                     assert($result instanceof IActionResult);
                 }
                 $this->afterExecute();
-            } else {
+            } else if ($methodName == Parameters::GET_METHOD_NAME) {
                 $result = $this->sendModuleResource($actionMode);
             }
+        }
+        if ($result == null) {
+            $result = StatusResult::notFound();
         }
         return $result;
     }
@@ -114,8 +118,11 @@ class Module extends Extension implements IModule {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      */
     protected function sendLocaleData(): IActionResult {
-        $locale   = $this->getActionArgs()->getLocale();
-        $l10n     = Localization::getInstance();
+        $l10n   = Localization::getInstance();
+        $locale = $this->args()->get('locale');
+        if (!$locale) {
+            $locale = $l10n->getDefaultLocale()->getName();
+        }
         $l10nData = $l10n->getLocale($locale)->toArray();
         $landVars = $l10n->getLanguageVars($locale)->toArray();
         return DataResult::dataArray([
@@ -127,40 +134,46 @@ class Module extends Extension implements IModule {
     /**
      * Отправляет файл ресурса
      *
-     * @param string $type Тип ресурса
+     * @param string|null $type Тип ресурса
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    protected function sendModuleResource(string $type): ?IActionResult {
-        $fileName   = null;
-        $fs         = FileSystem::getInstance();
-        $moduleFile = $this->getClassFileName();
-        switch ($type) {
-            case ResourceModule::CSS_FILE_TYPE:
-            case ResourceModule::JS_FILE_TYPE:
-                $fileName = $fs->changeFileNameExt($moduleFile, $type);
-                break;
-            default:
-                $mime     = FileMIME::getInsance();
-                $path     = $this->getActionArgs()->getObjectPath();
-                $dir      = $fs->fileDir($moduleFile);
-                $fileName = $dir . '/' . $type;
-                if ($path) {
-                    $fileName .= '/' . $path;
+    protected function sendModuleResource(?string $type): ?IActionResult {
+        $result = null;
+        if ($type != null) {
+            $fileName   = null;
+            $fs         = FileSystem::getInstance();
+            $moduleFile = $this->getClassFileName();
+            switch ($type) {
+                case ResourceModule::CSS_FILE_TYPE:
+                case ResourceModule::JS_FILE_TYPE:
+                    $fileName = $fs->changeFileNameExt($moduleFile, $type);
+                    break;
+                default:
+                    $mime     = FileMIME::getInsance();
+                    $path     = $this->args()->getObjectPath();
+                    $dir      = $fs->fileDir($moduleFile);
+                    $fileName = $dir . '/' . $type;
+                    if ($path) {
+                        $fileName .= '/' . $path;
+                    }
+                    $fileType = $fs->fileNameExt($fileName);
+                    if (!$mime->isExtensionResource($fileType)) {
+                        $fileName = null;
+                    }
+                    break;
+            }
+            if ($fileName != null) {
+                $minFileName = $fs->minimizedFilePath($fileName);
+                if ($fs->fileExists($minFileName)) {
+                    $fileName = $minFileName;
                 }
-                $fileType = $fs->fileNameExt($fileName);
-                if (!$mime->isExtensionResource($fileType)) {
-                    $fileName = null;
-                }
-                break;
-        }
-        if ($fileName != null) {
-            $minFileName = $fs->minimizedFilePath($fileName);
-            if ($fs->fileExists($minFileName)) {
-                $fileName = $minFileName;
+            }
+            if ($fs->fileExists($fileName)) {
+                $result = new FileResult($fileName, false, true);
             }
         }
-        return $fs->fileExists($fileName) ? new FileResult($fileName, false, true) : StatusResult::notFound();
+        return $result;
     }
 }

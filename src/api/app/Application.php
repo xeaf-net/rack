@@ -20,6 +20,7 @@ use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Interfaces\IConfiguration;
 use XEAF\Rack\API\Interfaces\IModule;
 use XEAF\Rack\API\Interfaces\INodeModule;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Home\HomeModule;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
@@ -27,6 +28,7 @@ use XEAF\Rack\API\Modules\Tools\SessionModule;
 use XEAF\Rack\API\Utils\Assets;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Reflection;
 use XEAF\Rack\API\Utils\Session;
@@ -58,7 +60,21 @@ class Application extends Extension {
         if ($actionArgs != null) {
             Factory::setFactoryObject(ActionArgs::class, $actionArgs);
         }
+        $this->initialization();
+    }
+
+    /**
+     * Инициализация текущей сесси приложения
+     *
+     * @return void
+     */
+    protected function initialization(): void {
         $this->_router = Router::getInstance();
+        $locale        = Session::getInstance()->getLocale();
+        if (!$locale) {
+            $locale = PortalConfig::getInstance()->getLocale();
+        }
+        Localization::getInstance()->setDefaultLocale($locale);
     }
 
     /**
