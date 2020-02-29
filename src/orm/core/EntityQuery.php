@@ -62,7 +62,6 @@ class EntityQuery extends DataModel {
      * @param string        $xql Текст XQL запроса
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      */
     public function __construct(EntityManager $em, string $xql) {
         parent::__construct();

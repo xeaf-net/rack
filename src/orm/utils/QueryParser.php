@@ -13,8 +13,10 @@
 namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\ORM\Interfaces\IQueryParser;
 use XEAF\Rack\ORM\Models\QueryModel;
+use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Parsers\AliasParser;
 use XEAF\Rack\ORM\Utils\Parsers\FilterParser;
 use XEAF\Rack\ORM\Utils\Parsers\FromParser;
@@ -102,7 +104,11 @@ class QueryParser implements IQueryParser {
             $this->_xql        = $xql;
             $this->_phase      = self::ALIAS_PHASE;
             $this->_queryModel = new QueryModel();
-            $this->processXQL();
+            try {
+                $this->processXQL();
+            } catch (CollectionException $exception) {
+                throw EntityException::internalError($exception);
+            }
         }
         return $this->_queryModel;
     }
