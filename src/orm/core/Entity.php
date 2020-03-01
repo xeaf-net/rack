@@ -15,8 +15,10 @@ namespace XEAF\Rack\ORM\Core;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\ORM\Models\EntityModel;
+use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Utils\EntityStorage;
+use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -159,6 +161,79 @@ abstract class Entity extends DataObject {
             }
         }
         return $result;
+    }
+
+    /**
+     * Вызывается перед сохранением значения сущности
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $entityManager Менеджер сущностей
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     *
+     * @noinspection PhpUnusedParameterInspection
+     */
+    public function beforePersist(EntityManager $entityManager): void {
+        foreach ($this->getModel()->getProperties() as $name => $property) {
+            assert($property instanceof PropertyModel);
+            switch ($property->getDataType()) {
+                case DataTypes::DT_ENUM:
+                    $this->checkEnumValue($name, $property);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Проверяет корректность значения свойтсва типа перечисление
+     *
+     * @param string                                        $name
+     * @param \XEAF\Rack\ORM\Models\Properties\EnumProperty $property
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function checkEnumValue(string $name, EnumProperty $property): void {
+        $value = $this->$name;
+        $enums = $property->enumValues();
+        if (!in_array($value, $enums)) {
+            throw EntityException::invalidEnumValue($value);
+        }
+    }
+
+    /**
+     * вызывается после сохранения значения сущности
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $entityManager Менеджер сущностей
+     *
+     * @return void
+     */
+    public function afterPersist(EntityManager $entityManager): void {
+        // Ничего не делать
+    }
+
+    /**
+     * Вызывается перед удалением значения сущности
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $entityManager Менеджер сущностей
+     *
+     * @return void
+     */
+    public function beforeDelete(EntityManager $entityManager): void {
+        // Ничего не делать
+    }
+
+    /**
+     * вызывается после сохранения значения сущности
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $entityManager Менеджер сущностей
+     *
+     * @return void
+     */
+    public function afterDelete(EntityManager $entityManager): void {
+        // Ничего не делать
     }
 
     /**

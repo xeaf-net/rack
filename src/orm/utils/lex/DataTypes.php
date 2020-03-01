@@ -53,4 +53,19 @@ class DataTypes {
      * Тип данных - логическое значение
      */
     public const DT_BOOL = 7;
+
+    /**
+     * Тип данных - перечисление
+     */
+    public const DT_ENUM = 8;
+
+    /**
+     * Тип данных - массив
+     */
+    public const DT_ARRAY = 9;
+
+    /**
+     * Тип данных - объект
+     */
+    public const DT_OBJECT = 10;
 }

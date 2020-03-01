@@ -268,4 +268,41 @@ abstract class PropertyModel extends DataModel {
     public static function bool(string $fieldName, bool $primaryKey = false, bool $readOnly = false): BoolProperty {
         return new BoolProperty($fieldName, $primaryKey, $readOnly);
     }
+
+    /**
+     * Создает описания свойства типа перечисление
+     *
+     * @param array  $enums     Возможные значения свойства
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак полч только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\EnumProperty
+     */
+    public static function enum(array $enums, string $fieldName, bool $readOnly = false): EnumProperty {
+        return new EnumProperty($enums, $fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа массив
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\TextProperty
+     */
+    public static function array(string $fieldName, bool $readOnly = false): self {
+        return new ArrayProperty($fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа объект
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\TextProperty
+     */
+    public static function object(string $fieldName, bool $readOnly = false): self {
+        return new ObjectProperty($fieldName, $readOnly);
+    }
 }

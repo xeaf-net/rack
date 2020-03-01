@@ -15,6 +15,8 @@ namespace XEAF\Rack\ORM\Core;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\API\Utils\Exceptions\SerializerException;
+use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\Db\Interfaces\IDatabase;
 use XEAF\Rack\Db\Utils\Database;
 use XEAF\Rack\Db\Utils\Exceptions\DatabaseException;
@@ -222,7 +224,10 @@ abstract class EntityManager {
      */
     public function persist(Entity $entity): Entity {
         try {
-            return $this->isWatching($entity) ? $this->persistUpdate($entity) : $this->persistInsert($entity);
+            $entity->beforePersist($this);
+            $result = $this->isWatching($entity) ? $this->persistUpdate($entity) : $this->persistInsert($entity);
+            $entity->afterPersist($this);
+            return $result;
         } catch (DatabaseException $dbe) {
             throw EntityException::internalError($dbe);
         }
@@ -280,6 +285,7 @@ abstract class EntityManager {
      *
      * @return \XEAF\Rack\ORM\Core\Entity
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function persistUpdate(Entity $entity): Entity {
         if ($this->isModified($entity)) {
@@ -307,6 +313,7 @@ abstract class EntityManager {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function delete(Entity $entity): void {
+        $entity->beforeDelete($this);
         if ($this->isWatching($entity)) {
             $sql        = Generator::getInstance()->deleteSQL($entity);
             $model      = $entity->getModel();
@@ -321,6 +328,7 @@ abstract class EntityManager {
                 throw EntityException::internalError($exception);
             }
         }
+        $entity->afterDelete($this);
     }
 
     /**
@@ -445,20 +453,29 @@ abstract class EntityManager {
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
      *
      * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function parameterValue(string $name, Entity $entity): string {
         $result   = $entity->{$name};
         $property = $entity->getModel()->getPropertyByName($name);
-        switch ($property->getDataType()) {
-            case DataTypes::DT_BOOL:
-                $result = $this->_db->formatBool($result);
-                break;
-            case DataTypes::DT_DATE:
-                $result = $this->_db->formatDate($result);
-                break;
-            case DataTypes::DT_DATETIME:
-                $result = $this->_db->formatDateTime($result);
-                break;
+        try {
+            switch ($property->getDataType()) {
+                case DataTypes::DT_BOOL:
+                    $result = $this->_db->formatBool($result);
+                    break;
+                case DataTypes::DT_DATE:
+                    $result = $this->_db->formatDate($result);
+                    break;
+                case DataTypes::DT_DATETIME:
+                    $result = $this->_db->formatDateTime($result);
+                    break;
+                case DataTypes::DT_ARRAY:
+                case DataTypes::DT_OBJECT:
+                    Serializer::getInstance()->serialize($result);
+                    break;
+            }
+        } catch (SerializerException $exception) {
+            throw EntityException::internalError($exception);
         }
         return $result;
     }

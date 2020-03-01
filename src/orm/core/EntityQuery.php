@@ -20,6 +20,8 @@ use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Utils\Exceptions\CollectionException;
+use XEAF\Rack\API\Utils\Exceptions\SerializerException;
+use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
@@ -589,6 +591,20 @@ class EntityQuery extends DataModel {
                     break;
                 case DataTypes::DT_DATETIME:
                     $result[$name] = $db->sqlDateTime($value);
+                    break;
+                case DataTypes::DT_ARRAY:
+                    try {
+                        $result[$name] = Serializer::getInstance()->unserialize($value);
+                    } catch (SerializerException $exception) {
+                        $result[$name] = [];
+                    }
+                    break;
+                case DataTypes::DT_OBJECT:
+                    try {
+                        $result[$name] = Serializer::getInstance()->unserialize($value);
+                    } catch (SerializerException $exception) {
+                        $result[$name] = null;
+                    }
                     break;
                 default:
                     $result[$name] = $value;
