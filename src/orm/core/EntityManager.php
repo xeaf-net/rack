@@ -13,10 +13,14 @@
 namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\API\Utils\Exceptions\SerializerException;
+use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\Db\Interfaces\IDatabase;
 use XEAF\Rack\Db\Utils\Database;
 use XEAF\Rack\Db\Utils\Exceptions\DatabaseException;
+use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
@@ -132,7 +136,6 @@ abstract class EntityManager {
      * @param string $xql Текст XQL запроса
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function query(string $xql): EntityQuery {
@@ -182,6 +185,36 @@ abstract class EntityManager {
     }
 
     /**
+     * Возвращает объект сущности по первичному ключу
+     *
+     * @param string $entityName Имя объекта сущностей
+     * @param array  $params     Параметры значений первичного ключа
+     *
+     * @return \XEAF\Rack\ORM\Core\Entity|null
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function findByPK(string $entityName, array $params): ?Entity {
+        $result = null;
+        $model  = $this->_entities->get($entityName);
+        if ($model) {
+            assert($model instanceof EntityModel);
+            $xql = "e from $entityName e where ";
+            $pks = $model->getPrimaryKeyNames();
+            foreach ($pks as $pk) {
+                $xql .= "e.$pk == :$pk &&";
+            }
+            $query  = $this->query(rtrim($xql, '&'));
+            $result = $query->getFirst($params);
+            if ($result) {
+                assert($result instanceof Entity);
+            }
+        } else {
+            throw EntityException::unknownEntity($entityName);
+        }
+        return $result;
+    }
+
+    /**
      * Сохранение изменений сущности в базе данных
      *
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
@@ -191,9 +224,27 @@ abstract class EntityManager {
      */
     public function persist(Entity $entity): Entity {
         try {
-            return $this->isWatching($entity) ? $this->persistUpdate($entity) : $this->persistInsert($entity);
+            $entity->beforePersist($this);
+            $result = $this->isWatching($entity) ? $this->persistUpdate($entity) : $this->persistInsert($entity);
+            $entity->afterPersist($this);
+            return $result;
         } catch (DatabaseException $dbe) {
             throw EntityException::internalError($dbe);
+        }
+    }
+
+    /**
+     * Сохраняет изменения списка сущностей в базе данных
+     *
+     * @param \XEAF\Rack\API\Interfaces\ICollection $collection Список сущностей
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function persistList(ICollection $collection): void {
+        foreach ($collection as $entity) {
+            assert($entity instanceof Entity);
+            $this->persist($entity);
         }
     }
 
@@ -234,6 +285,7 @@ abstract class EntityManager {
      *
      * @return \XEAF\Rack\ORM\Core\Entity
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function persistUpdate(Entity $entity): Entity {
         if ($this->isModified($entity)) {
@@ -261,6 +313,7 @@ abstract class EntityManager {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function delete(Entity $entity): void {
+        $entity->beforeDelete($this);
         if ($this->isWatching($entity)) {
             $sql        = Generator::getInstance()->deleteSQL($entity);
             $model      = $entity->getModel();
@@ -274,6 +327,22 @@ abstract class EntityManager {
             } catch (DatabaseException $exception) {
                 throw EntityException::internalError($exception);
             }
+        }
+        $entity->afterDelete($this);
+    }
+
+    /**
+     * Удаляет объекты сущностей из базы данных
+     *
+     * @param \XEAF\Rack\API\Interfaces\ICollection $collection Список сущностей
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function deleteList(ICollection $collection): void {
+        foreach ($collection as $entity) {
+            assert($entity instanceof Entity);
+            $this->delete($entity);
         }
     }
 
@@ -384,20 +453,29 @@ abstract class EntityManager {
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
      *
      * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function parameterValue(string $name, Entity $entity): string {
         $result   = $entity->{$name};
         $property = $entity->getModel()->getPropertyByName($name);
-        switch ($property->getDataType()) {
-            case DataTypes::DT_BOOL:
-                $result = $this->_db->formatBool($result);
-                break;
-            case DataTypes::DT_DATE:
-                $result = $this->_db->formatDate($result);
-                break;
-            case DataTypes::DT_DATETIME:
-                $result = $this->_db->formatDateTime($result);
-                break;
+        try {
+            switch ($property->getDataType()) {
+                case DataTypes::DT_BOOL:
+                    $result = $this->_db->formatBool($result);
+                    break;
+                case DataTypes::DT_DATE:
+                    $result = $this->_db->formatDate($result);
+                    break;
+                case DataTypes::DT_DATETIME:
+                    $result = $this->_db->formatDateTime($result);
+                    break;
+                case DataTypes::DT_ARRAY:
+                case DataTypes::DT_OBJECT:
+                    $result = Serializer::getInstance()->serialize($result);
+                    break;
+            }
+        } catch (SerializerException $exception) {
+            throw EntityException::internalError($exception);
         }
         return $result;
     }

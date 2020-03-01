@@ -111,7 +111,6 @@ class QueryParser implements IQueryParser {
      * Обрабатывает текст XQL запроса
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function processXQL(): void {

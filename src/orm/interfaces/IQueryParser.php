@@ -28,7 +28,6 @@ interface IQueryParser extends IFactoryObject {
      * @param string $xql Исходный код XQL
      *
      * @return \XEAF\Rack\ORM\Models\QueryModel
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     function buildQueryModel(string $xql): QueryModel;

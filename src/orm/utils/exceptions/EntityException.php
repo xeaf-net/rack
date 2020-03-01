@@ -68,6 +68,11 @@ class EntityException extends Exception {
     public const UNEXPECTED_EXPRESSION_END = 'F009';
 
     /**
+     * Некорректное значение перечисления
+     */
+    public const INVALID_ENUM_VALUE = 'F010';
+
+    /**
      * Внутренняя ошибка ORM
      */
     public const INTERNAL_ERROR = 'EF999';
@@ -104,6 +109,9 @@ class EntityException extends Exception {
                 break;
             case self::UNEXPECTED_EXPRESSION_END:
                 $result = 'Unexpected expression end.';
+                break;
+            case self::INVALID_ENUM_VALUE:
+                $result = 'Invalid enum value [%s].';
                 break;
             case self::INTERNAL_ERROR:
                 $result = 'Internal ORM error.';
@@ -206,6 +214,17 @@ class EntityException extends Exception {
      */
     public static function unexpectedExpressionEnd(): self {
         return new self(self::UNEXPECTED_EXPRESSION_END);
+    }
+
+    /**
+     * Некорретное значение поля перечисления
+     *
+     * @param string $value Значение поля
+     *
+     * @return static
+     */
+    public static function invalidEnumValue(string $value): self {
+        return new self(self::INVALID_ENUM_VALUE, [$value]);
     }
 
     /**

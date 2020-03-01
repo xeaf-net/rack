@@ -67,7 +67,7 @@ class Migration implements IMigration {
         return '
             select migration_version 
                 from 
-                     xeaf_migrations 
+                     rack_migrations 
                 where
                     migration_product = :product
                 order by

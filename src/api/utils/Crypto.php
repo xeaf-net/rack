@@ -28,6 +28,11 @@ use XEAF\Rack\API\Utils\Exceptions\CryptoException;
 class Crypto implements ICrypto {
 
     /**
+     * Нулевой UUID
+     */
+    public const ZERO_UUID = '00000000-0000-0000-0000-000000000000';
+
+    /**
      * Идентификатор алгоритма хеширования
      */
     public const HASH_ALGO = 'sha256';
