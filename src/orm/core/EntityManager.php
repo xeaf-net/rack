@@ -471,7 +471,7 @@ abstract class EntityManager {
                     break;
                 case DataTypes::DT_ARRAY:
                 case DataTypes::DT_OBJECT:
-                    Serializer::getInstance()->serialize($result);
+                    $result = Serializer::getInstance()->serialize($result);
                     break;
             }
         } catch (SerializerException $exception) {

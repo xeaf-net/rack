@@ -595,6 +595,9 @@ class EntityQuery extends DataModel {
                 case DataTypes::DT_ARRAY:
                     try {
                         $result[$name] = Serializer::getInstance()->unserialize($value);
+                        if (!is_array($result[$name])) {
+                            $result[$name] = [];
+                        }
                     } catch (SerializerException $exception) {
                         $result[$name] = [];
                     }

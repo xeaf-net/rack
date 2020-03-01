@@ -158,6 +158,9 @@ abstract class Entity extends DataObject {
                 case DataTypes::DT_DATETIME:
                     $result[$name] = $fmt->formatDateTime($result[$name]);
                     break;
+                case DataTypes::DT_OBJECT:
+                    $result[$name] = (array) $result[$name];
+                    break;
             }
         }
         return $result;
@@ -174,7 +177,7 @@ abstract class Entity extends DataObject {
      * @noinspection PhpUnusedParameterInspection
      */
     public function beforePersist(EntityManager $entityManager): void {
-        foreach ($this->getModel()->getProperties() as $name => $property) {
+        foreach ($this->getModel()->getPropertyByNames() as $name => $property) {
             assert($property instanceof PropertyModel);
             switch ($property->getDataType()) {
                 case DataTypes::DT_ENUM:
