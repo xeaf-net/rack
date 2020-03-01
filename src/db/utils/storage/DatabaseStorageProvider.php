@@ -199,7 +199,7 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
         return '
-            select * from xeaf_storage
+            select * from rack_storage
                 where storage_name = :name';
     }
 
@@ -213,7 +213,7 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
         return '
-            insert into xeaf_storage (
+            insert into rack_storage (
                 storage_name, 
                 storage_key, 
                 storage_value, 
@@ -236,7 +236,7 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
         return '
-            update xeaf_storage
+            update rack_storage
                 set
                     storage_value    = :value,
                     storage_validity = :validity
@@ -255,7 +255,7 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
         /** @noinspection SqlNoDataSourceInspection */
         /** @noinspection SqlResolve */
         return '
-            delete from xeaf_storage
+            delete from rack_storage
                 where
                     storage_name = :name and
                     storage_key  = :key';
