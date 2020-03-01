@@ -15,8 +15,18 @@ namespace XEAF\Rack\ORM\Core;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\ORM\Models\EntityModel;
+use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
+use XEAF\Rack\ORM\Models\Properties\BoolProperty;
+use XEAF\Rack\ORM\Models\Properties\DateProperty;
+use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
+use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
+use XEAF\Rack\ORM\Models\Properties\NumericProperty;
+use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
+use XEAF\Rack\ORM\Models\Properties\StringProperty;
+use XEAF\Rack\ORM\Models\Properties\TextProperty;
+use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
 use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
@@ -159,7 +169,7 @@ abstract class Entity extends DataObject {
                     $result[$name] = $fmt->formatDateTime($result[$name]);
                     break;
                 case DataTypes::DT_OBJECT:
-                    $result[$name] = (array) $result[$name];
+                    $result[$name] = (array)$result[$name];
                     break;
             }
         }
@@ -245,4 +255,148 @@ abstract class Entity extends DataObject {
      * @return \XEAF\Rack\ORM\Models\EntityModel
      */
     abstract protected function createEntityModel(): EntityModel;
+
+    /**
+     * Создает описание свойства типа UUID
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\UUIDProperty
+     */
+    public static function uuid(string $fieldName, bool $primaryKey = false, bool $readOnly = false): UUIDProperty {
+        return new UUIDProperty($fieldName, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства строкового типа
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param int    $length     Длина
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\StringProperty
+     */
+    public static function string(string $fieldName, int $length = 255, bool $primaryKey = false, bool $readOnly = false): StringProperty {
+        return new StringProperty($fieldName, $length, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства строкового типа для текста
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\TextProperty
+     */
+    public static function text(string $fieldName, bool $readOnly = false): TextProperty {
+        return new TextProperty($fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства целочисленного типа
+     *
+     * @param string $fieldName     Имя поля БД
+     * @param bool   $primaryKey    Признак первичного ключа
+     * @param bool   $readOnly      Признак поля только для чтения
+     * @param bool   $autoIncrement Признак поля с автоинкрементом
+     *
+     * @return IntegerProperty
+     */
+    public static function integer(string $fieldName, bool $primaryKey = false, bool $readOnly = false, bool $autoIncrement = false): IntegerProperty {
+        return new IntegerProperty($fieldName, $primaryKey, $readOnly, $autoIncrement);
+    }
+
+    /**
+     * Создает описание свойства действительного типа
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param int    $size       Размер
+     * @param int    $precision  Точность
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\NumericProperty
+     */
+    public static function numeric(string $fieldName, int $size = 15, int $precision = 2, bool $primaryKey = false, bool $readOnly = false): NumericProperty {
+        return new NumericProperty($fieldName, $size, $precision, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа календарной даты
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateProperty
+     */
+    public static function date(string $fieldName, bool $primaryKey = false, bool $readOnly = false): DateProperty {
+        return new DateProperty($fieldName, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа календарных даты и времени
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
+     */
+    public static function dateTime(string $fieldName, bool $primaryKey = false, bool $readOnly = false): DateTimeProperty {
+        return new DateTimeProperty($fieldName, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства логического типа
+     *
+     * @param string $fieldName  Имя поля БД
+     * @param bool   $primaryKey Признак первичного ключа
+     * @param bool   $readOnly   Признак поля только для чтения
+     *
+     * @return BoolProperty
+     */
+    public static function bool(string $fieldName, bool $primaryKey = false, bool $readOnly = false): BoolProperty {
+        return new BoolProperty($fieldName, $primaryKey, $readOnly);
+    }
+
+    /**
+     * Создает описания свойства типа перечисление
+     *
+     * @param array  $enums     Возможные значения свойства
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак полч только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\EnumProperty
+     */
+    public static function enum(array $enums, string $fieldName, bool $readOnly = false): EnumProperty {
+        return new EnumProperty($enums, $fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа массив
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ArrayProperty
+     */
+    public static function array(string $fieldName, bool $readOnly = false): ArrayProperty {
+        return new ArrayProperty($fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа объект
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ObjectProperty
+     */
+    public static function object(string $fieldName, bool $readOnly = false): ObjectProperty {
+        return new ObjectProperty($fieldName, $readOnly);
+    }
 }
