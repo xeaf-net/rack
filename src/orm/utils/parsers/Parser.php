@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Utils\Parsers;
 
 use XEAF\Rack\API\Interfaces\ICollection;
+use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\ORM\Models\QueryModel;
 use XEAF\Rack\ORM\Models\TokenModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
@@ -93,7 +94,6 @@ abstract class Parser {
      * @param \XEAF\Rack\API\Interfaces\ICollection $tokens Список лексем
      *
      * @return int
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function parse(ICollection $tokens): int {
@@ -101,8 +101,12 @@ abstract class Parser {
         $this->_previous = null;
         while (!$tokens->isEmpty() && $this->_state != self::ERROR && $this->_state != self::STOP) {
             $this->_previous = $this->_current;
-            $this->_current  = $tokens->pop();
-            $newState        = $this->step($this->_current);
+            try {
+                $this->_current = $tokens->pop();
+            } catch (CollectionException $exception) {
+                throw EntityException::internalError($exception);
+            }
+            $newState = $this->step($this->_current);
             $this->move($this->_state, $newState);
             $this->_state = $newState;
         }

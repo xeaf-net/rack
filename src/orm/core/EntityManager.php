@@ -189,7 +189,6 @@ abstract class EntityManager {
      * @param array  $params     Параметры значений первичного ключа
      *
      * @return \XEAF\Rack\ORM\Core\Entity|null
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function findByPK(string $entityName, array $params): ?Entity {
@@ -197,10 +196,10 @@ abstract class EntityManager {
         $model  = $this->_entities->get($entityName);
         if ($model) {
             assert($model instanceof EntityModel);
-            $xql = "e from $entityName where ";
+            $xql = "e from $entityName e where ";
             $pks = $model->getPrimaryKeyNames();
             foreach ($pks as $pk) {
-                $xql .= "$pk == :$pk &&";
+                $xql .= "e.$pk == :$pk &&";
             }
             $query  = $this->query(rtrim($xql, '&'));
             $result = $query->getFirst($params);

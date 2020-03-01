@@ -19,6 +19,7 @@ use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
@@ -190,7 +191,6 @@ class EntityQuery extends DataModel {
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      */
     public function where(string $where): EntityQuery {
         $this->_model->getWhereModels()->clear();
@@ -205,7 +205,6 @@ class EntityQuery extends DataModel {
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      */
     public function andWhere(string $where): EntityQuery {
         $tokenizer   = Tokenizer::getInstance();
@@ -479,17 +478,20 @@ class EntityQuery extends DataModel {
      * @param array $params Параметры запроса
      *
      * @return \XEAF\Rack\API\Core\DataObject|null
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function getFirst(array $params = []): ?DataObject {
-        $result = null;
-        $list   = $this->get($params, 1);
-        if (!$list->isEmpty()) {
-            $result = $list->item(0);
-            assert($result instanceof DataObject);
+        try {
+            $result = null;
+            $list   = $this->get($params, 1);
+            if (!$list->isEmpty()) {
+                $result = $list->item(0);
+                assert($result instanceof DataObject);
+            }
+            return $result;
+        } catch (CollectionException $exception) {
+            throw EntityException::internalError($exception);
         }
-        return $result;
     }
 
     /**
@@ -498,25 +500,28 @@ class EntityQuery extends DataModel {
      * @param array $data Массив полей результата
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CollectionException
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function processSingleRecords(array &$data): ICollection {
         $result = new Collection();
-        $alias  = $this->_model->getAliasModels()->first();
-        assert($alias instanceof AliasModel);
-        $model      = $alias->getModel();
-        $tableName  = $model->getTableName();
-        $entityName = $this->_em->findByTableName($tableName);
-        $className  = $this->_em->getEntityClass($entityName);
-        $properties = $model->getPropertyByNames();
-        foreach ($data as $record) {
-            $item   = $this->processRecord($properties, $record);
-            $entity = new $className($item);
-            $this->_em->watch($entity);
-            $result->push($entity);
+        try {
+            $alias = $this->_model->getAliasModels()->first();
+            assert($alias instanceof AliasModel);
+            $model      = $alias->getModel();
+            $tableName  = $model->getTableName();
+            $entityName = $this->_em->findByTableName($tableName);
+            $className  = $this->_em->getEntityClass($entityName);
+            $properties = $model->getPropertyByNames();
+            foreach ($data as $record) {
+                $item   = $this->processRecord($properties, $record);
+                $entity = new $className($item);
+                $this->_em->watch($entity);
+                $result->push($entity);
+            }
+            return $result;
+        } catch (CollectionException $exception) {
+            throw EntityException::internalError($exception);
         }
-        return $result;
     }
 
     /**
