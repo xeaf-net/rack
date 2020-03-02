@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LayoutExtension.php
+ * Layout.php
  *
  * Файл является неотъемлемой частью проекта XEAF-RACK
  *
@@ -26,7 +26,7 @@ use XEAF\Rack\UI\Utils\TemplateEngine;
  *
  * @package  XEAF\Rack\UI\Core
  */
-abstract class LayoutExtension extends Extension {
+abstract class Layout extends Extension {
 
     /**
      * Результат исполнения действия

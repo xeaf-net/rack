@@ -371,7 +371,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
             $layoutFile = $plugin->getLayoutFile();
             try {
                 $pluginData = $plugin->getDataObject($params);
-                $result     = $plugin->generateHTML($pluginData);
+                $result     = $plugin->html($pluginData);
                 if (!$result) {
                     $newSmarty->assign(self::VAR_PLUGIN_MODEL, $pluginData);
                     $newSmarty->assign(self::VAR_ACTION_MODEL, self::$_currentActionResult->getDataObject());

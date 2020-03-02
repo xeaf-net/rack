@@ -39,7 +39,7 @@ class PageTitlePlugin extends Plugin {
     /**
      * @inheritDoc
      */
-    public function generateHTML(DataObject $dataObject = null): ?string {
+    public function html(DataObject $dataObject = null): ?string {
         return $dataObject->{'pageTitle'}??'';
     }
 }
