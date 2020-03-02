@@ -30,12 +30,12 @@ class EnumProperty extends PropertyModel {
     /**
      * Конструктор класса
      *
-     * @param array  $enums     Массив значений допустимых свойств
      * @param string $fieldName Имя поля базы данных
+     * @param array  $enums     Массив значений допустимых свойств
      * @param bool   $readOnly  Признак только для чтения
      *
      */
-    public function __construct(array $enums, string $fieldName = '', bool $readOnly = false) {
+    public function __construct(string $fieldName, array $enums, bool $readOnly = false) {
         parent::__construct(DataTypes::DT_ENUM, 0, 0, $fieldName, false, $readOnly);
         $this->_enums = $enums;
     }

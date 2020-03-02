@@ -366,14 +366,14 @@ abstract class Entity extends DataObject {
     /**
      * Создает описания свойства типа перечисление
      *
-     * @param array  $enums     Возможные значения свойства
      * @param string $fieldName Имя поля БД
+     * @param array  $enums     Возможные значения свойства
      * @param bool   $readOnly  Признак полч только для чтения
      *
      * @return \XEAF\Rack\ORM\Models\Properties\EnumProperty
      */
-    public static function enum(array $enums, string $fieldName, bool $readOnly = false): EnumProperty {
-        return new EnumProperty($enums, $fieldName, $readOnly);
+    public static function enum(string $fieldName, array $enums, bool $readOnly = false): EnumProperty {
+        return new EnumProperty($fieldName, $enums, $readOnly);
     }
 
     /**
