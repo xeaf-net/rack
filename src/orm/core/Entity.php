@@ -24,6 +24,7 @@ use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
+use XEAF\Rack\ORM\Models\Properties\StatusProperty;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
@@ -398,5 +399,17 @@ abstract class Entity extends DataObject {
      */
     public static function object(string $fieldName, bool $readOnly = false): ObjectProperty {
         return new ObjectProperty($fieldName, $readOnly);
+    }
+
+    /**
+     * Создает описание свойства типа код состояния сущности
+     *
+     * @param string $fieldName Имя поля БД
+     * @param bool   $readOnly  Признак поля только для чтения
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\StatusProperty
+     */
+    public static function status(string $fieldName, bool $readOnly = false): StatusProperty {
+        return new StatusProperty($fieldName, $readOnly);
     }
 }
