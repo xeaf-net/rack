@@ -25,7 +25,7 @@ use XEAF\Rack\UI\Models\Results\PageResult;
  *
  * @package  XEAF\Rack\UI\Core
  */
-abstract class Template extends LayoutExtension {
+abstract class Template extends Layout {
 
     /**
      * Имя переменной определяющей BASE HREF

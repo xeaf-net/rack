@@ -20,7 +20,7 @@ use XEAF\Rack\UI\Models\Results\HtmlResult;
  *
  * @package  XEAF\Rack\UI\Core
  */
-abstract class Plugin extends LayoutExtension {
+abstract class Plugin extends Layout {
 
     /**
      * Объект шаблона
@@ -58,7 +58,7 @@ abstract class Plugin extends LayoutExtension {
      * @return string|null
      * @noinspection PhpUnusedParameterInspection
      */
-    public function generateHTML(DataObject $dataObject = null): ?string {
+    public function html(DataObject $dataObject = null): ?string {
         return null; // Использовать .tpl файл
     }
 }
