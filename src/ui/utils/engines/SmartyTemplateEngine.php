@@ -367,21 +367,21 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
             $className = $te->getRegisteredPlugin($pluginName);
             $plugin    = new $className(self::$_currentActionResult, self::$_currentTemplate);
             assert($plugin instanceof Plugin);
-            $newSmarty  = self::createSmarty();
-            $layoutFile = $plugin->getLayoutFile();
-            try {
-                $pluginData = $plugin->getDataObject($params);
-                $result     = $plugin->html($pluginData);
-                if (!$result) {
+            $result = $plugin->html($params);
+            if (!$result) {
+                $newSmarty  = self::createSmarty();
+                $layoutFile = $plugin->getLayoutFile();
+                try {
+                    $pluginData = $plugin->getDataObject($params);
                     $newSmarty->assign(self::VAR_PLUGIN_MODEL, $pluginData);
                     $newSmarty->assign(self::VAR_ACTION_MODEL, self::$_currentActionResult->getDataObject());
                     if (self::$_currentTemplate) {
                         $newSmarty->assign(self::VAR_TEMPLATE_MODEL, self::$_currentTemplate->getDataObject());
                     }
                     $result = $newSmarty->fetch($plugin->getLayoutFile());
+                } catch (Throwable $exception) {
+                    throw TemplateException::templateProcessingError($layoutFile, $exception);
                 }
-            } catch (Throwable $exception) {
-                throw TemplateException::templateProcessingError($layoutFile, $exception);
             }
         }
         return $result;

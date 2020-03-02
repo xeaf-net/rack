@@ -53,12 +53,12 @@ abstract class Plugin extends Layout {
     /**
      * Возвращет HTML код плагина
      *
-     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Модель данных плагина
+     * @param array $params Параметры вызова плагина
      *
      * @return string|null
      * @noinspection PhpUnusedParameterInspection
      */
-    public function html(DataObject $dataObject = null): ?string {
+    public function html(array $params = []): ?string {
         return null; // Использовать .tpl файл
     }
 }

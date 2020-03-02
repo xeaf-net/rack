@@ -24,5 +24,5 @@ class FavIconPlugin extends Plugin {
     /**
      * Идентификатор плагина
      */
-    public const PLUGIN_NAME = 'tagFavIcon';
+    public const PLUGIN_NAME = 'favIcon';
 }
