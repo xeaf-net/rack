@@ -160,7 +160,7 @@ class Crypto implements ICrypto {
      */
     public function jwtPrivateKey(): string {
         if (!$this->_jwtPrivateKey) {
-            $fileName             = __XEAF_RACK_CONFIG_DIR__ . '/' . self::JWT_PRIVATE_FILE_NAME;
+            $fileName             = __RACK_CONFIG_DIR__ . '/' . self::JWT_PRIVATE_FILE_NAME;
             $this->_jwtPrivateKey = file_get_contents($fileName);
             if (!$this->_jwtPrivateKey) {
                 throw CryptoException::jwtPrivateKeyNotFound();
@@ -174,7 +174,7 @@ class Crypto implements ICrypto {
      */
     public function jwtPublicKey(): string {
         if (!$this->_jwtPublicKey) {
-            $fileName            = __XEAF_RACK_CONFIG_DIR__ . '/' . self::JWT_PUBLIC_FILE_NAME;
+            $fileName            = __RACK_CONFIG_DIR__ . '/' . self::JWT_PUBLIC_FILE_NAME;
             $this->_jwtPublicKey = file_get_contents($fileName);
             if (!$this->_jwtPublicKey) {
                 throw CryptoException::jwtPublicKeyNotFound();

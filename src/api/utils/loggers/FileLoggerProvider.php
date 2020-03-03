@@ -131,7 +131,7 @@ class FileLoggerProvider implements ILoggerProvider {
     protected function logText(int $level, string $message, $data = null): string {
         $prefix = '[' . self::LEVEL_PREFIXES[$level] . '] ';
         $time   = $this->getFormattedDateTime();
-        $debug  = __XEAF_RACK_DEBUG_MODE__ && $data != null ? "\n" . print_r($data, true) : '';
+        $debug  = __RACK_DEBUG_MODE__ && $data != null ? "\n" . print_r($data, true) : '';
         $lines  = explode("\n", $time . ' ' . $message . $debug);
         return $prefix . implode("\n" . $prefix, $lines) . "\n";
     }

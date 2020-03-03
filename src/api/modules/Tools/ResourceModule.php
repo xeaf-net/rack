@@ -179,7 +179,7 @@ class ResourceModule extends Module {
      */
     protected function processGetVendor(): ?IActionResult {
         $result   = null;
-        $fileName = $this->resourcePath(__XEAF_RACK_VENDOR_DIR__);
+        $fileName = $this->resourcePath(__RACK_VENDOR_DIR__);
         if ($this->_fs->fileExists($fileName)) {
             $result = $this->sendResourceFile($fileName);
         }

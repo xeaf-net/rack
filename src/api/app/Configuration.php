@@ -66,7 +66,7 @@ class Configuration implements IConfiguration {
      * @return string
      */
     protected function configFilePath(): string {
-        $prefix = __XEAF_RACK_CONFIG_DIR__ . '/' . self::FILE_NAME;
+        $prefix = __RACK_CONFIG_DIR__ . '/' . self::FILE_NAME;
         $result = $prefix . self::FILE_NAME_EXT;
         $host   = $_SERVER['SERVER_NAME'] ?? '';
         if ($host) {
