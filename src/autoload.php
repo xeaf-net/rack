@@ -15,4 +15,4 @@ namespace XEAF\Rack;
 /**
  * Номер версии фреймворка
  */
-define('__RACK_VERSION__', '1.0.8');
+define('__RACK_VERSION__', '1.0.9-dev');
