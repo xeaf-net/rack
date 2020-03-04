@@ -17,22 +17,22 @@ use XEAF\Rack\API\App\Application;
 /**
  * Путь к папке с файлами конфигурации
  */
-define('__XEAF_RACK_CONFIG_DIR__', __DIR__ . '/../etc');
+define('__RACK_CONFIG_DIR__', __DIR__ . '/../etc');
 
 /**
  * Путь к директории файлов сторонних поставщиков
  */
-define('__XEAF_RACK_VENDOR_DIR__', __DIR__ . '/../../vendor');
+define('__RACK_VENDOR_DIR__', __DIR__ . '/../../vendor');
 
 /**
  * Признак режима отладки
  */
-define('__XEAF_RACK_DEBUG_MODE__', true);
+define('__RACK_DEBUG_MODE__', true);
 
 /**
  * Подгрузка autoload.php
  */
-require_once __XEAF_RACK_VENDOR_DIR__ . '/autoload.php';
+require_once __RACK_VENDOR_DIR__ . '/autoload.php';
 
 /**
  * Запуск приложения

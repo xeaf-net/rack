@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="{$pageLocale->getLang()}" dir="{$pageLocale->getDir()}">
     <head>
-        <title>{plugin name='tagPageTitle'}</title>
-        {plugin name='tagFavIcon'}
-        {plugin name='tagPageMeta'}
-        {plugin name='tagResourceLink' type='css'}
+        <title>{tag name='pageTitle'}</title>
+        {tag name='favIcon'}
+        {tag name='pageMeta'}
+        {tag name='resourceLink' type='css'}
     </head>
     <body>
         {content}
-        {plugin name='tagResourceLink' type='js'}
+        {tag name='resourceLink' type='js'}
     </body>
 </html>

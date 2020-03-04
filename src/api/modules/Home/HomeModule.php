@@ -31,8 +31,8 @@ class HomeModule extends Module {
     protected function processGet(): ?IActionResult {
         $data = [
             'title'     => 'XEAF Rack',
-            'version'   => __XEAF_RACK_VERSION__,
-            'debugMode' => __XEAF_RACK_DEBUG_MODE__
+            'version'   => __RACK_VERSION__,
+            'debugMode' => __RACK_DEBUG_MODE__
         ];
         return DataResult::dataArray($data);
     }

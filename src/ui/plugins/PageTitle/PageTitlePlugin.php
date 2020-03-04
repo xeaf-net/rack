@@ -12,7 +12,6 @@
  */
 namespace XEAF\Rack\UI\Plugins\PageTitle;
 
-use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Core\Plugin;
 
 /**
@@ -25,21 +24,12 @@ class PageTitlePlugin extends Plugin {
     /**
      * Идентификатор плагина
      */
-    public const PLUGIN_NAME = 'tagPageTitle';
+    public const PLUGIN_NAME = 'pageTitle';
 
     /**
      * @inheritDoc
      */
-    public function getDataObject(array $params = []): ?DataObject {
-        return new DataObject([
-            'pageTitle' => $this->_template->getPageTitle()
-        ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function html(DataObject $dataObject = null): ?string {
-        return $dataObject->{'pageTitle'}??'';
+    public function html(array $params = []): ?string {
+        return $this->_template->getPageTitle();
     }
 }

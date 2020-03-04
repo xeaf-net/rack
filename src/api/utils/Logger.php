@@ -105,7 +105,7 @@ class Logger implements ILogger {
      * @inheritDoc
      */
     public function debug(string $message, $data = null): void {
-        if (__XEAF_RACK_DEBUG_MODE__ && $this->getLevel() >= self::DEBUG) {
+        if (__RACK_DEBUG_MODE__ && $this->getLevel() >= self::DEBUG) {
             $this->_provider->writeLog(self::DEBUG, $message, $data);
         }
     }
@@ -154,7 +154,7 @@ class Logger implements ILogger {
      */
     public static function fatalError(string $message, $data = null): void {
         print "FTL: $message\n\n";
-        if (__XEAF_RACK_DEBUG_MODE__ && $data != null) {
+        if (__RACK_DEBUG_MODE__ && $data != null) {
             print_r($data);
         }
         die();

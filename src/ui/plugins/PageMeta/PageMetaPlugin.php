@@ -25,7 +25,7 @@ class PageMetaPlugin extends Plugin {
     /**
      * Идентификатор плагина
      */
-    public const PLUGIN_NAME = 'tagPageMeta';
+    public const PLUGIN_NAME = 'pageMeta';
 
     /**
      * @inheritDoc

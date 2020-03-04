@@ -69,7 +69,7 @@ class Assets implements IAssets {
      * @inheritDoc
      */
     public function getDistRootFolder(): string {
-        return __XEAF_RACK_VENDOR_DIR__ . '/../dist';
+        return __RACK_VENDOR_DIR__ . '/../dist';
     }
 
     /**
@@ -83,7 +83,7 @@ class Assets implements IAssets {
      * @inheritDoc
      */
     public function getNodeModulesPath(): string {
-        return __XEAF_RACK_VENDOR_DIR__ . '/../node_modules';
+        return __RACK_VENDOR_DIR__ . '/../node_modules';
     }
 
     /**

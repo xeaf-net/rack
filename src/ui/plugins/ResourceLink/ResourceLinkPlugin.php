@@ -32,7 +32,7 @@ class ResourceLinkPlugin extends Plugin {
     /**
      * Идентификатор плагина
      */
-    public const PLUGIN_NAME = 'tagResourceLink';
+    public const PLUGIN_NAME = 'resourceLink';
 
     /**
      * Объект модуле работы с файловой системой
