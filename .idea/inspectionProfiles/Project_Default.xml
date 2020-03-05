@@ -13,14 +13,14 @@
     <inspection_tool class="PhpCompoundNamespaceDepthInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpConstantNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_regex" value="[A-Z_\d]*" />
-      <option name="m_minLength" value="3" />
+      <option name="m_minLength" value="2" />
     </inspection_tool>
     <inspection_tool class="PhpDivisionByZeroInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpFunctionNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpIllegalPsrClassPathInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpLongTypeFormInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpMethodNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="m_minLength" value="3" />
+      <option name="m_minLength" value="2" />
       <option name="m_maxLength" value="25" />
     </inspection_tool>
     <inspection_tool class="PhpMethodOrClassCallIsNotCaseSensitiveInspection" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -33,7 +33,11 @@
     <inspection_tool class="PhpMultipleClassesDeclarationsInOneFile" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpNewClassMissingParameterListInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpNonCanonicalElementsOrderInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
-    <inspection_tool class="PhpPropertyNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PhpPropertyNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_regex" value="[_a-z][A-Za-z\d]*" />
+      <option name="m_minLength" value="3" />
+      <option name="m_maxLength" value="22" />
+    </inspection_tool>
     <inspection_tool class="PhpSeparateElseIfInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpShortOpenTagInspection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PhpStaticAsDynamicMethodCallInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />

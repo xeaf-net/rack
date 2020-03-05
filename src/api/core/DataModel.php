@@ -39,6 +39,8 @@ abstract class DataModel extends DataObject {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function undefinedSetter(string $name, $value): void {
         throw CoreException::propertyIsNotWritable($this->getClassName(), $name);

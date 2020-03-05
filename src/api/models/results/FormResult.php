@@ -38,6 +38,8 @@ class FormResult extends ErrorResult {
     /**
      * @inheritDoc
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
         $headers    = HttpResponse::getInstance();
@@ -53,7 +55,6 @@ class FormResult extends ErrorResult {
      * Результат успешной операции
      *
      * @return \XEAF\Rack\API\Models\Results\FormResult
-     * @noinspection PhpMethodNamingConventionInspection
      */
     public static function ok(): self {
         return new FormResult();
@@ -72,7 +73,7 @@ class FormResult extends ErrorResult {
         $l10n    = Localization::getInstance();
         $message = $l10n->fmtLanguageVar($langFmt, $args);
         if ($id == '') {
-            $result = self::badRequest($langFmt, $args);
+            $result = new self($langFmt, $args, HttpResponse::BAD_REQUEST);
         } else {
             $result = self::badRequest();
             $result->addObjectError($id, $message);
@@ -83,13 +84,10 @@ class FormResult extends ErrorResult {
     /**
      * Результат - 400 BAD REQUEST
      *
-     * @param string $langFmt Имя языковой переменной с форматом сообщения
-     * @param array  $args    Аргументы сообщения
-     *
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
-    public static function badRequest(string $langFmt = '', array $args = []): self {
-        return new self($langFmt, $args, HttpResponse::BAD_REQUEST);
+    public static function badRequest(): self {
+        return new self('', [], HttpResponse::BAD_REQUEST);
     }
 
     /**
@@ -107,7 +105,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
     public static function forbidden(): self {
-        return new self(HttpResponse::FORBIDDEN);
+        return new self('', [], HttpResponse::FORBIDDEN);
     }
 
     /**
@@ -116,7 +114,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
     public static function notFound(): self {
-        return new self(HttpResponse::NOT_FOUND);
+        return new self('', [], HttpResponse::NOT_FOUND);
     }
 
     /**
@@ -125,6 +123,6 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
     public static function internalServerError(): self {
-        return new self(HttpResponse::FATAL_ERROR);
+        return new self('', [], HttpResponse::FATAL_ERROR);
     }
 }

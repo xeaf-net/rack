@@ -530,9 +530,9 @@ class Generator implements IGenerator {
         if ($entity == null) {
             throw EntityException::unknownEntityAlias($alias);
         }
-        $result = $this->_entities->get($entity);
+        $result = $this->_entities->get( $entity);
         if ($result == null) {
-            throw EntityException::unknownEntity($entity);
+            throw EntityException::unknownEntity( $entity);
         }
         assert($result instanceof EntityModel);
         return $result;

@@ -117,7 +117,7 @@ class Crypto implements ICrypto {
      */
     public function randomBytes(int $length): string {
         $result = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($counter = 0; $counter < $length; $counter++) {
             $result .= chr(mt_rand(0, 255));
         }
         return $result;

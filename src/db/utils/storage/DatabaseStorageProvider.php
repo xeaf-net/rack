@@ -88,6 +88,7 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
         foreach ($data as $key => $value) {
             $this->delete($key);
         }
+        parent::clear();
     }
 
     /**

@@ -364,7 +364,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         $pluginName = $params['name'] ?? null;
         if ($pluginName) {
             $tplEngine = TemplateEngine::getInstance();
-            $className = $tplEngine->getRegisteredPlugin((string)$pluginName);
+            $className = $tplEngine->getRegisteredPlugin($pluginName);
             $plugin    = new $className(self::$_currentActionResult, self::$_currentTemplate);
             assert($plugin instanceof Plugin);
             $result = $plugin->html($params);
@@ -417,7 +417,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredPlugin(string $name): string {
-        $result = (string)$this->_plugins->get($name);
+        $result = $this->_plugins->get($name);
         if ($result == null) {
             throw TemplateException::unregisteredPlugin($name);
         }
@@ -451,7 +451,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredTemplate(string $name): string {
-        $result = (string)$this->_templates->get($name);
+        $result = $this->_templates->get($name);
         if ($result == null) {
             throw TemplateException::unregisteredTemplate($name);
         }

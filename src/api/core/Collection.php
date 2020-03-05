@@ -174,9 +174,9 @@ class Collection implements ICollection {
      * @inheritDoc
      */
     public function last(): DataObject {
-        $n = $this->count();
-        if ($n > 0) {
-            return $this->_data[$n - 1];
+        $count = $this->count();
+        if ($count > 0) {
+            return $this->_data[$count - 1];
         }
         throw CollectionException::collectionIsEmpty();
     }
