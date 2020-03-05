@@ -138,6 +138,8 @@ class PageResult extends HtmlResult {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
         $this->adjustLayoutFile();

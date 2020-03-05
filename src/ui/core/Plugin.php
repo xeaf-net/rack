@@ -47,7 +47,7 @@ abstract class Plugin extends Layout {
      * @return \XEAF\Rack\API\Core\DataObject|null
      */
     public function getDataObject(array $params = []): ?DataObject {
-        return null;
+        return parent::getDataObject();
     }
 
     /**

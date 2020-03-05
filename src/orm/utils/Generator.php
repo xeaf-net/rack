@@ -526,13 +526,13 @@ class Generator implements IGenerator {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function entityModelByAlias(string $alias): EntityModel {
-        $entity = $this->_aliases->get($alias);
-        if ($entity == null) {
+        $entity = (string)$this->_aliases->get($alias);
+        if (empty($entity)) {
             throw EntityException::unknownEntityAlias($alias);
         }
-        $result = $this->_entities->get( $entity);
+        $result = $this->_entities->get($entity);
         if ($result == null) {
-            throw EntityException::unknownEntity( $entity);
+            throw EntityException::unknownEntity($entity);
         }
         assert($result instanceof EntityModel);
         return $result;
@@ -564,7 +564,8 @@ class Generator implements IGenerator {
         $model  = $this->entityModelByAlias($alias);
         $result = $model->getPropertyByName($property);
         if ($result == null) {
-            throw EntityException::unknownEntityProperty($this->_aliases->get($alias), $property);
+            $name = (string)$this->_aliases->get($alias);
+            throw EntityException::unknownEntityProperty($name, $property);
         }
         return $result;
     }

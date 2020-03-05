@@ -111,6 +111,8 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      *
      * @return mixed
      * @throws \XEAF\Rack\Redis\Utils\Exceptions\RedisException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function get(string $key, $defaultValue = null) {
         try {
@@ -135,6 +137,8 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      *
      * @return void
      * @throws \XEAF\Rack\Redis\Utils\Exceptions\RedisException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function put(string $key, $value = null, int $ttl = 0): void {
         try {
@@ -156,6 +160,8 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      *
      * @return void
      * @throws \XEAF\Rack\Redis\Utils\Exceptions\RedisException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function delete(string $key): void {
         try {
@@ -171,6 +177,8 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      * @param string $key Ключ
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function exists(string $key): bool {
         return $this->_redis->exists($key);

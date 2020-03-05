@@ -28,6 +28,8 @@ class PageTitlePlugin extends Plugin {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function html(array $params = []): ?string {
         return $this->_template->getPageTitle();

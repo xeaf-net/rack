@@ -21,6 +21,8 @@ class Stack extends Collection {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function push(DataObject $item): void {
         if ($this->_duplicates || !$this->exists($item)) {
@@ -31,6 +33,8 @@ class Stack extends Collection {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function unpush(): DataObject {
         return parent::pop();

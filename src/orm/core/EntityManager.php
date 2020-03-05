@@ -116,7 +116,7 @@ abstract class EntityManager {
      * @return string
      */
     public function getEntityClass(string $entity): string {
-        return  $this->_entityClasses->get($entity);
+        return (string) $this->_entityClasses->get($entity);
     }
 
     /**

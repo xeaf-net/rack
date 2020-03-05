@@ -66,6 +66,8 @@ class ResourceLinkPlugin extends Plugin {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function getDataObject(array $params = []): ?DataObject {
         $link = '';
@@ -73,7 +75,7 @@ class ResourceLinkPlugin extends Plugin {
         switch ($type) {
             case ResourceModule::CSS_FILE_TYPE:
             case ResourceModule::JS_FILE_TYPE:
-                $link = $this->resourceLink($type);
+                $link = $this->resourceLink((string) $type);
                 break;
             default:
                 break;

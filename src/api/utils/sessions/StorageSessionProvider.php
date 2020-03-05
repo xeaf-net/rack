@@ -49,6 +49,8 @@ class StorageSessionProvider extends StaticSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function loadSessionVars(): void {
         $this->resolveSessionId();
@@ -63,6 +65,8 @@ class StorageSessionProvider extends StaticSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function saveSessionVars(): void {
         $name = $this->storageVarName();

@@ -29,6 +29,8 @@ class PageMetaPlugin extends Plugin {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function getDataObject(array $params = []): ?DataObject {
         return DataObject::fromArray([
