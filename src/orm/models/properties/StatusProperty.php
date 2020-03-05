@@ -22,22 +22,22 @@ class StatusProperty extends EnumProperty {
     /**
      * Сущность активна
      */
-    public const ACTIVE = 'ACT';
+    public const ACTIVE = 'ACTIVE';
 
     /**
      * Сущность архивирована
      */
-    public const ARCHIVED = 'ARC';
+    public const ARCHIVED = 'ARCHIVED';
 
     /**
      * Действие сущности приостановлена
      */
-    public const STOPPED = 'STP';
+    public const STOPPED = 'STOPPED';
 
     /**
      * Сущность помечена на удаление
      */
-    public const DELETED = 'DEL';
+    public const DELETED = 'DELETED';
 
     /**
      * Список возможных состояний сущностей
