@@ -136,7 +136,7 @@ class Generator implements IGenerator {
             $properties = $model->getPropertyByNames();
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                if (!$property->getAutoIncrement()) {
+                if ($property->getIsInsertable()) {
                     $params[] = ':' . $name;
                     $fields[] = $property->getFieldName();
                 }
@@ -167,7 +167,7 @@ class Generator implements IGenerator {
                 $line      = "$fieldName=$paramName";
                 if ($property->getPrimaryKey()) {
                     $keys[] = $line;
-                } else if (!$property->getReadOnly()) {
+                } else if ($property->getIsUpdatable()) {
                     $lines[] = $line;
                 }
             }

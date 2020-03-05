@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\AccessTypes;
+
 /**
  * Реализует методы свойства типа состояния записи
  *
@@ -52,11 +54,11 @@ class StatusProperty extends EnumProperty {
     /**
      * Конструктор класса
      *
-     * @param string $fieldName Имя поля базы данных
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля базы данных
+     * @param int    $accessType Определение доступа
      *
      */
-    public function __construct(string $fieldName, bool $readOnly = false) {
-        parent::__construct($fieldName, self::STATUSES, $readOnly);
+    public function __construct(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct($fieldName, self::STATUSES, $accessType);
     }
 }

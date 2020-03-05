@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Models\Properties;
 
 use XEAF\Rack\API\Utils\Strings;
+use XEAF\Rack\ORM\Utils\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -28,10 +29,10 @@ class StringProperty extends PropertyModel {
      * @param string $fieldName  Имя поля БД
      * @param int    $length     Длина
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      */
-    public function __construct(string $fieldName, int $length, bool $primaryKey = false, bool $readOnly = false) {
-        parent::__construct(DataTypes::DT_STRING, $length, 0, $fieldName, $primaryKey, $readOnly);
+    public function __construct(string $fieldName, int $length, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct(DataTypes::DT_STRING, $length, 0, $fieldName, $primaryKey, $accessType);
     }
 
     /**

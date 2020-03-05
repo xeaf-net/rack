@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -30,13 +31,13 @@ class EnumProperty extends PropertyModel {
     /**
      * Конструктор класса
      *
-     * @param string $fieldName Имя поля базы данных
-     * @param array  $enums     Массив значений допустимых свойств
-     * @param bool   $readOnly  Признак только для чтения
+     * @param string $fieldName  Имя поля базы данных
+     * @param array  $enums      Массив значений допустимых свойств
+     * @param int    $accessType Определение доступа
      *
      */
-    public function __construct(string $fieldName, array $enums, bool $readOnly = false) {
-        parent::__construct(DataTypes::DT_ENUM, 0, 0, $fieldName, false, $readOnly);
+    public function __construct(string $fieldName, array $enums, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct(DataTypes::DT_ENUM, 0, 0, $fieldName, false, $accessType);
         $this->_enums = $enums;
     }
 

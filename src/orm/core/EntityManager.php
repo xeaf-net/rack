@@ -264,7 +264,7 @@ abstract class EntityManager {
         $autoIncrement = null;
         foreach ($model->getPropertyByNames() as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getAutoIncrement()) {
+            if ($property->getIsInsertable()) {
                 $parameters[$name] = $this->parameterValue($name, $entity);
             } else {
                 $autoIncrement = $name;
@@ -295,7 +295,7 @@ abstract class EntityManager {
             $parameters = [];
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                if (!$property->getReadOnly() && !$property->getAutoIncrement()) {
+                if ($property->getIsUpdatable()) {
                     $parameters[$name] = $this->parameterValue($name, $entity);
                 }
             }
@@ -413,7 +413,7 @@ abstract class EntityManager {
             $properties = $original->getModel()->getPropertyByNames();
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                if (!$property->getReadOnly()) {
+                if ($property->getIsInsertable() || $property->getIsUpdatable()) {
                     if ($entity->{$name} != $original->{$name}) {
                         $result = true;
                         break;
@@ -439,7 +439,7 @@ abstract class EntityManager {
             $properties = $original->getModel()->getPropertyByNames();
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                if (!$property->getReadOnly()) {
+                if ($property->getIsReadable()) {
                     $entity->{$name} = $original->{$name};
                 }
             }

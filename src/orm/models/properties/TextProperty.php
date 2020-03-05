@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\AccessTypes;
+
 /**
  * Реализует методы свойства текстового типа
  *
@@ -22,10 +24,10 @@ class TextProperty extends StringProperty {
     /**
      * Конструктор класса
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      */
-    public function __construct(string $fieldName, bool $readOnly = false) {
-        parent::__construct($fieldName, 0, false, $readOnly);
+    public function __construct(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct($fieldName, 0, false, $accessType);
     }
 }

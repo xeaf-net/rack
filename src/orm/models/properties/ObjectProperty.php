@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -24,11 +25,11 @@ class ObjectProperty extends PropertyModel {
     /**
      * Конструктор класса
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      */
-    public function __construct(string $fieldName = '', bool $readOnly = false) {
-        parent::__construct(DataTypes::DT_OBJECT, 0, 0, $fieldName, false, $readOnly);
+    public function __construct(string $fieldName = '', int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct(DataTypes::DT_OBJECT, 0, 0, $fieldName, false, $accessType);
     }
 
     /**
