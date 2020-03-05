@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\UI\Plugins\PageTitle;
 
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Core\Plugin;
 
 /**
@@ -28,10 +29,17 @@ class PageTitlePlugin extends Plugin {
 
     /**
      * @inheritDoc
+     */
+    public function getDataObject(): ?DataObject {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public function html(array $params = []): ?string {
+    public function html(): ?string {
         return $this->_template->getPageTitle();
     }
 }

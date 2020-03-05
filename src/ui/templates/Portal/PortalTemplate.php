@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\UI\Templates\Portal;
 
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Core\Template;
 
 /**
@@ -26,4 +27,10 @@ class PortalTemplate extends Template {
      */
     public const TEMPLATE_NAME = 'portal';
 
+    /**
+     * @inheritDoc
+     */
+    public function getDataObject(): ?DataObject {
+        return null;
+    }
 }

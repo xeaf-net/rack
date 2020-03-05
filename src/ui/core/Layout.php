@@ -84,9 +84,7 @@ abstract class Layout extends Extension {
      *
      * @return \XEAF\Rack\API\Core\DataObject|null
      */
-    public function getDataObject(): ?DataObject {
-        return null;
-    }
+    abstract public function getDataObject(): ?DataObject;
 
     /**
      * Возвращает имя файла шаблона построения

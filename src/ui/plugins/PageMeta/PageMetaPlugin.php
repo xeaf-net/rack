@@ -29,10 +29,8 @@ class PageMetaPlugin extends Plugin {
 
     /**
      * @inheritDoc
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public function getDataObject(array $params = []): ?DataObject {
+    public function getDataObject(): ?DataObject {
         return DataObject::fromArray([
             'pageMeta' => $this->_template->getPageMeta()
         ]);

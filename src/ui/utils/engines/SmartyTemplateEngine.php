@@ -365,14 +365,14 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         if (!empty($pluginName)) {
             $tplEngine = TemplateEngine::getInstance();
             $className = $tplEngine->getRegisteredPlugin($pluginName);
-            $plugin    = new $className(self::$_currentActionResult, self::$_currentTemplate);
+            $plugin    = new $className(self::$_currentActionResult, self::$_currentTemplate, $params);
             assert($plugin instanceof Plugin);
-            $result = $plugin->html($params);
+            $result = $plugin->html();
             if (!$result) {
                 $newSmarty  = self::createSmarty();
                 $layoutFile = $plugin->getLayoutFile();
                 try {
-                    $pluginData = $plugin->getDataObject($params);
+                    $pluginData = $plugin->getDataObject();
                     $newSmarty->assign(self::VAR_PLUGIN_MODEL, $pluginData);
                     $newSmarty->assign(self::VAR_ACTION_MODEL, self::$_currentActionResult->getDataObject());
                     if (self::$_currentTemplate) {
