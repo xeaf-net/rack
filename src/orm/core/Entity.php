@@ -385,7 +385,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описания свойства типа перечисление
+     * Создает описания свойства типа Перечисление
      *
      * @param string $fieldName  Имя поля БД
      * @param array  $enums      Возможные значения свойства
@@ -398,7 +398,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описание свойства типа массив
+     * Создает описание свойства типа Массив
      *
      * @param string $fieldName  Имя поля БД
      * @param int    $accessType Определение доступа
@@ -410,7 +410,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описание свойства типа объект
+     * Создает описание свойства типа Объект
      *
      * @param string $fieldName  Имя поля БД
      * @param int    $accessType Определение доступа
@@ -422,7 +422,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описание свойства типа код состояния сущности
+     * Создает описание свойства типа Код состояния сущности
      *
      * @param string $fieldName  Имя поля БД
      * @param int    $accessType Определение доступа
@@ -431,5 +431,29 @@ abstract class Entity extends DataObject {
      */
     public static function status(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): StatusProperty {
         return new StatusProperty($fieldName, $accessType);
+    }
+
+    /**
+     * Создает описание свойства даты и времени создания записи
+     *
+     * @param string $fieldName Имя поля БД
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
+     */
+    public static function createdTime(string $fieldName): DateTimeProperty {
+        $accessType = AccessTypes::AC_READABLE;
+        return new DateTimeProperty($fieldName, false, $accessType);
+    }
+    
+    /**
+     * Создает описание свойства даты и времени изменния записи
+     *
+     * @param string $fieldName Имя поля БД
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
+     */
+    public static function modifiedTime(string $fieldName): DateTimeProperty {
+        $accessType = AccessTypes::AC_READABLE | AccessTypes::AC_UPDATABLE;
+        return new DateTimeProperty($fieldName, false, $accessType);
     }
 }
