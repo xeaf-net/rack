@@ -29,8 +29,8 @@ use XEAF\Rack\ORM\Utils\AccessTypes;
  *
  * @property-read bool   $isReadable    Признак читаемого свойства
  * @property-read bool   $isInsertable  Признак вставляемого свойства
- * @property-read bool   $isUpdatable   Признак изменяемого совйства
- * @property-read bool   $isVirtual     Признак виртуального совйства
+ * @property-read bool   $isUpdatable   Признак изменяемого свойства
+ * @property-read bool   $isCalculated  Признак вычисляемого свойства
  *
  * @package XEAF\Rack\ORM\Models\Properties
  */
@@ -191,12 +191,12 @@ abstract class PropertyModel extends DataModel {
     }
 
     /**
-     * Возвращает признак виртуального свойства
+     * Возвращает признак вычисляемого свойства
      *
      * @return bool
      */
-    public function getIsVirtual(): bool {
-        return $this->getAccessType() == AccessTypes::AC_VIRTUAL;
+    public function getIsCalculated(): bool {
+        return $this->getAccessType() == AccessTypes::AC_CALCULATED;
     }
 
     /**

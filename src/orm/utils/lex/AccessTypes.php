@@ -20,9 +20,9 @@ namespace XEAF\Rack\ORM\Utils;
 class AccessTypes {
 
     /**
-     * Виртуальное свойство
+     * Нет доступа
      */
-    public const AC_VIRTUAL = 0x00;
+    public const AC_NONE = 0x00;
 
     /**
      * Свойство только для чтения
@@ -38,6 +38,11 @@ class AccessTypes {
      * Обновляемое свойство
      */
     public const AC_UPDATABLE = 0x04;
+
+    /**
+     * Вычисляемое поле
+     */
+    public const AC_CALCULATED = 0x08;
 
     /**
      * Свойство с полным доступом

@@ -94,11 +94,13 @@ abstract class Entity extends DataObject {
         $result     = [];
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            if (array_key_exists($name, $data)) {
-                $result[$name] = $data[$name];
-            } else {
-                assert($property instanceof PropertyModel);
-                $result[$name] = $property->getDefaultValue();
+            assert($property instanceof PropertyModel);
+            if (!$property->getIsCalculated()) {
+                if (array_key_exists($name, $data)) {
+                    $result[$name] = $data[$name];
+                } else {
+                    $result[$name] = $property->getDefaultValue();
+                }
             }
         }
         return $result;
@@ -150,6 +152,21 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function toArray(array $map = []): array {
+        $result     = parent::toArray();
+        $properties = $this->_model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if ($property->getIsCalculated()) {
+                $result[$name] = $this->$name;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает массив отформатированных значений свойств
      *
      * @param array $map Карта возвращаемых свойств
@@ -157,7 +174,7 @@ abstract class Entity extends DataObject {
      * @return array
      */
     public function toFormattedArray(array $map = []): array {
-        $result = parent::toArray($map);
+        $result = $this->toArray($map);
         $model  = $this->getModel();
         $names  = array_keys($result);
         $fmt    = Formatter::getInstance();
