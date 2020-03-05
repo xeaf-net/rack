@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IkeyStorage.php
@@ -28,5 +28,5 @@ interface IKeyStorage extends IKeyValue {
      *
      * @return void
      */
-    function put(string $key, $value = null, int $ttl = 0): void;
+    public function put(string $key, $value = null, int $ttl = 0): void;
 }

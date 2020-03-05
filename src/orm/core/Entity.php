@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Entity.php
@@ -28,9 +28,9 @@ use XEAF\Rack\ORM\Models\Properties\StatusProperty;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
-use XEAF\Rack\ORM\Utils\AccessTypes;
 use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -160,6 +160,7 @@ abstract class Entity extends DataObject {
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
             if ($property->getIsCalculated()) {
+                /** @noinspection PhpVariableVariableInspection */
                 $result[$name] = $this->$name;
             }
         }
@@ -228,6 +229,7 @@ abstract class Entity extends DataObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function checkEnumValue(string $name, EnumProperty $property): void {
+        /** @noinspection PhpVariableVariableInspection */
         $value = $this->$name;
         $enums = $property->enumValues();
         if (!in_array($value, $enums)) {

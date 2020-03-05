@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * AccessTypes.php
@@ -10,12 +10,12 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\ORM\Utils;
+namespace XEAF\Rack\ORM\Utils\Lex;
 
 /**
  * Содержит константы видов доступа к свойствам
  *
- * @package  XEAF\Rack\ORM\Utils
+ * @package XEAF\Rack\ORM\Utils\Lex
  */
 class AccessTypes {
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ICalendar.php
@@ -24,14 +24,14 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function now(): int;
+    public function now(): int;
 
     /**
      * Возвращает текущую дату
      *
      * @return int
      */
-    function today(): int;
+    public function today(): int;
 
     /**
      * Возвращает дату, предшествующую заданной
@@ -40,7 +40,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function yesterday(?int $date = null): int;
+    public function yesterday(?int $date = null): int;
 
     /**
      * Возвращает дату, следующую за заданной
@@ -49,7 +49,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function tomorrow(?int $date = null): int;
+    public function tomorrow(?int $date = null): int;
 
     /**
      * Возвращает первый день месяца заданной даты
@@ -58,7 +58,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function firstDayOfMonth(int $date): int;
+    public function firstDayOfMonth(int $date): int;
 
     /**
      * Возвращает последний день месяца заданной даты
@@ -67,7 +67,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function lastDayOfMonth(int $date): int;
+    public function lastDayOfMonth(int $date): int;
 
     /**
      * Возвращает первый день года заданной даты
@@ -76,7 +76,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function firstDayOfYear(int $date): int;
+    public function firstDayOfYear(int $date): int;
 
     /**
      * Возвращает последний день года заданной даты
@@ -85,7 +85,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function lastDayOfYear(int $date): int;
+    public function lastDayOfYear(int $date): int;
 
     /**
      * Возвращает массив разобранных состалвющих даты и времени
@@ -94,7 +94,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return array
      */
-    function parseDateTime(int $dateTime = null): array;
+    public function parseDateTime(int $dateTime = null): array;
 
     /**
      * Возвращает день месяца заданной даты
@@ -103,7 +103,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getDay(int $date = null): int;
+    public function getDay(int $date = null): int;
 
     /**
      * Возвращает номер месяца заданной даты
@@ -112,7 +112,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getMonth(int $date = null): int;
+    public function getMonth(int $date = null): int;
 
     /**
      * Возвращает год заданной даты
@@ -121,7 +121,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getYear(int $date = null): int;
+    public function getYear(int $date = null): int;
 
     /**
      * Возвращает часы заданных даты и времени
@@ -130,7 +130,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getHours(int $dateTime = null): int;
+    public function getHours(int $dateTime = null): int;
 
     /**
      * Возвращает минуты заданных даты и времени
@@ -139,7 +139,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getMinutes(int $dateTime): int;
+    public function getMinutes(int $dateTime): int;
 
     /**
      * Возвращает секунды заданных даты и времени
@@ -148,7 +148,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function getSeconds(int $dateTime): int;
+    public function getSeconds(int $dateTime): int;
 
     /**
      * Удаляет время из даты и времени
@@ -157,7 +157,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return int
      */
-    function dateTimeToDate(int $dateTime): int;
+    public function dateTimeToDate(int $dateTime): int;
 
 
     /**
@@ -169,7 +169,7 @@ interface ICalendar extends IFactoryObject {
      *
      * @return string
      */
-    function normalizeDate(int $date = null): string;
+    public function normalizeDate(int $date = null): string;
 
     /**
      * Возвращает нормализованное представления даты и времени
@@ -180,5 +180,5 @@ interface ICalendar extends IFactoryObject {
      *
      * @return string
      */
-    function normalizeDateTime(int $dateTime = null): string;
+    public function normalizeDateTime(int $dateTime = null): string;
 }

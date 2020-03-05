@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Calendar.php
@@ -207,8 +207,8 @@ class Calendar implements ICalendar {
      * @inheritDoc
      */
     public function normalizeDate(int $date = null): string {
-        $d = $date == null ? $this->today() : $date;
-        return date(self::NORMALIZE_DATE, $d);
+        $dt = $date == null ? $this->today() : $date;
+        return date(self::NORMALIZE_DATE, $dt);
     }
 
     /**

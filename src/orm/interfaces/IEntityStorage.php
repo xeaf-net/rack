@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IEntityStorage.php
@@ -29,7 +29,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return \XEAF\Rack\ORM\Models\EntityModel|null
      */
-    function getModel(string $className): ?EntityModel;
+    public function getModel(string $className): ?EntityModel;
 
     /**
      * Сохраняет информацию о модели сущности
@@ -39,7 +39,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return void
      */
-    function putModel(string $className, EntityModel $entityModel): void;
+    public function putModel(string $className, EntityModel $entityModel): void;
 
     /**
      * Возвращает текст SQL команды вставки записи
@@ -48,7 +48,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return string|null
      */
-    function getInsertSQL(string $className): ?string;
+    public function getInsertSQL(string $className): ?string;
 
     /**
      * Сохраняет текст SQL команды вставки записи
@@ -58,7 +58,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return void
      */
-    function putInsertSQL(string $className, string $sql): void;
+    public function putInsertSQL(string $className, string $sql): void;
 
     /**
      * Возвращает текст SQL команды изменения записи
@@ -67,7 +67,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return string|null
      */
-    function getUpdateSQL(string $className): ?string;
+    public function getUpdateSQL(string $className): ?string;
 
     /**
      * Сохраняет текст SQL команды изменения записи
@@ -77,7 +77,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return void
      */
-    function putUpdateSQL(string $className, string $sql): void;
+    public function putUpdateSQL(string $className, string $sql): void;
 
     /**
      * Возвращает текст SQL команды удаления записи
@@ -86,7 +86,7 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return string|null
      */
-    function getDeleteSQL(string $className): ?string;
+    public function getDeleteSQL(string $className): ?string;
 
     /**
      * Сохраняет текст SQL команды изменения записи
@@ -96,5 +96,5 @@ interface IEntityStorage extends IFactoryObject {
      *
      * @return void
      */
-    function putDeleteSQL(string $className, string $sql): void;
+    public function putDeleteSQL(string $className, string $sql): void;
 }

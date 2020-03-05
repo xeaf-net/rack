@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * INodeModule.php
@@ -24,5 +24,5 @@ interface INodeModule extends IModule {
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
-    function checkNode(): ?IActionResult;
+    public function checkNode(): ?IActionResult;
 }

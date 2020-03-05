@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ConfigModel.php
@@ -82,5 +82,5 @@ abstract class ConfigModel extends DataModel {
      *
      * @return void
      */
-    abstract function parseConfigurationSection(object $data): void;
+    abstract public function parseConfigurationSection(object $data): void;
 }

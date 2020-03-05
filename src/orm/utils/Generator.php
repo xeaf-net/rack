@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Generator.php
@@ -167,7 +167,7 @@ class Generator implements IGenerator {
                 $line      = "$fieldName=$paramName";
                 if ($property->getPrimaryKey()) {
                     $keys[] = $line;
-                } else if ($property->getIsUpdatable()) {
+                } elseif ($property->getIsUpdatable()) {
                     $lines[] = $line;
                 }
             }

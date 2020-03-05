@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ILogger.php
@@ -26,7 +26,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return int
      */
-    function getLevel(): int;
+    public function getLevel(): int;
 
     /**
      * Задает уровень записей хурнала
@@ -35,7 +35,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function setLevel(int $level): void;
+    public function setLevel(int $level): void;
 
     /**
      * Записывает в журанал отладочное сообщение
@@ -45,7 +45,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function debug(string $message, $data = null): void;
+    public function debug(string $message, $data = null): void;
 
     /**
      * Записывает в журанал информационное сообщение
@@ -55,7 +55,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function info(string $message, $data = null): void;
+    public function info(string $message, $data = null): void;
 
     /**
      * Записывает в журанал сообщение о предупреждении
@@ -65,7 +65,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function warning(string $message, $data): void;
+    public function warning(string $message, $data): void;
 
     /**
      * Записывает в журанал сообщение об ошибке
@@ -75,7 +75,7 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function error(string $message, $data = null): void;
+    public function error(string $message, $data = null): void;
 
     /**
      * Записывает в журнал сообщение об исключении
@@ -84,5 +84,5 @@ interface ILogger extends INamedObject, IProviderFactory {
      *
      * @return void
      */
-    function exception(Throwable $exception): void;
+    public function exception(Throwable $exception): void;
 }

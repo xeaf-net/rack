@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * HttpResponse.php
@@ -134,14 +134,14 @@ class HttpResponse implements IHttpResponse {
     /**
      * @inheritDoc
      */
-    function responseCode(int $statusCode): void {
+    public function responseCode(int $statusCode): void {
         http_response_code($statusCode);
     }
 
     /**
      * @inheritDoc
      */
-    function contentType(string $mimeType, string $charset = ''): void {
+    public function contentType(string $mimeType, string $charset = ''): void {
         $header = "Content-type: $mimeType";
         if ($charset) {
             $header .= "; charset=$charset";

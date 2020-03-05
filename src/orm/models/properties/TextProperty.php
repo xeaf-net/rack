@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * TextProperty.php
@@ -12,7 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
-use XEAF\Rack\ORM\Utils\AccessTypes;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 
 /**
  * Реализует методы свойства текстового типа

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * TemplatesConfig.php
@@ -141,7 +141,7 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
     /**
      * @inheritDoc
      */
-    function parseConfigurationSection(object $data): void {
+    public function parseConfigurationSection(object $data): void {
         $portalConfig         = PortalConfig::getInstance();
         $this->_engine        = $data->{'engine'} ?? self::DEFAULT_ENGINE;
         $this->_forceCompile  = $data->{'forceCompile'} ?? self::DEFAULT_FORCE_COMPILE;

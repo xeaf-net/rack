@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ITemplateEngineActions.php
@@ -29,7 +29,7 @@ interface ITemplateEngineActions {
      *
      * @return string
      */
-    function defaultLayoutFile(string $className): string;
+    public function defaultLayoutFile(string $className): string;
 
     /**
      * Возвращает имя класса зарегистрированного плагина
@@ -39,7 +39,7 @@ interface ITemplateEngineActions {
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    function getRegisteredPlugin(string $name): string;
+    public function getRegisteredPlugin(string $name): string;
 
     /**
      * Регистрирует новый плагин
@@ -49,7 +49,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function registerPlugin(string $name, string $className): void;
+    public function registerPlugin(string $name, string $className): void;
 
     /**
      * Регистрирует плагины по определениям из массива
@@ -58,7 +58,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function registerPlugins(array $plugins): void;
+    public function registerPlugins(array $plugins): void;
 
     /**
      * Отменяет регистрацию плагина
@@ -67,7 +67,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function unregisterPlugin(string $name): void;
+    public function unregisterPlugin(string $name): void;
 
     /**
      * Возвращает имя класса зарегистрированного шаблона
@@ -77,7 +77,7 @@ interface ITemplateEngineActions {
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    function getRegisteredTemplate(string $name): string;
+    public function getRegisteredTemplate(string $name): string;
 
     /**
      * Регистрирует новый шаблон
@@ -87,7 +87,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function registerTemplate(string $name, string $className): void;
+    public function registerTemplate(string $name, string $className): void;
 
     /**
      * Регистрирует шаблоны по определениям из массива
@@ -96,7 +96,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function registerTemplates(array $templates): void;
+    public function registerTemplates(array $templates): void;
 
     /**
      * Отменяет регигстрацию шаблона
@@ -105,7 +105,7 @@ interface ITemplateEngineActions {
      *
      * @return void
      */
-    function unregisterTemplate(string $name): void;
+    public function unregisterTemplate(string $name): void;
 
     /**
      * Возвращает HTML код результата действия
@@ -115,7 +115,7 @@ interface ITemplateEngineActions {
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    function parseModule(HtmlResult $actionResult): string;
+    public function parseModule(HtmlResult $actionResult): string;
 
     /**
      * Возвращает HTML код страницы
@@ -126,5 +126,5 @@ interface ITemplateEngineActions {
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    function parseTemplate(Template $template, string &$pageContent): string;
+    public function parseTemplate(Template $template, string &$pageContent): string;
 }

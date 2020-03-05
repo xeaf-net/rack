@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Locale.php
@@ -98,63 +98,63 @@ class Locale extends DataModel implements ILocale {
     /**
      * @inheritDoc
      */
-    function getName(): string {
+    public function getName(): string {
         return $this->_name;
     }
 
     /**
      * @inheritDoc
      */
-    function getLanguage(): string {
+    public function getLanguage(): string {
         return $this->_language;
     }
 
     /**
      * @inheritDoc
      */
-    function getLang(): string {
+    public function getLang(): string {
         return $this->_lang;
     }
 
     /**
      * @inheritDoc
      */
-    function getDir(): string {
+    public function getDir(): string {
         return $this->_dir;
     }
 
     /**
      * @inheritDoc
      */
-    function getDateFormat(): string {
+    public function getDateFormat(): string {
         return $this->_dateFormat;
     }
 
     /**
      * @inheritDoc
      */
-    function getTimeFormat(): string {
+    public function getTimeFormat(): string {
         return $this->_timeFormat;
     }
 
     /**
      * @inheritDoc
      */
-    function getDateTimeFormat(): string {
+    public function getDateTimeFormat(): string {
         return $this->_dateTimeFormat;
     }
 
     /**
      * @inheritDoc
      */
-    function getDecimalPoint(): string {
+    public function getDecimalPoint(): string {
         return $this->_decimalPoint;
     }
 
     /**
      * @inheritDoc
      */
-    function getThousandsSeparator(): string {
+    public function getThousandsSeparator(): string {
         return $this->_thousandsSeparator;
     }
 }

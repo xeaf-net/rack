@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ISerializer.php
@@ -30,7 +30,7 @@ interface ISerializer extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonArrayEncode(array $data): string;
+    public function jsonArrayEncode(array $data): string;
 
     /**
      * Восстанавливает массив из данных в формате JSON
@@ -40,7 +40,7 @@ interface ISerializer extends IFactoryObject {
      * @return array
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonArrayDecode(string $json): array;
+    public function jsonArrayDecode(string $json): array;
 
     /**
      * Возвращает JSON представление объекта
@@ -50,7 +50,7 @@ interface ISerializer extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonObjectEncode(object $obj = null): string;
+    public function jsonObjectEncode(object $obj = null): string;
 
     /**
      * Создает объект из JSON
@@ -60,7 +60,7 @@ interface ISerializer extends IFactoryObject {
      * @return object
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonObjectDecode(string $json): object;
+    public function jsonObjectDecode(string $json): object;
 
     /**
      * Возвращает JSON представление объекта данных
@@ -70,7 +70,7 @@ interface ISerializer extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonDataObjectEncode(DataObject $dataObject = null): string;
+    public function jsonDataObjectEncode(DataObject $dataObject = null): string;
 
     /**
      * Создает объект данных из JSON
@@ -80,7 +80,7 @@ interface ISerializer extends IFactoryObject {
      * @return \XEAF\Rack\API\Core\DataObject
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonDataObjectDecode(string $json): DataObject;
+    public function jsonDataObjectDecode(string $json): DataObject;
 
     /**
      * Возвращает JSON представление коллекции объектов данных
@@ -90,7 +90,7 @@ interface ISerializer extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonCollectionEncode(Collection $list): string;
+    public function jsonCollectionEncode(Collection $list): string;
 
     /**
      * Создает коллекцию объектов данных из JSON
@@ -100,7 +100,7 @@ interface ISerializer extends IFactoryObject {
      * @return \XEAF\Rack\API\Core\Collection
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonCollectionDecode(string $json): Collection;
+    public function jsonCollectionDecode(string $json): Collection;
 
     /**
      * Восстанавливает массив из файла данных в формате JSON
@@ -111,7 +111,7 @@ interface ISerializer extends IFactoryObject {
      * @return array
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonDecodeFileArray(string $fileName, bool $comments = false): array;
+    public function jsonDecodeFileArray(string $fileName, bool $comments = false): array;
 
     /**
      * Восстанавливает объект из файла данных в формате JSON
@@ -122,7 +122,7 @@ interface ISerializer extends IFactoryObject {
      * @return object
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function jsonDecodeFileObject(string $fileName, bool $comments = false): object;
+    public function jsonDecodeFileObject(string $fileName, bool $comments = false): object;
 
     /**
      * Сериализует данные для сохранения
@@ -133,7 +133,7 @@ interface ISerializer extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function serialize($data, string $password = ''): string;
+    public function serialize($data, string $password = ''): string;
 
     /**
      * Восстанавливает данные из сериализованного представления
@@ -144,5 +144,5 @@ interface ISerializer extends IFactoryObject {
      * @return mixed
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function unserialize(string $serialized, string $password = '');
+    public function unserialize(string $serialized, string $password = '');
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ITokenizer.php
@@ -29,5 +29,5 @@ interface ITokenizer extends IFactoryObject {
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      */
-    function tokenize(string $xql): ICollection;
+    public function tokenize(string $xql): ICollection;
 }

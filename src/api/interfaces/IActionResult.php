@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IActionResult.php
@@ -26,7 +26,7 @@ interface IActionResult {
      *
      * @return int
      */
-    function getStatusCode(): int;
+    public function getStatusCode(): int;
 
     /**
      * Задает код состояния HTTP
@@ -35,12 +35,12 @@ interface IActionResult {
      *
      * @return void
      */
-    function setStatusCode(int $statusCode): void;
+    public function setStatusCode(int $statusCode): void;
 
     /**
      * Обрабатывает результат исполнения действия
      *
      * @return void
      */
-    function processResult(): void;
+    public function processResult(): void;
 }

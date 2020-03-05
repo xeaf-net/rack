@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ISessionActions.php
@@ -24,7 +24,7 @@ interface ISessionActions extends IKeyValue {
      *
      * @return string|null
      */
-    function getId(): ?string;
+    public function getId(): ?string;
 
     /**
      * Задает идентификатор сесии
@@ -33,14 +33,14 @@ interface ISessionActions extends IKeyValue {
      *
      * @return void
      */
-    function setId(?string $sessionId): void;
+    public function setId(?string $sessionId): void;
 
     /**
      * Возвращает идентификатор пользователя сессии
      *
      * @return string|null
      */
-    function getUserId(): ?string;
+    public function getUserId(): ?string;
 
     /**
      * Задает идентификатор пользователя сессии
@@ -49,14 +49,14 @@ interface ISessionActions extends IKeyValue {
      *
      * @return void
      */
-    function setUserId(?string $userId): void;
+    public function setUserId(?string $userId): void;
 
     /**
      * Возвращет имя локали сессии
      *
      * @return string|null
      */
-    function getLocale(): ?string;
+    public function getLocale(): ?string;
 
     /**
      * Задет имя локали сессии
@@ -65,26 +65,26 @@ interface ISessionActions extends IKeyValue {
      *
      * @return void
      */
-    function setLocale(?string $locale): void;
+    public function setLocale(?string $locale): void;
 
     /**
      * Загружает значения переменных сессии
      *
      * @return void
      */
-    function loadSessionVars(): void;
+    public function loadSessionVars(): void;
 
     /**
      * Сохраняет значения переменных сессии
      *
      * @return void
      */
-    function saveSessionVars(): void;
+    public function saveSessionVars(): void;
 
     /**
      * Возвращает признак нативной сессии
      *
      * @return bool
      */
-    function isNative(): bool;
+    public function isNative(): bool;
 }

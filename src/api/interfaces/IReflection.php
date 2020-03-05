@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IReflection.php
@@ -27,14 +27,14 @@ interface IReflection extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    function classFileName(string $className): string;
+    public function classFileName(string $className): string;
 
     /**
      * Возвращает имя класс текущего исполняемого модуля
      *
      * @return string
      */
-    function moduleClassName(): string;
+    public function moduleClassName(): string;
 
     /**
      * Возвращает имя файла класса текущего исполняемого модуля
@@ -42,7 +42,7 @@ interface IReflection extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    function moduleClassFileName(): string;
+    public function moduleClassFileName(): string;
 
     /**
      * Создает объект dependency injection
@@ -51,7 +51,7 @@ interface IReflection extends IFactoryObject {
      *
      * @return mixed
      */
-    function createInjectable(string $className);
+    public function createInjectable(string $className);
 
     /**
      * Возвращает результат исполнения метода dependency injection
@@ -61,5 +61,5 @@ interface IReflection extends IFactoryObject {
      *
      * @return mixed
      */
-    function returnInjectable(object $object, string $method);
+    public function returnInjectable(object $object, string $method);
 }

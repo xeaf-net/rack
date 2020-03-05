@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IQueryParser.php
@@ -30,5 +30,5 @@ interface IQueryParser extends IFactoryObject {
      * @return \XEAF\Rack\ORM\Models\QueryModel
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    function buildQueryModel(string $xql): QueryModel;
+    public function buildQueryModel(string $xql): QueryModel;
 }

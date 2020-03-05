@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IHttpResponse.php
@@ -26,7 +26,7 @@ interface IHttpResponse extends IFactoryObject {
      *
      * @return void
      */
-    function responseCode(int $statusCode): void;
+    public function responseCode(int $statusCode): void;
 
     /**
      * Добавляет заголовок для типа отправляемого контента
@@ -36,14 +36,14 @@ interface IHttpResponse extends IFactoryObject {
      *
      * @return void
      */
-    function contentType(string $mimeType, string $charset = ''): void;
+    public function contentType(string $mimeType, string $charset = ''): void;
 
     /**
      * Добавляет заголовок отправки данных в формате JSON
      *
      * @return void
      */
-    function contentJSON(): void;
+    public function contentJSON(): void;
 
     /**
      * Добавляет заголовок переадресации
@@ -52,7 +52,7 @@ interface IHttpResponse extends IFactoryObject {
      *
      * @return void
      */
-    function locationHeader(string $url): void;
+    public function locationHeader(string $url): void;
 
     /**
      * Добавляет заголовок отправки файла как вложение
@@ -61,12 +61,12 @@ interface IHttpResponse extends IFactoryObject {
      *
      * @return void
      */
-    function fileAttachmentHeader(string $fileName): void;
+    public function fileAttachmentHeader(string $fileName): void;
 
     /**
      * Добавляет заголовок кеширования отправляемого файла
      *
      * @return void
      */
-    function fileCacheHeader(): void;
+    public function fileCacheHeader(): void;
 }

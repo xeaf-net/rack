@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * PortalConfig.php
@@ -159,7 +159,7 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     /**
      * @inheritDoc
      */
-    function parseConfigurationSection(object $data): void {
+    public function parseConfigurationSection(object $data): void {
         $this->_url      = $data->{'url'} ?? self::DEFAULT_URL;
         $this->_origin   = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
         $this->_locale   = $data->{'locale'} ?? self::DEFAULT_LOCALE;

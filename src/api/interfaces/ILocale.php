@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ILocale.php
@@ -24,68 +24,68 @@ interface ILocale {
      *
      * @return string
      */
-    function getName(): string;
+    public function getName(): string;
 
     /**
      * Возвращает имя языка локали
      *
      * @return string
      */
-    function getLanguage(): string;
+    public function getLanguage(): string;
 
     /**
      * Возвращает сокращенное название языка
      *
      * @return string
      */
-    function getLang(): string;
+    public function getLang(): string;
 
     /**
      * Возвращает направление написания
      *
      * @return string
      */
-    function getDir(): string;
+    public function getDir(): string;
 
     /**
      * Возвращает формат представления даты
      *
      * @return string
      */
-    function getDateFormat(): string;
+    public function getDateFormat(): string;
 
     /**
      * Возвращает формат представления времени
      *
      * @return string
      */
-    function getTimeFormat(): string;
+    public function getTimeFormat(): string;
 
     /**
      * Возвращет формат представления даты и времени
      *
      * @return string
      */
-    function getDateTimeFormat(): string;
+    public function getDateTimeFormat(): string;
 
     /**
      * Возвращает символ десятичной точки
      *
      * @return string
      */
-    function getDecimalPoint(): string;
+    public function getDecimalPoint(): string;
 
     /**
      * Возвращает разделитель разрядов
      *
      * @return string
      */
-    function getThousandsSeparator(): string;
+    public function getThousandsSeparator(): string;
 
     /**
      * Возвращает представление констант локали в виде массива
      *
      * @return array
      */
-    function toArray(): array;
+    public function toArray(): array;
 }

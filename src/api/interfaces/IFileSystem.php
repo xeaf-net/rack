@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IFileSystem.php
@@ -28,7 +28,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return bool
      */
-    function fileExists(?string $filePath): bool;
+    public function fileExists(?string $filePath): bool;
 
     /**
      * Возвращает признак существования папки
@@ -38,7 +38,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return bool
      */
-    function folderExists(?string $folderPath, bool $create = false): bool;
+    public function folderExists(?string $folderPath, bool $create = false): bool;
 
     /**
      * Безопасно удаляет файл
@@ -47,7 +47,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return bool
      */
-    function deleteFile(?string $filePath): bool;
+    public function deleteFile(?string $filePath): bool;
 
     /**
      * Безопасно удаляет папку
@@ -56,7 +56,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return bool
      */
-    function deleteFolder(?string $folderPath): bool;
+    public function deleteFolder(?string $folderPath): bool;
 
     /**
      * Возвращает имя файла без расширения
@@ -65,7 +65,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function trimFileNameExt(string $filePath): string;
+    public function trimFileNameExt(string $filePath): string;
 
     /**
      * Заменяет расширение в имени файла
@@ -75,7 +75,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function changeFileNameExt(string $filePath, string $newExt): string;
+    public function changeFileNameExt(string $filePath, string $newExt): string;
 
     /**
      * Возвращает путь к минимизированной версии файла
@@ -84,7 +84,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function minimizedFilePath(string $filePath): string;
+    public function minimizedFilePath(string $filePath): string;
 
     /**
      * Возвращает признак существования минимизированной версии файла
@@ -95,7 +95,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @since 1.0.2
      */
-    function minimizedFileExists(string $filePath): bool;
+    public function minimizedFileExists(string $filePath): bool;
 
     /**
      * Возвращает директорию файла
@@ -104,7 +104,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function fileDir(string $filePath): string;
+    public function fileDir(string $filePath): string;
 
     /**
      * Возвращает имя файла
@@ -113,7 +113,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function fileName(string $filePath): string;
+    public function fileName(string $filePath): string;
 
     /**
      * Возвращает имя файла с расширением
@@ -122,7 +122,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function fileBaseName(string $filePath): string;
+    public function fileBaseName(string $filePath): string;
 
     /**
      * Возвращает расширение имени файла
@@ -131,7 +131,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function fileNameExt(string $filePath): string;
+    public function fileNameExt(string $filePath): string;
 
     /**
      * Проверяет корректность имени файла
@@ -140,7 +140,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return bool
      */
-    function validateFileName(string $fileName): bool;
+    public function validateFileName(string $fileName): bool;
 
     /**
      * Очищает имя файла от недопустимых символов
@@ -150,7 +150,7 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return string
      */
-    function sanitizeFileName(string $fileName, string $replaceWith = ''): string;
+    public function sanitizeFileName(string $fileName, string $replaceWith = ''): string;
 
     /**
      * Выводит файл блоками
@@ -160,5 +160,5 @@ interface IFileSystem extends IFactoryObject {
      *
      * @return void
      */
-    function readFileChunks(string $filePath, int $chunkSize = FileSystem::CHUNK_SIZE): void;
+    public function readFileChunks(string $filePath, int $chunkSize = FileSystem::CHUNK_SIZE): void;
 }

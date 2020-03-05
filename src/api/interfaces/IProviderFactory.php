@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IProviderFactory.php
@@ -26,7 +26,7 @@ interface IProviderFactory extends IFactoryObject {
      *
      * @return bool
      */
-    static function isRegistered(string $name): bool;
+    public static function isRegistered(string $name): bool;
 
     /**
      * Регистрирует новый провайдер
@@ -37,7 +37,7 @@ interface IProviderFactory extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\ProviderException
      */
-    static function registerProvider(string $name, string $className): void;
+    public static function registerProvider(string $name, string $className): void;
 
     /**
      * Отменяет регистрацию провайдера
@@ -47,7 +47,7 @@ interface IProviderFactory extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\ProviderException
      */
-    static function unregisterProvider(string $name): void;
+    public static function unregisterProvider(string $name): void;
 
     /**
      * Возвращает имя класса провайдера
@@ -57,5 +57,5 @@ interface IProviderFactory extends IFactoryObject {
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ProviderException
      */
-    static function getProviderClass(string $name): string;
+    public static function getProviderClass(string $name): string;
 }

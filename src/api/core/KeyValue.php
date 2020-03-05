@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * KeyValue.php
@@ -92,7 +92,7 @@ class KeyValue implements IKeyValue {
     /**
      * @inheritDoc
      */
-    function keys(): array {
+    public function keys(): array {
         return array_keys($this->_values);
     }
 

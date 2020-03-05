@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IStrings.php
@@ -26,7 +26,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isEmpty(?string $buf): bool;
+    public function isEmpty(?string $buf): bool;
 
     /**
      * Возвращает NULL для пустой строки
@@ -35,7 +35,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return string|null
      */
-    function emptyToNull(?string $buf): ?string;
+    public function emptyToNull(?string $buf): ?string;
 
     /**
      * Возвращает пустую строку для значения NULL
@@ -44,7 +44,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return string
      */
-    function emptyToEmpty(?string $buf): string;
+    public function emptyToEmpty(?string $buf): string;
 
     /**
      * Преобразует строку в целое число
@@ -54,7 +54,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return int
      */
-    function stringToInteger(?string $buf, int $onError = 0): int;
+    public function stringToInteger(?string $buf, int $onError = 0): int;
 
     /**
      * Преобразует строку в действительное число
@@ -64,7 +64,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return float
      */
-    function stringToFloat(?string $buf, float $onError = 0): float;
+    public function stringToFloat(?string $buf, float $onError = 0): float;
 
     /**
      * Преобразует строку в дату и время
@@ -74,7 +74,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return int
      */
-    function stringToDateTime(?string $buf, int $onError = 0): int;
+    public function stringToDateTime(?string $buf, int $onError = 0): int;
 
     /**
      * Проверяет содержит ли переданная строка целое число
@@ -83,7 +83,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isInteger(?string $buf): bool;
+    public function isInteger(?string $buf): bool;
 
     /**
      * Проверяет содержит ли переданная строка действительное число
@@ -92,7 +92,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isFloat(?string $buf): bool;
+    public function isFloat(?string $buf): bool;
 
     /**
      * Проверяет содержит ли переданная строка дату и время
@@ -101,7 +101,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isDateTime(?string $buf): bool;
+    public function isDateTime(?string $buf): bool;
 
     /**
      * Проверяет является ли преданная строка UUID
@@ -110,7 +110,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isUUID(?string $buf): bool;
+    public function isUUID(?string $buf): bool;
 
     /**
      * Провряет является ли переданная строка адресом электронной почты
@@ -119,7 +119,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isEmail(?string $buf): bool;
+    public function isEmail(?string $buf): bool;
 
     /**
      * Проверяет является ли преданная строка идентификатором объекта
@@ -128,7 +128,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function isObjectId(?string $buf): bool;
+    public function isObjectId(?string $buf): bool;
 
     /**
      * Возвращает признак начала строки символов с заданной подкстроки
@@ -139,7 +139,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function startsWith(string $haystack, string $needle, bool $ignoreCase = false): bool;
+    public function startsWith(string $haystack, string $needle, bool $ignoreCase = false): bool;
 
     /**
      * Возвращает признак завершения строки символов заданной подстрокой
@@ -150,7 +150,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    function endsWith(string $haystack, string $needle, bool $ignoreCase = false): bool;
+    public function endsWith(string $haystack, string $needle, bool $ignoreCase = false): bool;
 
     /**
      * Возвращает строку с приведенным к верхенму регистру первым символом
@@ -159,7 +159,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return string
      */
-    function upperCaseFirst(string $buf): string;
+    public function upperCaseFirst(string $buf): string;
 
     /**
      * Разбирает параметры DSN
@@ -168,7 +168,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return array
      */
-    function parseDSN(string $data): array;
+    public function parseDSN(string $data): array;
 
     /**
      * Разбирает строку на пары Ключ-Значение
@@ -178,7 +178,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return array
      */
-    function parseKeyValue(string $data, string $separator): array;
+    public function parseKeyValue(string $data, string $separator): array;
 
     /**
      * Преобразует строки из систаксиса Kebab в синтаксис Camel
@@ -188,5 +188,5 @@ interface IStrings extends IFactoryObject {
      *
      * @return string|null
      */
-    function kebabToCamel(?string $kebab, bool $upperFirstChar = true): ?string;
+    public function kebabToCamel(?string $kebab, bool $upperFirstChar = true): ?string;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IConfiguration.php
@@ -29,5 +29,5 @@ interface IConfiguration extends IFactoryObject {
      * @return object|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\ConfigurationException
      */
-    function getParameters(string $section, string $subsection = '', bool $mustExists = true): ?object;
+    public function getParameters(string $section, string $subsection = '', bool $mustExists = true): ?object;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ILocalization.php
@@ -26,14 +26,14 @@ interface ILocalization extends IFactoryObject {
      *
      * @return \XEAF\Rack\API\Interfaces\ILocale
      */
-    function getLocale(string $name): ILocale;
+    public function getLocale(string $name): ILocale;
 
     /**
      * Возвращает объект локали по умолчанию
      *
      * @return \XEAF\Rack\API\Interfaces\ILocale
      */
-    function getDefaultLocale(): ILocale;
+    public function getDefaultLocale(): ILocale;
 
     /**
      * Задает идентификатор локали по умолчанию
@@ -42,7 +42,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return void
      */
-    function setDefaultLocale(string $name): void;
+    public function setDefaultLocale(string $name): void;
 
     /**
      * Регистрирует новую локаль
@@ -53,7 +53,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return void
      */
-    function registerLocale(string $name, ILocale $locale, bool $default = false): void;
+    public function registerLocale(string $name, ILocale $locale, bool $default = false): void;
 
     /**
      * Отменяет регистрацию локали
@@ -62,7 +62,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return void
      */
-    function unregisterLocale(string $name): void;
+    public function unregisterLocale(string $name): void;
 
     /**
      * Регистрирует класс для загрузки значений языковых переменных
@@ -71,7 +71,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return void
      */
-    function registerLanguageClass(string $className): void;
+    public function registerLanguageClass(string $className): void;
 
     /**
      * Возвращает значение языковой переменной
@@ -81,7 +81,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return string
      */
-    function getLanguageVar(string $name, string $locale = null): string;
+    public function getLanguageVar(string $name, string $locale = null): string;
 
     /**
      * Форматирует данные с использованием языковой переменной
@@ -92,7 +92,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return string
      */
-    function fmtLanguageVar(string $name, array $args, string $locale = null): string;
+    public function fmtLanguageVar(string $name, array $args, string $locale = null): string;
 
     /**
      * Возвращает список значений всех переменных локали
@@ -101,7 +101,7 @@ interface ILocalization extends IFactoryObject {
      *
      * @return \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    function getLocaleVars(string $locale = null): IKeyValue;
+    public function getLocaleVars(string $locale = null): IKeyValue;
 
     /**
      * Возвращает список значений всех языковых переменных
@@ -110,5 +110,5 @@ interface ILocalization extends IFactoryObject {
      *
      * @return \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    function getLanguageVars(string $locale = null): IKeyValue;
+    public function getLanguageVars(string $locale = null): IKeyValue;
 }

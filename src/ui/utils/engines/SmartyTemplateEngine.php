@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * SmartyTemplateEngine.php
@@ -241,12 +241,12 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * Обрабатывает вызов модификатора языковой переменной
      *
-     * @param mixed|null $name   Идентификатор переменной
-     * @param mixed|null $locale Имя локали
+     * @param string|null $name   Идентификатор переменной
+     * @param mixed|null  $locale Имя локали
      *
      * @return string
      */
-    public static function printLangModifier($name = null, $locale = null) {
+    public static function printLangModifier(string $name = null, $locale = null) {
         $l10n = Localization::getInstance();
         return $l10n->getLanguageVar($name, $locale);
     }
@@ -254,16 +254,16 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * Обрабатывает вызов модификатора форматирования целых чисел
      *
-     * @param mixed|null $text   Форматируемый текст
-     * @param mixed|null $locale Имя локали
+     * @param string|null $text   Форматируемый текст
+     * @param mixed|null  $locale Имя локали
      *
      * @return string
      */
-    public static function printIntModifier($text = null, $locale = null) {
+    public static function printIntModifier(string $text = null, $locale = null) {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
-            return $fmt->formatInteger($text, $locale);
+            return $fmt->formatInteger((int)$text, $locale);
         }
         return $text;
     }
@@ -288,16 +288,16 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * Обрабатывает вызов модификатора форматирования даты
      *
-     * @param mixed|null $text   Форматируемый текст
-     * @param mixed|null $locale Имя локали
+     * @param string|null $text   Форматируемый текст
+     * @param mixed|null  $locale Имя локали
      *
      * @return string
      */
-    public static function printDateModifier($text = null, $locale = null) {
+    public static function printDateModifier(string $text = null, $locale = null) {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
-            return $fmt->formatDate($text, $locale);
+            return $fmt->formatDate((int)$text, $locale);
         }
         return $text;
     }
@@ -305,16 +305,16 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * Обрабатывает вызов модификатора форматирования времени
      *
-     * @param mixed|null $text   Форматируемый текст
-     * @param mixed|null $locale Имя локали
+     * @param string|null $text   Форматируемый текст
+     * @param mixed|null  $locale Имя локали
      *
      * @return string
      */
-    public static function printTimeModifier($text = null, $locale = null) {
+    public static function printTimeModifier(string $text = null, $locale = null) {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
-            return $fmt->formatTime($text, $locale);
+            return $fmt->formatTime((int)$text, $locale);
         }
         return $text;
     }
@@ -322,16 +322,16 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * Обрабатывает вызов модификатора форматирования времени
      *
-     * @param mixed|null $text   Форматируемый текст
-     * @param mixed|null $locale Имя локали
+     * @param string|null $text   Форматируемый текст
+     * @param mixed|null  $locale Имя локали
      *
      * @return string
      */
-    public static function printDateTimeModifier($text = null, $locale = null) {
+    public static function printDateTimeModifier(string $text = null, $locale = null) {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
-            return $fmt->formatDateTime($text, $locale);
+            return $fmt->formatDateTime((int)$text, $locale);
         }
         return $text;
     }
@@ -363,8 +363,8 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         $result     = '';
         $pluginName = $params['name'] ?? null;
         if ($pluginName) {
-            $te        = TemplateEngine::getInstance();
-            $className = $te->getRegisteredPlugin($pluginName);
+            $tplEngine = TemplateEngine::getInstance();
+            $className = $tplEngine->getRegisteredPlugin((string)$pluginName);
             $plugin    = new $className(self::$_currentActionResult, self::$_currentTemplate);
             assert($plugin instanceof Plugin);
             $result = $plugin->html($params);
@@ -417,7 +417,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredPlugin(string $name): string {
-        $result = $this->_plugins->get($name);
+        $result = (string)$this->_plugins->get($name);
         if ($result == null) {
             throw TemplateException::unregisteredPlugin($name);
         }
@@ -451,7 +451,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredTemplate(string $name): string {
-        $result = $this->_templates->get($name);
+        $result = (string)$this->_templates->get($name);
         if ($result == null) {
             throw TemplateException::unregisteredTemplate($name);
         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * INotificator.php
@@ -31,7 +31,7 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function notify(string $userId, string $type, DataObject $dataObject = null): void;
+    public function notify(string $userId, string $type, DataObject $dataObject = null): void;
 
     /**
      * Отправляет сообщение пользователю сессии
@@ -42,7 +42,7 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function notifyMe(string $type, DataObject $dataObject = null): void;
+    public function notifyMe(string $type, DataObject $dataObject = null): void;
 
     /**
      * Отправляет сообщение всем пользователям
@@ -53,7 +53,7 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function notifyAll(string $type, DataObject $dataObject = null): void;
+    public function notifyAll(string $type, DataObject $dataObject = null): void;
 
     /**
      * Отправляет нотификационное сообщение группе пользователей
@@ -65,7 +65,7 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function notifyGroup(array $users, string $type, DataObject $dataObject = null): void;
+    public function notifyGroup(array $users, string $type, DataObject $dataObject = null): void;
 
     /**
      * Регистрирует сессию пользователя
@@ -73,7 +73,7 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function registerUserSession(): void;
+    public function registerUserSession(): void;
 
     /**
      * Отменяет регистрацию сессии пользователя
@@ -81,5 +81,5 @@ interface INotificator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    function unregisterUserSession(): void;
+    public function unregisterUserSession(): void;
 }

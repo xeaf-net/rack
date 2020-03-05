@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FileLoggerProvider.php
@@ -75,7 +75,7 @@ class FileLoggerProvider implements ILoggerProvider {
     /**
      * @inheritDoc
      */
-    function getConfigLevel(): int {
+    public function getConfigLevel(): int {
         return $this->_configLevel;
     }
 

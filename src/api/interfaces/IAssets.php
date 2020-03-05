@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IAssets.php
@@ -24,7 +24,7 @@ interface IAssets extends IFactoryObject {
      *
      * @return array
      */
-    function getPublicFolders(): array;
+    public function getPublicFolders(): array;
 
     /**
      * Регистрирует папку публичного ресурса
@@ -33,14 +33,14 @@ interface IAssets extends IFactoryObject {
      *
      * @return void
      */
-    function registerPublicFolder(string $folderPath): void;
+    public function registerPublicFolder(string $folderPath): void;
 
     /**
      * Возвращает директорию скомпилированных ресурсов
      *
      * @return string
      */
-    function getDistRootFolder(): string;
+    public function getDistRootFolder(): string;
 
     /**
      * Возвращает директорию скомпилированных публичных ресурсов
@@ -49,12 +49,12 @@ interface IAssets extends IFactoryObject {
      *
      * @return string
      */
-    function getDistPublicFolder(string $fileType): string;
+    public function getDistPublicFolder(string $fileType): string;
 
         /**
      * Возвращает путь к папке модулей Node.js
      *
      * @return string
      */
-    function getNodeModulesPath(): string;
+    public function getNodeModulesPath(): string;
 }

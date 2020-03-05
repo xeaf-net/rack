@@ -1,4 +1,4 @@
-<?php /** @noinspection SpellCheckingInspection */
+<?php declare(strict_types = 1);
 
 /**
  * FileMIME.php

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * UUIDProperty.php
@@ -13,7 +13,7 @@
 namespace XEAF\Rack\ORM\Models\Properties;
 
 use XEAF\Rack\API\Utils\Crypto;
-use XEAF\Rack\ORM\Utils\AccessTypes;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**

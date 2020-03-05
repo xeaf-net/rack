@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Reflection.php
@@ -75,7 +75,7 @@ class Reflection implements IReflection {
         $refMethod = $refClass->getConstructor();
         if ($refClass->implementsInterface(INamedObject::class)) {
             $result = Factory::getFactoryNamedObject($className, Factory::DEFAULT_NAME);
-        } else if ($refClass->implementsInterface(IFactoryObject::class)) {
+        } elseif ($refClass->implementsInterface(IFactoryObject::class)) {
             $result = Factory::getFactoryObject($className);
         } else {
             $args   = $this->injectMethodArgs($refMethod);
@@ -114,7 +114,7 @@ class Reflection implements IReflection {
             $paramClassName = $paramClass->getName();
             if ($paramClass->implementsInterface(INamedObject::class)) {
                 $result[] = Factory::getFactoryNamedObject($paramClassName, Factory::DEFAULT_NAME);
-            } else if ($paramClass->implementsInterface(IFactoryObject::class)) {
+            } elseif ($paramClass->implementsInterface(IFactoryObject::class)) {
                 $result[] = Factory::getFactoryObject($paramClassName);
             } else {
                 $result[] = new $paramClassName();

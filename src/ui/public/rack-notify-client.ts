@@ -3,6 +3,7 @@
  */
 declare var io: any;
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Клиент сервера отправки нотификационных сообщений
  */

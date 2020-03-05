@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IRestAPI.php
@@ -24,12 +24,12 @@ interface IRestAPI {
      *
      * @return int
      */
-    function getLastStatusCode(): int;
+    public function getLastStatusCode(): int;
 
     /**
      * Возвращает признак состояния ошибки при обращении к стороннему API
      *
      * @return bool
      */
-    function getErrorState(): bool;
+    public function getErrorState(): bool;
 }

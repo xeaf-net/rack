@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FormResult.php
@@ -53,6 +53,7 @@ class FormResult extends ErrorResult {
      * Результат успешной операции
      *
      * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @noinspection PhpMethodNamingConventionInspection
      */
     public static function ok(): self {
         return new FormResult();
