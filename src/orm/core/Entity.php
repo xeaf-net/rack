@@ -444,7 +444,7 @@ abstract class Entity extends DataObject {
         $accessType = AccessTypes::AC_READABLE;
         return new DateTimeProperty($fieldName, false, $accessType);
     }
-    
+
     /**
      * Создает описание свойства даты и времени изменния записи
      *
