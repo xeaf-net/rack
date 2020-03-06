@@ -135,7 +135,13 @@ class HttpResponse implements IHttpResponse {
      * @inheritDoc
      */
     public function responseCode(int $statusCode): void {
-        http_response_code($statusCode);
+        if (array_key_exists($statusCode, self::MESSAGES)) {
+            http_response_code($statusCode);
+            $header = "HTTP/1.1 $statusCode " . self::MESSAGES[$statusCode];
+            header($header, true, $statusCode);
+        } else {
+            $this->responseCode(self::FATAL_ERROR);
+        }
     }
 
     /**
