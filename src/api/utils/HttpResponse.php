@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IHttpResponse;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 
 /**
  * Содержит константы кодов состояний HTTP и методы отправки заголовков
@@ -152,10 +153,20 @@ class HttpResponse implements IHttpResponse {
     /**
      * @inheritDoc
      */
+    public function authenticateBearer(int $statusCode): void {
+        if ($statusCode == HttpResponse::UNAUTHORIZED) {
+            $realm = PortalConfig::getInstance()->getHost();
+            header('WWW-Authenticate: Bearer realm="' . $realm . '"');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function contentType(string $mimeType, string $charset = ''): void {
-        $header = "Content-type: $mimeType";
+        $header = "Content - type: $mimeType";
         if ($charset) {
-            $header .= "; charset=$charset";
+            $header .= "; charset = $charset";
         }
         header($header);
     }
@@ -199,7 +210,7 @@ class HttpResponse implements IHttpResponse {
         $cacheTime = $formatter->formatCacheDateTime(time() + $cacheSecs);
         header("Expires: $cacheTime");
         header("Pragma: cache");
-        header("Cache-Control: max-age=$cacheSecs");
+        header("Cache - Control: max - age = $cacheSecs");
     }
 
     /**

@@ -107,8 +107,11 @@ class ErrorResult extends StatusResult {
             'tag'     => $this->getTag()
         ];
 
-        $headers = HttpResponse::getInstance();
-        $headers->responseCode($this->getHeaderStatusCode());
+        $headers    = HttpResponse::getInstance();
+        $headerCode = $this->getHeaderStatusCode();
+        $headers->responseCode($headerCode);
+        $headers->authenticateBearer($headerCode);
+
         $headers->contentJSON();
 
         if ($result['message'] == '') {

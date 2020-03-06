@@ -22,11 +22,20 @@ interface IHttpResponse extends IFactoryObject {
     /**
      * Отправляет код состояния протокола HTTP
      *
-     * @param int $statusCode Код статуса протокола HTTP
+     * @param int $statusCode Код состояния HTTP
      *
      * @return void
      */
     public function responseCode(int $statusCode): void;
+
+    /**
+     * Формирование заголовка Authenticate: Bearer
+     *
+     * @param int $statusCode Код состояния HTTP
+     *
+     * @return void
+     */
+    public function authenticateBearer(int $statusCode): void;
 
     /**
      * Добавляет заголовок для типа отправляемого контента

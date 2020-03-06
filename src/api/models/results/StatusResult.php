@@ -30,12 +30,9 @@ class StatusResult extends ActionResult {
      * @inheritDoc
      */
     public function processResult(): void {
-        $session = Session::getInstance();
         $headers = HttpResponse::getInstance();
         $code    = $this->getStatusCode();
         $headers->responseCode($code);
-        if ($code == HttpResponse::UNAUTHORIZED) {
-            header('Authenticate: Bearer ' . $session->getId());
-        }
+        $headers->authenticateBearer($code);
     }
 }
