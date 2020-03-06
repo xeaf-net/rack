@@ -12,7 +12,7 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
-use XEAF\Rack\API\Core\ActionResult;
+use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
@@ -137,9 +137,9 @@ class ErrorResult extends StatusResult {
      * @param string $langFmt Имя языковой переменной или формат сообщения
      * @param array  $args    Аргументы сообщения
      *
-     * @return \XEAF\Rack\API\Core\ActionResult
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
      */
-    public static function argument(string $id, string $langFmt, array $args = []): ActionResult {
+    public static function argument(string $id, string $langFmt, array $args = []): IActionResult {
         return new ErrorResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
     }
 }

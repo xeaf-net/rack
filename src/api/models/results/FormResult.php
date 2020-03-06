@@ -12,7 +12,7 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
-use XEAF\Rack\API\Core\ActionResult;
+use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
 
@@ -41,11 +41,11 @@ class FormResult extends ErrorResult {
      * @param string $langFmt Имя языковой переменной или формат сообщения
      * @param array  $args    Аргументы сообщения
      *
-     * @return \XEAF\Rack\API\Core\ActionResult
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function argument(string $id, string $langFmt, array $args = []): ActionResult {
+    public static function argument(string $id, string $langFmt, array $args = []): IActionResult {
         return new FormResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
     }
 }
