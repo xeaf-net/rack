@@ -12,7 +12,7 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
-use XEAF\Rack\API\Core\ActionResult;
+use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Serializer;
 
@@ -25,6 +25,8 @@ use XEAF\Rack\API\Utils\Serializer;
  * @package XEAF\Rack\API\Models\Results
  */
 class ErrorResult extends StatusResult {
+
+    use CommonErrorsTrait;
 
     /**
      * Текст сообщения об ошибке
@@ -122,82 +124,5 @@ class ErrorResult extends StatusResult {
      */
     protected function getHeaderStatusCode(): int {
         return $this->getStatusCode();
-    }
-
-    /**
-     * Результат успешной операции
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function ok(): ActionResult {
-        return new ErrorResult(HttpResponse::OK);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 400 - BAD REQUEST
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function badRequest(): ActionResult {
-        return new ErrorResult(HttpResponse::BAD_REQUEST);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function unauthorized(): ActionResult {
-        return new ErrorResult(HttpResponse::UNAUTHORIZED);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 403 - FORBIDDEN
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function forbidden(): ActionResult {
-        return new ErrorResult(HttpResponse::FORBIDDEN);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 404 - NOT FOUND
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function notFound(): ActionResult {
-        return new ErrorResult(HttpResponse::NOT_FOUND);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function internalServerError(): ActionResult {
-        return new ErrorResult(HttpResponse::FATAL_ERROR);
-    }
-
-    /**
-     * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
-     *
-     * @return \XEAF\Rack\API\Core\ActionResult
-     *
-     * @noinspection PhpMissingParentCallCommonInspection
-     */
-    public static function notImplemented(): ActionResult {
-        return new ErrorResult(HttpResponse::NOT_IMPLEMENTED);
     }
 }
