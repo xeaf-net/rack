@@ -24,6 +24,7 @@ use XEAF\Rack\API\Utils\Parameters;
  * @property-read string $url       URL портала
  * @property-read string $host      Имя хоста портала
  * @property-read string $origin    URL источника запросов
+ * @property-read string $bearer    Идентификатор типа авторизации
  * @property-read string $session   Провайдер сессии
  * @property-read string $locale    Имя локали
  * @property-read string $tempPath  Директория временных файлов
@@ -46,6 +47,11 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * URL источника запросов по умолчанию
      */
     private const DEFAULT_ORIGIN = Parameters::ORIGIN_ALL;
+
+    /**
+     * Идентфикатор типа авторизации
+     */
+    private const DEFAULT_BEARER = 'rackAPI';
 
     /**
      * Имя локали по умолчанию
@@ -73,6 +79,12 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * @var string
      */
     private $_origin = self::DEFAULT_ORIGIN;
+
+    /**
+     * Идентификатор тип авторизации
+     * @var string
+     */
+    private $_bearer = self::DEFAULT_BEARER;
 
     /**
      * Имя локали по умолчанию
@@ -130,6 +142,15 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     }
 
     /**
+     * Возвращает идентификатор типа авторизации
+     *
+     * @return string
+     */
+    public function getBearer(): string {
+        return $this->_bearer;
+    }
+
+    /**
      * Возвращает имя локали
      *
      * @return string
@@ -162,6 +183,7 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     public function parseConfigurationSection(object $data): void {
         $this->_url      = $data->{'url'} ?? self::DEFAULT_URL;
         $this->_origin   = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
+        $this->_bearer   = $data->{'bearer'} ?? self::DEFAULT_BEARER;
         $this->_locale   = $data->{'locale'} ?? self::DEFAULT_LOCALE;
         $this->_session  = $data->{'session'} ?? self::DEFAULT_SESSION;
         $this->_tempPath = $data->{'tempPath'} ?? self::DEFAULT_TEMP_PATH;

@@ -152,20 +152,6 @@ class Session implements ISession {
     /**
      * @inheritDoc
      */
-    public function getApiId(): string {
-        return $this->_provider->getApiId();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setApiId(string $apiId): void {
-        $this->_provider->setApiId($apiId);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getUserId(): ?string {
         return $this->_provider->getUserId();
     }

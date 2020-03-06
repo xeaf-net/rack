@@ -155,9 +155,10 @@ class HttpResponse implements IHttpResponse {
      */
     public function authenticateBearer(int $statusCode): void {
         if ($statusCode == HttpResponse::UNAUTHORIZED) {
-            $apiId = Session::getInstance()->getApiId();
-            $realm = PortalConfig::getInstance()->getHost();
-            header('WWW-Authenticate: ' . $apiId . ' realm="' . $realm . '"');
+            $config = PortalConfig::getInstance();
+            $bearer = $config->getBearer();
+            $realm  = $config->getHost();
+            header('WWW-Authenticate: ' . $bearer . ' realm="' . $realm . '"');
         }
     }
 

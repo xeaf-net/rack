@@ -23,4 +23,6 @@
     * StatusProperty::STOPPED переименована в SUSPENDED
     * Добавлена проверка Session::getId() на соответствие UUID
     * Добавлена проверка Session::getId() на соответствие UUID
+    * Добавлен новый параметр конфигурации портала $bearer
+    
     
