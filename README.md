@@ -17,3 +17,4 @@
     * уточнена поддержка WWW-Authenticate
     * изменено поведение классов ErrorResult и FormResult
     * добавлена поддержка API_ID
+* `1.0.10` - ???
