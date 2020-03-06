@@ -34,7 +34,7 @@ class StatusProperty extends EnumProperty {
     /**
      * Действие сущности приостановлена
      */
-    public const STOPPED = 'STOPPED';
+    public const SUSPENDED = 'STOPPED';
 
     /**
      * Сущность помечена на удаление
@@ -47,7 +47,7 @@ class StatusProperty extends EnumProperty {
     public const STATUSES = [
         self::ACTIVE,
         self::ARCHIVED,
-        self::STOPPED,
+        self::SUSPENDED,
         self::DELETED
     ];
 
