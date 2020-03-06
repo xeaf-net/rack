@@ -108,7 +108,7 @@ class Tokenizer implements ITokenizer {
      * @return void
      */
     protected function prepareXQL(string $xql): void {
-        $this->_chars    = preg_split('//u', $xql, null, PREG_SPLIT_NO_EMPTY);
+        $this->_chars    = preg_split('//u', $xql, -1, PREG_SPLIT_NO_EMPTY);
         $this->_chars[]  = TokenChars::STOP;
         $this->_charPos  = 0;
         $this->_brackets = 0;
