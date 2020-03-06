@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Models\Results;
 use XEAF\Rack\API\Core\ActionResult;
 use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Session;
 
 /**
  * Реализует методы результата возвращающего код статуса
@@ -29,7 +30,12 @@ class StatusResult extends ActionResult {
      * @inheritDoc
      */
     public function processResult(): void {
+        $session = Session::getInstance();
         $headers = HttpResponse::getInstance();
-        $headers->responseCode($this->getStatusCode());
+        $code    = $this->getStatusCode();
+        $headers->responseCode($code);
+        if ($code == HttpResponse::UNAUTHORIZED) {
+            header('Authenticate: Bearer ' . $session->getId());
+        }
     }
 }
