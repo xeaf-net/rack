@@ -77,6 +77,15 @@ class StatusResult extends ActionResult {
     }
 
     /**
+     * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
+     *
+     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     */
+    public static function notImplemented(): self {
+        return new self(HttpResponse::NOT_IMPLEMENTED);
+    }
+
+    /**
      * @inheritDoc
      */
     public function processResult(): void {

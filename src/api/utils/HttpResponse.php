@@ -78,6 +78,11 @@ class HttpResponse implements IHttpResponse {
     public const FATAL_ERROR = 500;
 
     /**
+     * Метод не реализован
+     */
+    public const NOT_IMPLEMENTED = 501;
+
+    /**
      * Тексты сообщений для кодов ответов HTTP протокола
      */
     public const MESSAGES = [
