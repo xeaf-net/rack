@@ -158,6 +158,22 @@ class Crypto implements ICrypto {
     /**
      * @inheritDoc
      */
+    public function requestHeaderBearer(): ?string {
+        $result = null;
+        $params = Parameters::getInstance();
+        $auth   = $params->getHeader(Session::SESSION_AUTH);
+        if ($auth) {
+            $result = trim(substr($auth, strlen('Bearer') + 1));
+            if ($result == '') {
+                $result = null;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function jwtPrivateKey(): string {
         if (!$this->_jwtPrivateKey) {
             $fileName             = __RACK_CONFIG_DIR__ . '/' . self::JWT_PRIVATE_FILE_NAME;
@@ -181,19 +197,6 @@ class Crypto implements ICrypto {
             }
         }
         return $this->_jwtPublicKey;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function requestHeaderJWT(): ?string {
-        $result = null;
-        $params = Parameters::getInstance();
-        $auth   = $params->getHeader(Session::SESSION_AUTH);
-        if ($auth) {
-            $result = substr($auth, strlen('Bearer') + 1);
-        }
-        return $result;
     }
 
     /**

@@ -102,6 +102,13 @@ interface ICrypto extends IFactoryObject {
     public function securityToken(): string;
 
     /**
+     * Возвращает JWT из заголовка запроса
+     *
+     * @return string|null
+     */
+    public function requestHeaderBearer(): ?string;
+
+    /**
      * Загружает данные приватного ключа JWT
      *
      * @return string
@@ -120,13 +127,6 @@ interface ICrypto extends IFactoryObject {
      * @since 1.0.4
      */
     public function jwtPublicKey(): string;
-
-    /**
-     * Возвращает JWT из заголовка запроса
-     *
-     * @return string|null
-     */
-    public function requestHeaderJWT(): ?string;
 
     /**
      * Кодирует и подписывает новый JWT
