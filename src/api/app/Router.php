@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Router.php
@@ -81,10 +81,8 @@ class Router implements IRouter {
         $result = null;
         if (!$path) {
             $result = $this->_routes->get(self::ROOT_NODE);
-        } else {
-            if ($this->routeExists($path)) {
-                $result = $this->_routes->get($path);
-            }
+        } elseif ($this->routeExists($path)) {
+            $result = $this->_routes->get($path);
         }
         return $result;
     }

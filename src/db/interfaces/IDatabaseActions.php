@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IDatabaseActions.php
@@ -25,28 +25,28 @@ interface IDatabaseActions {
      * @return void
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function connect(): void;
+    public function connect(): void;
 
     /**
      * Закрывает соединение с базой данных
      *
      * @return void
      */
-    function disconnect(): void;
+    public function disconnect(): void;
 
     /**
      * Возвращает признак открытого соединения
      *
      * @return bool
      */
-    function connected(): bool;
+    public function connected(): bool;
 
     /**
      * Возвращает признак открытой транзакции
      *
      * @return bool
      */
-    function inTransaction(): bool;
+    public function inTransaction(): bool;
 
     /**
      * Открывает транзакцию
@@ -54,7 +54,7 @@ interface IDatabaseActions {
      * @return void
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function startTransaction(): void;
+    public function startTransaction(): void;
 
     /**
      * Подтверждает изменения в транзакции
@@ -62,7 +62,7 @@ interface IDatabaseActions {
      * @return void
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function commitTransaction();
+    public function commitTransaction();
 
     /**
      * Откатывает изменения в транзакции
@@ -70,7 +70,7 @@ interface IDatabaseActions {
      * @return void
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function rollbackTransaction(): void;
+    public function rollbackTransaction(): void;
 
     /**
      * Возвращает массив записей результата SQL запроса
@@ -83,7 +83,7 @@ interface IDatabaseActions {
      * @return array
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function select(string $sql, array $params = [], int $count = 0, int $offset = 0): array;
+    public function select(string $sql, array $params = [], int $count = 0, int $offset = 0): array;
 
     /**
      * Возвращает массив значений полей первой записи
@@ -94,7 +94,7 @@ interface IDatabaseActions {
      * @return null|array
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function selectFirst(string $sql, array $params = []): ?array;
+    public function selectFirst(string $sql, array $params = []): ?array;
 
     /**
      * Исполняет SQL команду к базе данных
@@ -105,7 +105,7 @@ interface IDatabaseActions {
      * @return int Количество затронутых записей
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function execute(string $sql, array $params = []): int;
+    public function execute(string $sql, array $params = []): int;
 
     /**
      * Возвращает идентификатор последней созданной записи
@@ -113,14 +113,14 @@ interface IDatabaseActions {
      * @return string
      * @throws \XEAF\Rack\Db\Utils\Exceptions\DatabaseException
      */
-    function lastInsertId(): string;
+    public function lastInsertId(): string;
 
     /**
      * Возвращает параметры подключения
      *
      * @return array
      */
-    function connectionOptions(): array;
+    public function connectionOptions(): array;
 
     /**
      * Возвращает SQL выражение преобразования к верхнему регистру
@@ -129,7 +129,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function lowerCaseExpression(string $expression): string;
+    public function lowerCaseExpression(string $expression): string;
 
     /**
      * Возвращает SQL выражение преобразования к верхнему регистру
@@ -138,7 +138,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function upperCaseExpression(string $expression): string;
+    public function upperCaseExpression(string $expression): string;
 
     /**
      * Возвращает SQL выражение форматирования даты
@@ -148,7 +148,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function dateExpression(string $expression, string $locale = null): string;
+    public function dateExpression(string $expression, string $locale = null): string;
 
     /**
      * Возвращает SQL выражение форматирования времени
@@ -158,7 +158,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function timeExpression(string $expression, string $locale = null): string;
+    public function timeExpression(string $expression, string $locale = null): string;
 
     /**
      * Возвращает SQL выражение форматирования даты и времени
@@ -168,7 +168,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function dateTimeExpression(string $expression, string $locale = null): string;
+    public function dateTimeExpression(string $expression, string $locale = null): string;
 
     /**
      * Возвращает представление даты в пригодном для SQL формате
@@ -177,7 +177,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function formatDate(int $date): string;
+    public function formatDate(int $date): string;
 
     /**
      * Преобразует дату формата SQL в timestamp
@@ -186,7 +186,7 @@ interface IDatabaseActions {
      *
      * @return int
      */
-    function sqlDate(string $date): int;
+    public function sqlDate(string $date): int;
 
     /**
      * Возвращает представление даты и времени в пригодном для SQL формате
@@ -195,7 +195,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function formatDateTime(int $dateTime): string;
+    public function formatDateTime(int $dateTime): string;
 
     /**
      * Преобразует дату и время формата SQL в timestamp
@@ -204,7 +204,7 @@ interface IDatabaseActions {
      *
      * @return int
      */
-    function sqlDateTime(string $dateTime): int;
+    public function sqlDateTime(string $dateTime): int;
 
     /**
      * Возвращает представления логического значения в пригодном для SQL формате
@@ -213,7 +213,7 @@ interface IDatabaseActions {
      *
      * @return string
      */
-    function formatBool(bool $flag): string;
+    public function formatBool(bool $flag): string;
 
     /**
      * Преобразует логическое значение формата SQL в тип bool
@@ -222,5 +222,5 @@ interface IDatabaseActions {
      *
      * @return bool
      */
-    function sqlBool(string $flag): bool;
+    public function sqlBool(string $flag): bool;
 }

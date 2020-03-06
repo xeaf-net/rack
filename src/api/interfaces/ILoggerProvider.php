@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ILoggerProvider.php
@@ -24,7 +24,7 @@ interface ILoggerProvider extends INamedObject, IProvider {
      *
      * @return int
      */
-    function getConfigLevel(): int;
+    public function getConfigLevel(): int;
 
     /**
      * Создает запись в журнале операций
@@ -35,5 +35,5 @@ interface ILoggerProvider extends INamedObject, IProvider {
      *
      * @return void
      */
-    function writeLog(int $level, string $message, $data = null): void;
+    public function writeLog(int $level, string $message, $data = null): void;
 }

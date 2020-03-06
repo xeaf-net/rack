@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IMigration.php
@@ -30,7 +30,7 @@ interface IMigration extends IFactoryObject {
      *
      * @return string|null
      */
-    function version(IDatabase $database, string $product = Migration::XEAF_RACK_PRODUCT): ?string;
+    public function version(IDatabase $database, string $product = Migration::XEAF_RACK_PRODUCT): ?string;
 
     /**
      * Проверяет наличие требуемой версии миграции
@@ -41,5 +41,5 @@ interface IMigration extends IFactoryObject {
      *
      * @return bool
      */
-    function checkVersion(IDatabase $database, string $version, string $product = Migration::XEAF_RACK_PRODUCT): bool;
+    public function checkVersion(IDatabase $database, string $version, string $product = Migration::XEAF_RACK_PRODUCT): bool;
 }

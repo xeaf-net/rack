@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * StorageSessionProvider.php
@@ -49,6 +49,8 @@ class StorageSessionProvider extends StaticSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function loadSessionVars(): void {
         $this->resolveSessionId();
@@ -63,6 +65,8 @@ class StorageSessionProvider extends StaticSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function saveSessionVars(): void {
         $name = $this->storageVarName();
@@ -94,13 +98,14 @@ class StorageSessionProvider extends StaticSessionProvider {
      */
     protected function resolveSessionId(): void {
         if (!$this->_useJWT) {
-            $params = Parameters::getInstance();
-            $id     = $params->get(strtolower(Session::SESSION_ID));
-            if (!$id) {
-                $id = $params->getHeader(Session::SESSION_ID);
+            $crypto    = Crypto::getInstance();
+            $sessionId = $crypto->requestHeaderBearer();
+            if ($sessionId == null) {
+                $params    = Parameters::getInstance();
+                $sessionId = $params->get(strtolower(Session::SESSION_ID));
             }
-            if ($id) {
-                $this->setId($id);
+            if ($sessionId != null) {
+                $this->setId($sessionId);
             }
         } else {
             $this->resolveJWT();
@@ -115,7 +120,7 @@ class StorageSessionProvider extends StaticSessionProvider {
     protected function resolveJWT(): void {
         $crypto = Crypto::getInstance();
         try {
-            $encodedJWT = $crypto->requestHeaderJWT();
+            $encodedJWT = $crypto->requestHeaderBearer();
             if ($encodedJWT) {
                 $decodedJWT = $crypto->decodeJWT($encodedJWT);
                 if ($crypto->validateJWT($decodedJWT)) {

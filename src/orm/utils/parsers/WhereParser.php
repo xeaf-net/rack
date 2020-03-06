@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * WhereParser.php
@@ -110,7 +110,7 @@ class WhereParser extends Parser {
                     case TokenTypes::ID_UNKNOWN:
                         if ($this->_previous->getType() == TokenTypes::SP_DOT) {
                             $this->_current->setType(TokenTypes::ID_PROPERTY);
-                        } else if ($this->_previous->getType() == TokenTypes::SP_COLON) {
+                        } elseif ($this->_previous->getType() == TokenTypes::SP_COLON) {
                             $this->_current->setType(TokenTypes::ID_PARAMETER);
                         }
                         break;

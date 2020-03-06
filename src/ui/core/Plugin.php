@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Plugin.php
@@ -12,7 +12,6 @@
  */
 namespace XEAF\Rack\UI\Core;
 
-use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Models\Results\HtmlResult;
 
 /**
@@ -29,36 +28,30 @@ abstract class Plugin extends Layout {
     protected $_template = null;
 
     /**
+     * Параметры вызова плагина
+     * @var array
+     */
+    protected $_params = [];
+
+    /**
      * Конструктор класса
      *
      * @param \XEAF\Rack\UI\Models\Results\HtmlResult $actionResult Результат исполнения действия
      * @param \XEAF\Rack\UI\Core\Template|null        $template     Объект шаблона
+     * @param array                                   $params       Параметры вызова плагина
      */
-    public function __construct(HtmlResult $actionResult, Template $template = null) {
+    public function __construct(HtmlResult $actionResult, ?Template $template, array $params) {
         parent::__construct($actionResult);
         $this->_template = $template;
-    }
-
-    /**
-     * Возвращает объект данных
-     *
-     * @param array $params Параметры вызова плагина
-     *
-     * @return \XEAF\Rack\API\Core\DataObject|null
-     */
-    public function getDataObject(array $params = []): ?DataObject {
-        return null;
+        $this->_params   = $params;
     }
 
     /**
      * Возвращет HTML код плагина
      *
-     * @param array $params Параметры вызова плагина
-     *
      * @return string|null
-     * @noinspection PhpUnusedParameterInspection
      */
-    public function html(array $params = []): ?string {
+    public function html(): ?string {
         return null; // Использовать .tpl файл
     }
 }

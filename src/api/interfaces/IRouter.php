@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IRouter.php
@@ -23,7 +23,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function clearRoutes(): void;
+    public function clearRoutes(): void;
 
     /**
      * Возвращает признак существования маршрута
@@ -32,7 +32,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return bool
      */
-    function routeExists(string $path): bool;
+    public function routeExists(string $path): bool;
 
     /**
      * Возвращает имя класса модуля обработки маршрута
@@ -41,7 +41,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return string|null
      */
-    function routeClassName(?string $path): ?string;
+    public function routeClassName(?string $path): ?string;
 
     /**
      * Регистрирует новый маршрут
@@ -51,7 +51,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function registerRoute(string $path, string $className): void;
+    public function registerRoute(string $path, string $className): void;
 
     /**
      * Регистрирует маршруты по определениям из массива
@@ -60,7 +60,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function registerRoutes(array $routes): void;
+    public function registerRoutes(array $routes): void;
 
     /**
      * Отменяет регистрацию маршрута
@@ -69,14 +69,14 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function unregisterRoute(string $path): void;
+    public function unregisterRoute(string $path): void;
 
     /**
      * Отменяет регистрацию всех узлов маршрутов
      *
      * @return void
      */
-    function clearRouteNodes(): void;
+    public function clearRouteNodes(): void;
 
     /**
      * Возвращает признак существования узла маршрута
@@ -85,7 +85,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return bool
      */
-    function routeNodeExists(string $path): bool;
+    public function routeNodeExists(string $path): bool;
 
     /**
      * Возвращает имя класса модуля обработчика узла маршрута
@@ -94,7 +94,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return string|null
      */
-    function routeNodeClassName(string $path): ?string;
+    public function routeNodeClassName(string $path): ?string;
 
     /**
      * Регистрирует узел маршрута
@@ -104,7 +104,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function registerRouteNode(string $path, string $className = ''): void;
+    public function registerRouteNode(string $path, string $className = ''): void;
 
     /**
      * Регистрирует маршруты по определениям из массива
@@ -113,7 +113,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function registerRoutesNodes(array $routeNodes): void;
+    public function registerRoutesNodes(array $routeNodes): void;
 
     /**
      * Отменяет регистрацию узла маршрута
@@ -122,7 +122,7 @@ interface IRouter extends IFactoryObject {
      *
      * @return void
      */
-    function unregisterRouteNode(string $path): void;
+    public function unregisterRouteNode(string $path): void;
 
     /**
      * Извлекает из пути зарегистрированный узел
@@ -131,19 +131,19 @@ interface IRouter extends IFactoryObject {
      *
      * @return string
      */
-    function extractPathNode(string $path): string;
+    public function extractPathNode(string $path): string;
 
     /**
      * Возвращает класс модуля обработки текущего маршрута
      *
      * @return string|null
      */
-    function moduleClassName():?string;
+    public function moduleClassName():?string;
 
     /**
      * Возвращает класс модуля обработки узла текущего маршрута
      *
      * @return string|null
      */
-    function moduleNodeClassName():?string;
+    public function moduleNodeClassName():?string;
 }

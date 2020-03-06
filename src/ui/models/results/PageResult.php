@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * PageResult.php
@@ -138,6 +138,8 @@ class PageResult extends HtmlResult {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
         $this->adjustLayoutFile();

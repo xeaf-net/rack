@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FavIconPlugin.php
@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\UI\Plugins\FavIcon;
 
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Core\Plugin;
 
 /**
@@ -25,4 +26,11 @@ class FavIconPlugin extends Plugin {
      * Идентификатор плагина
      */
     public const PLUGIN_NAME = 'favIcon';
+
+    /**
+     * @inheritDoc
+     */
+    public function getDataObject(): ?DataObject {
+        return null;
+    }
 }

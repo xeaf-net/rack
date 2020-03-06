@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * INamedObject.php
@@ -28,14 +28,14 @@ interface INamedObject extends IFactoryObject {
      *
      * @param string $name Имя объекта
      */
-    function __construct(string $name = Factory::DEFAULT_NAME);
+    public function __construct(string $name = Factory::DEFAULT_NAME);
 
     /**
      * Возвращает имя объекта
      *
      * @return string
      */
-    function getName(): string;
+    public function getName(): string;
 
     /**
      * Задает имя объекта
@@ -44,5 +44,5 @@ interface INamedObject extends IFactoryObject {
      *
      * @return void
      */
-    function setName(string $name): void;
+    public function setName(string $name): void;
 }

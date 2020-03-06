@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * PageMetaPlugin.php
@@ -30,7 +30,7 @@ class PageMetaPlugin extends Plugin {
     /**
      * @inheritDoc
      */
-    public function getDataObject(array $params = []): ?DataObject {
+    public function getDataObject(): ?DataObject {
         return DataObject::fromArray([
             'pageMeta' => $this->_template->getPageMeta()
         ]);

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * NativeSessionProvider.php
@@ -29,6 +29,8 @@ class NativeSessionProvider extends StorageSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function loadSessionVars(): void {
         $this->sessionStart();
@@ -42,6 +44,8 @@ class NativeSessionProvider extends StorageSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function saveSessionVars(): void {
         $this->sessionStart();
@@ -54,6 +58,8 @@ class NativeSessionProvider extends StorageSessionProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function isNative(): bool {
         return true;
@@ -63,6 +69,8 @@ class NativeSessionProvider extends StorageSessionProvider {
      * Получает значение переменной сессии
      *
      * @return void
+     *             
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     protected function resolveSessionId(): void {
         $id = $_SESSION[Session::SESSION_ID] ?? null;

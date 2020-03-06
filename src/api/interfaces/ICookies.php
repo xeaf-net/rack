@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ICookies.php
@@ -22,35 +22,35 @@ interface ICookies extends IKeyStorage, IFactoryObject {
     /**
      * @inheritDoc
      */
-    function clear(): void;
+    public function clear(): void;
 
     /**
      * @inheritDoc
      */
-    function get(string $key, $defaultValue = null);
+    public function get(string $key, $defaultValue = null);
 
     /**
      * @inheritDoc
      */
-    function put(string $key, $value = null, int $ttl = 0): void;
+    public function put(string $key, $value = null, int $ttl = 0): void;
 
     /**
      * @inheritDoc
      */
-    function delete(string $key): void;
+    public function delete(string $key): void;
 
     /**
      * @inheritDoc
      */
-    function exists(string $key): bool;
+    public function exists(string $key): bool;
 
     /**
      * @inheritDoc
      */
-    function keys(): array;
+    public function keys(): array;
 
     /**
      * @inheritDoc
      */
-    function toArray(): array;
+    public function toArray(): array;
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * HttpResponse.php
@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IHttpResponse;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 
 /**
  * Содержит константы кодов состояний HTTP и методы отправки заголовков
@@ -78,6 +79,11 @@ class HttpResponse implements IHttpResponse {
     public const FATAL_ERROR = 500;
 
     /**
+     * Метод не реализован
+     */
+    public const NOT_IMPLEMENTED = 501;
+
+    /**
      * Тексты сообщений для кодов ответов HTTP протокола
      */
     public const MESSAGES = [
@@ -134,17 +140,34 @@ class HttpResponse implements IHttpResponse {
     /**
      * @inheritDoc
      */
-    function responseCode(int $statusCode): void {
-        http_response_code($statusCode);
+    public function responseCode(int $statusCode): void {
+        if (array_key_exists($statusCode, self::MESSAGES)) {
+            http_response_code($statusCode);
+            $header = "HTTP/1.1 $statusCode " . self::MESSAGES[$statusCode];
+            header($header, true, $statusCode);
+        } else {
+            $this->responseCode(self::FATAL_ERROR);
+        }
     }
 
     /**
      * @inheritDoc
      */
-    function contentType(string $mimeType, string $charset = ''): void {
-        $header = "Content-type: $mimeType";
+    public function authenticateBearer(int $statusCode): void {
+        if ($statusCode == HttpResponse::UNAUTHORIZED) {
+            $apiId = Session::getInstance()->getApiId();
+            $realm = PortalConfig::getInstance()->getHost();
+            header('WWW-Authenticate: ' . $apiId . ' realm="' . $realm . '"');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function contentType(string $mimeType, string $charset = ''): void {
+        $header = "Content-Type: $mimeType";
         if ($charset) {
-            $header .= "; charset=$charset";
+            $header .= "; charset = $charset";
         }
         header($header);
     }
@@ -188,7 +211,7 @@ class HttpResponse implements IHttpResponse {
         $cacheTime = $formatter->formatCacheDateTime(time() + $cacheSecs);
         header("Expires: $cacheTime");
         header("Pragma: cache");
-        header("Cache-Control: max-age=$cacheSecs");
+        header("Cache - Control: max - age = $cacheSecs");
     }
 
     /**

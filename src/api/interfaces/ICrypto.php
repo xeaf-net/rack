@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ICrypto.php
@@ -28,7 +28,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      */
-    function base64Encode(string $source): string;
+    public function base64Encode(string $source): string;
 
     /**
      * Преобразует данные в формате BASE64 в строку символов
@@ -37,7 +37,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      */
-    function base64Decode(string $base64): string;
+    public function base64Decode(string $base64): string;
 
     /**
      * Генерирует хеш на основе пароля и строковых данных
@@ -47,7 +47,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      */
-    function hash(string $data, $password = ''): string;
+    public function hash(string $data, $password = ''): string;
 
     /**
      * Метод сравнение хешей
@@ -57,7 +57,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @return bool
      */
-    function hashEquals(string $hash1, string $hash2): bool;
+    public function hashEquals(string $hash1, string $hash2): bool;
 
     /**
      * Возвращает случайно сгенерированную последовательность байтов
@@ -66,14 +66,14 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      */
-    function randomBytes(int $length): string;
+    public function randomBytes(int $length): string;
 
     /**
      * Генерирует UUID версии 4
      *
      * @return string
      */
-    function generateUUIDv4(): string;
+    public function generateUUIDv4(): string;
 
     /**
      * Возвращает хеш пароля
@@ -82,7 +82,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      */
-    function passwordHash(string $password): string;
+    public function passwordHash(string $password): string;
 
     /**
      * Проверяет соответствие пароля хешу
@@ -92,14 +92,21 @@ interface ICrypto extends IFactoryObject {
      *
      * @return bool
      */
-    function verifyPassword(string $password, string $hash): bool;
+    public function verifyPassword(string $password, string $hash): bool;
 
     /**
      * Генерирует значение токена безопасности
      *
      * @return string
      */
-    function securityToken(): string;
+    public function securityToken(): string;
+
+    /**
+     * Возвращает JWT из заголовка запроса
+     *
+     * @return string|null
+     */
+    public function requestHeaderBearer(): ?string;
 
     /**
      * Загружает данные приватного ключа JWT
@@ -109,7 +116,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    function jwtPrivateKey(): string;
+    public function jwtPrivateKey(): string;
 
     /**
      * Загружает данные публичного ключа JWT
@@ -119,14 +126,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    function jwtPublicKey(): string;
-
-    /**
-     * Возвращает JWT из заголовка запроса
-     *
-     * @return string|null
-     */
-    function requestHeaderJWT(): ?string;
+    public function jwtPublicKey(): string;
 
     /**
      * Кодирует и подписывает новый JWT
@@ -146,7 +146,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string;
+    public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string;
 
     /**
      * Расшифровывает и проверят подпись JWT
@@ -160,7 +160,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken;
+    public function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken;
 
     /**
      * Проверяет корректность данных JWT
@@ -169,5 +169,5 @@ interface ICrypto extends IFactoryObject {
      *
      * @return bool
      */
-    function validateJWT(JsonWebToken $jwt): bool;
+    public function validateJWT(JsonWebToken $jwt): bool;
 }

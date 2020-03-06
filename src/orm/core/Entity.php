@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Entity.php
@@ -30,6 +30,7 @@ use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
 use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -93,11 +94,13 @@ abstract class Entity extends DataObject {
         $result     = [];
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            if (array_key_exists($name, $data)) {
-                $result[$name] = $data[$name];
-            } else {
-                assert($property instanceof PropertyModel);
-                $result[$name] = $property->getDefaultValue();
+            assert($property instanceof PropertyModel);
+            if (!$property->getIsCalculated()) {
+                if (array_key_exists($name, $data)) {
+                    $result[$name] = $data[$name];
+                } else {
+                    $result[$name] = $property->getDefaultValue();
+                }
             }
         }
         return $result;
@@ -149,6 +152,22 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function toArray(array $map = []): array {
+        $result     = parent::toArray();
+        $properties = $this->_model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if ($property->getIsCalculated()) {
+                /** @noinspection PhpVariableVariableInspection */
+                $result[$name] = $this->$name;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает массив отформатированных значений свойств
      *
      * @param array $map Карта возвращаемых свойств
@@ -156,7 +175,7 @@ abstract class Entity extends DataObject {
      * @return array
      */
     public function toFormattedArray(array $map = []): array {
-        $result = parent::toArray($map);
+        $result = $this->toArray($map);
         $model  = $this->getModel();
         $names  = array_keys($result);
         $fmt    = Formatter::getInstance();
@@ -210,6 +229,7 @@ abstract class Entity extends DataObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function checkEnumValue(string $name, EnumProperty $property): void {
+        /** @noinspection PhpVariableVariableInspection */
         $value = $this->$name;
         $enums = $property->enumValues();
         if (!in_array($value, $enums)) {
@@ -262,12 +282,12 @@ abstract class Entity extends DataObject {
      *
      * @param string $fieldName  Имя поля БД
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\UUIDProperty
      */
-    public static function uuid(string $fieldName, bool $primaryKey = false, bool $readOnly = false): UUIDProperty {
-        return new UUIDProperty($fieldName, $primaryKey, $readOnly);
+    public static function uuid(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): UUIDProperty {
+        return new UUIDProperty($fieldName, $primaryKey, $accessType);
     }
 
     /**
@@ -276,24 +296,24 @@ abstract class Entity extends DataObject {
      * @param string $fieldName  Имя поля БД
      * @param int    $length     Длина
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\StringProperty
      */
-    public static function string(string $fieldName, int $length = 255, bool $primaryKey = false, bool $readOnly = false): StringProperty {
-        return new StringProperty($fieldName, $length, $primaryKey, $readOnly);
+    public static function string(string $fieldName, int $length = 255, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): StringProperty {
+        return new StringProperty($fieldName, $length, $primaryKey, $accessType);
     }
 
     /**
      * Создает описание свойства строкового типа для текста
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\TextProperty
      */
-    public static function text(string $fieldName, bool $readOnly = false): TextProperty {
-        return new TextProperty($fieldName, $readOnly);
+    public static function text(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): TextProperty {
+        return new TextProperty($fieldName, $accessType);
     }
 
     /**
@@ -301,13 +321,13 @@ abstract class Entity extends DataObject {
      *
      * @param string $fieldName     Имя поля БД
      * @param bool   $primaryKey    Признак первичного ключа
-     * @param bool   $readOnly      Признак поля только для чтения
+     * @param int    $accessType    Определение доступа
      * @param bool   $autoIncrement Признак поля с автоинкрементом
      *
      * @return IntegerProperty
      */
-    public static function integer(string $fieldName, bool $primaryKey = false, bool $readOnly = false, bool $autoIncrement = false): IntegerProperty {
-        return new IntegerProperty($fieldName, $primaryKey, $readOnly, $autoIncrement);
+    public static function integer(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT, bool $autoIncrement = false): IntegerProperty {
+        return new IntegerProperty($fieldName, $primaryKey, $accessType, $autoIncrement);
     }
 
     /**
@@ -317,12 +337,12 @@ abstract class Entity extends DataObject {
      * @param int    $size       Размер
      * @param int    $precision  Точность
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\NumericProperty
      */
-    public static function numeric(string $fieldName, int $size = 15, int $precision = 2, bool $primaryKey = false, bool $readOnly = false): NumericProperty {
-        return new NumericProperty($fieldName, $size, $precision, $primaryKey, $readOnly);
+    public static function numeric(string $fieldName, int $size = 15, int $precision = 2, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): NumericProperty {
+        return new NumericProperty($fieldName, $size, $precision, $primaryKey, $accessType);
     }
 
     /**
@@ -330,12 +350,12 @@ abstract class Entity extends DataObject {
      *
      * @param string $fieldName  Имя поля БД
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateProperty
      */
-    public static function date(string $fieldName, bool $primaryKey = false, bool $readOnly = false): DateProperty {
-        return new DateProperty($fieldName, $primaryKey, $readOnly);
+    public static function date(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateProperty {
+        return new DateProperty($fieldName, $primaryKey, $accessType);
     }
 
     /**
@@ -343,12 +363,12 @@ abstract class Entity extends DataObject {
      *
      * @param string $fieldName  Имя поля БД
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
      */
-    public static function dateTime(string $fieldName, bool $primaryKey = false, bool $readOnly = false): DateTimeProperty {
-        return new DateTimeProperty($fieldName, $primaryKey, $readOnly);
+    public static function dateTime(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateTimeProperty {
+        return new DateTimeProperty($fieldName, $primaryKey, $accessType);
     }
 
     /**
@@ -356,60 +376,84 @@ abstract class Entity extends DataObject {
      *
      * @param string $fieldName  Имя поля БД
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      *
      * @return BoolProperty
      */
-    public static function bool(string $fieldName, bool $primaryKey = false, bool $readOnly = false): BoolProperty {
-        return new BoolProperty($fieldName, $primaryKey, $readOnly);
+    public static function bool(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): BoolProperty {
+        return new BoolProperty($fieldName, $primaryKey, $accessType);
     }
 
     /**
-     * Создает описания свойства типа перечисление
+     * Создает описания свойства типа Перечисление
      *
-     * @param string $fieldName Имя поля БД
-     * @param array  $enums     Возможные значения свойства
-     * @param bool   $readOnly  Признак полч только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param array  $enums      Возможные значения свойства
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\EnumProperty
      */
-    public static function enum(string $fieldName, array $enums, bool $readOnly = false): EnumProperty {
-        return new EnumProperty($fieldName, $enums, $readOnly);
+    public static function enum(string $fieldName, array $enums, int $accessType = AccessTypes::AC_DEFAULT): EnumProperty {
+        return new EnumProperty($fieldName, $enums, $accessType);
     }
 
     /**
-     * Создает описание свойства типа массив
+     * Создает описание свойства типа Массив
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ArrayProperty
      */
-    public static function array(string $fieldName, bool $readOnly = false): ArrayProperty {
-        return new ArrayProperty($fieldName, $readOnly);
+    public static function array(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ArrayProperty {
+        return new ArrayProperty($fieldName, $accessType);
     }
 
     /**
-     * Создает описание свойства типа объект
+     * Создает описание свойства типа Объект
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ObjectProperty
      */
-    public static function object(string $fieldName, bool $readOnly = false): ObjectProperty {
-        return new ObjectProperty($fieldName, $readOnly);
+    public static function object(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ObjectProperty {
+        return new ObjectProperty($fieldName, $accessType);
     }
 
     /**
-     * Создает описание свойства типа код состояния сущности
+     * Создает описание свойства типа Код состояния сущности
      *
-     * @param string $fieldName Имя поля БД
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля БД
+     * @param int    $accessType Определение доступа
      *
      * @return \XEAF\Rack\ORM\Models\Properties\StatusProperty
      */
-    public static function status(string $fieldName, bool $readOnly = false): StatusProperty {
-        return new StatusProperty($fieldName, $readOnly);
+    public static function status(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): StatusProperty {
+        return new StatusProperty($fieldName, $accessType);
+    }
+
+    /**
+     * Создает описание свойства даты и времени создания записи
+     *
+     * @param string $fieldName Имя поля БД
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
+     */
+    public static function createdTime(string $fieldName): DateTimeProperty {
+        $accessType = AccessTypes::AC_READABLE;
+        return new DateTimeProperty($fieldName, false, $accessType);
+    }
+
+    /**
+     * Создает описание свойства даты и времени изменния записи
+     *
+     * @param string $fieldName Имя поля БД
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
+     */
+    public static function modifiedTime(string $fieldName): DateTimeProperty {
+        $accessType = AccessTypes::AC_READABLE | AccessTypes::AC_UPDATABLE;
+        return new DateTimeProperty($fieldName, false, $accessType);
     }
 }

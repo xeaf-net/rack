@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Module.php
@@ -52,9 +52,9 @@ class Module extends Extension implements IModule {
         $actionMode = $this->args()->getActionMode();
         if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_L10N) {
             $result = $this->sendLocaleData();
-        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
+        } elseif ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
             $result = $this->sendModuleResource(ResourceModule::CSS_FILE_TYPE);
-        } else if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_JS) {
+        } elseif ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_JS) {
             $result = $this->sendModuleResource(ResourceModule::JS_FILE_TYPE);
         } else {
             $method = $this->actionModeMethod($actionMode, $methodName);
@@ -66,7 +66,7 @@ class Module extends Extension implements IModule {
                     assert($result instanceof IActionResult);
                 }
                 $this->afterExecute();
-            } else if ($methodName == Parameters::GET_METHOD_NAME) {
+            } elseif ($methodName == Parameters::GET_METHOD_NAME) {
                 $result = $this->sendModuleResource($actionMode);
             }
         }

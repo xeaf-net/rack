@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ICacheStorage.php
@@ -10,14 +10,12 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\Interfaces;
-
-use XEAF\Rack\API\Interfaces\INamedObject;
+namespace XEAF\Rack\API\Interfaces;
 
 /**
  * Описывает методы работы с кешем
  *
- * @package XEAF\Rack\Interfaces
+ * @package XEAF\Rack\API\Interfaces
  */
 interface ICacheStorage extends INamedObject {
 
@@ -29,7 +27,7 @@ interface ICacheStorage extends INamedObject {
      *
      * @return mixed|null
      */
-    function get(string $key, $defaultValue = null);
+    public function get(string $key, $defaultValue = null);
 
     /**
      * Сохраняет значение в кеше
@@ -41,7 +39,7 @@ interface ICacheStorage extends INamedObject {
      *
      * @return void
      */
-    function put(string $key, $value = null, int $ttl = 0, array $tags = []): void;
+    public function put(string $key, $value = null, int $ttl = 0, array $tags = []): void;
 
     /**
      * Возвращает набор связанных со значением тегов
@@ -50,7 +48,7 @@ interface ICacheStorage extends INamedObject {
      *
      * @return array
      */
-    function getTags(string $key): array;
+    public function getTags(string $key): array;
 
     /**
      * Связывает значение кеша с одним или несколькими тегами
@@ -60,7 +58,7 @@ interface ICacheStorage extends INamedObject {
      *
      * @return void
      */
-    function setTags(string $key, array $tags): void;
+    public function setTags(string $key, array $tags): void;
 
     /**
      * Отменяет валидность значения кеша
@@ -69,7 +67,7 @@ interface ICacheStorage extends INamedObject {
      *
      * @return void
      */
-    function invalidate(string $key): void;
+    public function invalidate(string $key): void;
 
     /**
      * Отменяет валидность всех связанных с тегом переменных
@@ -78,12 +76,12 @@ interface ICacheStorage extends INamedObject {
      *
      * @return void
      */
-    function invalidateTag(string $tag): void;
+    public function invalidateTag(string $tag): void;
 
     /**
      * Отменяет валидность всех значений кеша
      *
      * @return void
      */
-    function invalidateAll(): void;
+    public function invalidateAll(): void;
 }

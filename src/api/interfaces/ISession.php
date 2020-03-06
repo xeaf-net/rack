@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ISession.php
@@ -24,5 +24,5 @@ interface ISession extends ISessionActions, IProviderFactory {
      *
      * @return bool
      */
-    function isAuthorized(): bool;
+    public function isAuthorized(): bool;
 }

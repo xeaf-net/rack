@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Generator.php
@@ -136,7 +136,7 @@ class Generator implements IGenerator {
             $properties = $model->getPropertyByNames();
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                if (!$property->getAutoIncrement()) {
+                if ($property->getIsInsertable()) {
                     $params[] = ':' . $name;
                     $fields[] = $property->getFieldName();
                 }
@@ -167,7 +167,7 @@ class Generator implements IGenerator {
                 $line      = "$fieldName=$paramName";
                 if ($property->getPrimaryKey()) {
                     $keys[] = $line;
-                } else if (!$property->getReadOnly()) {
+                } elseif ($property->getIsUpdatable()) {
                     $lines[] = $line;
                 }
             }
@@ -526,8 +526,8 @@ class Generator implements IGenerator {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function entityModelByAlias(string $alias): EntityModel {
-        $entity = $this->_aliases->get($alias);
-        if ($entity == null) {
+        $entity = (string)$this->_aliases->get($alias);
+        if (empty($entity)) {
             throw EntityException::unknownEntityAlias($alias);
         }
         $result = $this->_entities->get($entity);
@@ -564,7 +564,8 @@ class Generator implements IGenerator {
         $model  = $this->entityModelByAlias($alias);
         $result = $model->getPropertyByName($property);
         if ($result == null) {
-            throw EntityException::unknownEntityProperty($this->_aliases->get($alias), $property);
+            $name = (string)$this->_aliases->get($alias);
+            throw EntityException::unknownEntityProperty($name, $property);
         }
         return $result;
     }

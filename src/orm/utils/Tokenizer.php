@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Tokenizer.php
@@ -75,19 +75,19 @@ class Tokenizer implements ITokenizer {
             $ch = $this->_chars[$this->_charPos];
             if (in_array($ch, TokenChars::SPACE)) {
                 self::skipEmptySpace();
-            } else if (in_array($ch, TokenChars::OPERATOR)) {
+            } elseif (in_array($ch, TokenChars::OPERATOR)) {
                 self::readOperator();
-            } else if (($ch >= TokenChars::LA && $ch <= TokenChars::LZ) || ($ch >= TokenChars::UA && $ch <= TokenChars::UZ) || $ch == TokenChars::US) {
+            } elseif (($ch >= TokenChars::LA && $ch <= TokenChars::LZ) || ($ch >= TokenChars::UA && $ch <= TokenChars::UZ) || $ch == TokenChars::US) {
                 self::readIdentifier();
-            } else if ($ch == TokenChars::SQ) {
+            } elseif ($ch == TokenChars::SQ) {
                 self::readStringConstant();
-            } else if ($ch >= TokenChars::D0 && $ch <= TokenChars::D9) {
+            } elseif ($ch >= TokenChars::D0 && $ch <= TokenChars::D9) {
                 self::readNumericConstant();
-            } else if (in_array($ch, TokenChars::SEPARATOR)) {
+            } elseif (in_array($ch, TokenChars::SEPARATOR)) {
                 self::readSeparator();
-            } else if ($ch == TokenChars::OB || $ch == TokenChars::CB) {
+            } elseif ($ch == TokenChars::OB || $ch == TokenChars::CB) {
                 self::readBrackets();
-            } else if ($ch == TokenChars::STOP) {
+            } elseif ($ch == TokenChars::STOP) {
                 if ($this->_brackets != 0) {
                     throw EntityException::unpairedBracket($this->_charPos);
                 }

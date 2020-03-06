@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FileStorageProvider.php
@@ -77,6 +77,8 @@ class FileStorageProvider extends KeyStorage implements IStorageProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function clear(): void {
         $data = $this->toArray();
@@ -130,6 +132,8 @@ class FileStorageProvider extends KeyStorage implements IStorageProvider {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function exists(string $key): bool {
         $fileName = $this->getFileName($key);

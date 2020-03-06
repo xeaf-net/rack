@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FileMIME.php
@@ -26,7 +26,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isImage(string $fileType): bool;
+    public function isImage(string $fileType): bool;
 
     /**
      * Возвращает признак аудиофайла
@@ -35,7 +35,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isAudio(string $fileType): bool;
+    public function isAudio(string $fileType): bool;
 
     /**
      * Возвращает признак видеофайла
@@ -44,7 +44,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isVideo(string $fileType): bool;
+    public function isVideo(string $fileType): bool;
 
     /**
      * Возвращает признак файла ресурса
@@ -53,7 +53,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isResource(string $fileType): bool;
+    public function isResource(string $fileType): bool;
 
     /**
      * Возвращает признак файла прочего поддерживаемого типа
@@ -62,7 +62,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isFile(string $fileType): bool;
+    public function isFile(string $fileType): bool;
 
     /**
      * Возвращает MIME для заданного типа файла
@@ -71,7 +71,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return string
      */
-    function getMIME(string $fileType): string;
+    public function getMIME(string $fileType): string;
 
     /**
      * Возвращает признак поддержки типа файла
@@ -80,7 +80,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return bool
      */
-    function isSupported(string $fileType): bool;
+    public function isSupported(string $fileType): bool;
 
     /**
      * Возвращает признак типа файла ресурса расширения
@@ -91,7 +91,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @since 1.0.2
      */
-    function isExtensionResource(string $fileType): bool;
+    public function isExtensionResource(string $fileType): bool;
 
     /**
      * Регистрирует тип файла изображения
@@ -101,7 +101,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function registerImageFileType(string $fileType, string $mime): void;
+    public function registerImageFileType(string $fileType, string $mime): void;
 
     /**
      * Регистрирует тип аудио файла
@@ -111,7 +111,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function registerAudioFileType(string $fileType, string $mime): void;
+    public function registerAudioFileType(string $fileType, string $mime): void;
 
     /**
      * Регистрирует тип видео файла
@@ -121,7 +121,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function registerVideoFileType(string $fileType, string $mime): void;
+    public function registerVideoFileType(string $fileType, string $mime): void;
 
     /**
      * Регистрирует тип файла ресурса
@@ -131,7 +131,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function registerResourceFileType(string $fileType, string $mime): void;
+    public function registerResourceFileType(string $fileType, string $mime): void;
 
     /**
      * Регистрирует прочий поддерживаемый тип файла
@@ -141,7 +141,7 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function registerOtherFileType(string $fileType, string $mime): void;
+    public function registerOtherFileType(string $fileType, string $mime): void;
 
     /**
      * Отменяет регистрацию типа файла
@@ -150,5 +150,5 @@ interface IFileMIME extends IFactoryObject {
      *
      * @return void
      */
-    function unregisterFileType(string $fileType): void;
+    public function unregisterFileType(string $fileType): void;
 }

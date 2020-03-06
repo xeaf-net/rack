@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IKeyValue.php
@@ -26,14 +26,14 @@ interface IKeyValue extends Iterator {
      *
      * @return void
      */
-    function clear(): void;
+    public function clear(): void;
 
     /**
      * Возвращает признак пустого хранилища
      *
      * @return bool
      */
-    function isEmpty(): bool;
+    public function isEmpty(): bool;
 
     /**
      * Возвращает ранее сохраненное значение
@@ -43,7 +43,7 @@ interface IKeyValue extends Iterator {
      *
      * @return mixed
      */
-    function get(string $key, $defaultValue = null);
+    public function get(string $key, $defaultValue = null);
 
     /**
      * Сохраняет значение
@@ -53,7 +53,7 @@ interface IKeyValue extends Iterator {
      *
      * @return void
      */
-    function put(string $key, $value = null): void;
+    public function put(string $key, $value = null): void;
 
     /**
      * Удаляет ранее сохраненное значение
@@ -62,7 +62,7 @@ interface IKeyValue extends Iterator {
      *
      * @return void
      */
-    function delete(string $key): void;
+    public function delete(string $key): void;
 
     /**
      * Возвращает признак существования значения
@@ -71,19 +71,19 @@ interface IKeyValue extends Iterator {
      *
      * @return bool
      */
-    function exists(string $key): bool;
+    public function exists(string $key): bool;
 
     /**
      * Возвращает массив ключей
      *
      * @return array
      */
-    function keys(): array;
+    public function keys(): array;
 
     /**
      * Возвращает сохраняемые значения в виде массива
      *
      * @return array
      */
-    function toArray(): array;
+    public function toArray(): array;
 }

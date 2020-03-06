@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Application.php
@@ -39,6 +39,11 @@ use XEAF\Rack\API\Utils\Session;
  * @package XEAF\Rack\API\App
  */
 class Application extends Extension {
+
+    /**
+     * Идентификатор API по умолчанию
+     */
+    public const DEFAULT_API_ID = 'rackAPI';
 
     /**
      * Объект методов работы с маршрутами

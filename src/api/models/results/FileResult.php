@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * FileResult.php
@@ -192,10 +192,8 @@ class FileResult extends CachedResult {
         $headers->contentType($this->getMimeType());
         if ($this->getAttachment()) {
             $headers->fileAttachmentHeader($this->getFileName());
-        } else {
-            if ($this->getUseCache()) {
-                $headers->fileCacheHeader();
-            }
+        } elseif ($this->getUseCache()) {
+            $headers->fileCacheHeader();
         }
         $fileSystem->readFileChunks($this->getFilePath());
         if ($this->getDelete()) {

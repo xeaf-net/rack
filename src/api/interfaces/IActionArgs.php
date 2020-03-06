@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IActionArgs.php
@@ -24,49 +24,49 @@ interface IActionArgs extends IFactoryObject {
      *
      * @return string
      */
-    function getMethodName(): string;
+    public function getMethodName(): string;
 
     /**
      * Возвращает имя узла маршрута
      *
      * @return string
      */
-    function getActionNode(): string;
+    public function getActionNode(): string;
 
     /**
      * Возвращает путь действия
      *
      * @return string|null
      */
-    function getActionPath(): ?string;
+    public function getActionPath(): ?string;
 
     /**
      * Врзвращает режим вызова действия
      *
      * @return string|null
      */
-    function getActionMode(): ?string;
+    public function getActionMode(): ?string;
 
     /**
      * Возвращает идентификатор объекта действия
      *
      * @return string|null
      */
-    function getObjectId(): ?string;
+    public function getObjectId(): ?string;
 
     /**
      * Возвращает путь объекта действия
      *
      * @return string|null
      */
-    function getObjectPath(): ?string;
+    public function getObjectPath(): ?string;
 
     /**
      * Возвращает полный URL вызова действия
      *
      * @return string|null
      */
-    function getCurrentURL(): ?string;
+    public function getCurrentURL(): ?string;
 
     /**
      * Возвращает значение параметра
@@ -76,7 +76,7 @@ interface IActionArgs extends IFactoryObject {
      *
      * @return mixed
      */
-    function get(string $name, $defaultValue = null);
+    public function get(string $name, $defaultValue = null);
 
     /**
      * Возвращает значение параметра заголовка
@@ -86,12 +86,12 @@ interface IActionArgs extends IFactoryObject {
      *
      * @return mixed
      */
-    function getHeader(string $name, $defaultValue = null);
+    public function getHeader(string $name, $defaultValue = null);
 
     /**
      * Возвращает список параметров заголовков
      *
      * @return array
      */
-    function getHeaders(): array;
+    public function getHeaders(): array;
 }

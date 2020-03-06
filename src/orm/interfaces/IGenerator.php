@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IGenerator.php
@@ -31,7 +31,7 @@ interface IGenerator extends IFactoryObject {
      *
      * @return string
      */
-    function selectSQL(EntityQuery $query, bool $useFilter): string;
+    public function selectSQL(EntityQuery $query, bool $useFilter): string;
 
     /**
      * Возвращает текст SQL запроса для выбора количества записей
@@ -41,7 +41,7 @@ interface IGenerator extends IFactoryObject {
      *
      * @return string
      */
-    function selectCountSQL(EntityQuery $query, bool $useFilter): string;
+    public function selectCountSQL(EntityQuery $query, bool $useFilter): string;
 
     /**
      * Возвращает текст SQL команды для вставки записи
@@ -50,7 +50,7 @@ interface IGenerator extends IFactoryObject {
      *
      * @return string
      */
-    function insertSQL(Entity $entity): string;
+    public function insertSQL(Entity $entity): string;
 
     /**
      * Возвращает текст SQL команды для изменения записи
@@ -59,7 +59,7 @@ interface IGenerator extends IFactoryObject {
      *
      * @return string
      */
-    function updateSQL(Entity $entity): string;
+    public function updateSQL(Entity $entity): string;
 
     /**
      * Возвращает текст SQL команды для удаления записи
@@ -68,5 +68,5 @@ interface IGenerator extends IFactoryObject {
      *
      * @return string
      */
-    function deleteSQL(Entity $entity): string;
+    public function deleteSQL(Entity $entity): string;
 }

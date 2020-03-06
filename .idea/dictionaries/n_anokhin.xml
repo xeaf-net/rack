@@ -4,6 +4,7 @@
       <w>algo</w>
       <w>browserify</w>
       <w>dbindex</w>
+      <w>insertable</w>
       <w>mbstring</w>
       <w>outform</w>
       <w>pgsql</w>
@@ -14,6 +15,7 @@
       <w>unpush</w>
       <w>unserialization</w>
       <w>unserialize</w>
+      <w>updatable</w>
       <w>webmanifest</w>
     </words>
   </dictionary>

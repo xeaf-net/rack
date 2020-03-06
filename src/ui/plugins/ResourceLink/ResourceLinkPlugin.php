@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ResourceLinkPlugin.php
@@ -55,8 +55,8 @@ class ResourceLinkPlugin extends Plugin {
     /**
      * @inheritDoc
      */
-    public function __construct(HtmlResult $actionResult, Template $template = null) {
-        parent::__construct($actionResult, $template);
+    public function __construct(HtmlResult $actionResult, Template $template, array $params) {
+        parent::__construct($actionResult, $template, $params);
         $this->_fs   = FileSystem::getInstance();
         $this->_ref  = Reflection::getInstance();
         $this->_args = Parameters::getInstance();
@@ -67,13 +67,13 @@ class ResourceLinkPlugin extends Plugin {
      *
      * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
-    public function getDataObject(array $params = []): ?DataObject {
+    public function getDataObject(): ?DataObject {
         $link = '';
-        $type = $params['type'] ?? null;
+        $type = $this->_params['type'] ?? null;
         switch ($type) {
             case ResourceModule::CSS_FILE_TYPE:
             case ResourceModule::JS_FILE_TYPE:
-                $link = $this->resourceLink($type);
+                $link = $this->resourceLink((string)$type);
                 break;
             default:
                 break;

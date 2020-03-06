@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IntegerProperty.php
@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -26,11 +27,11 @@ class IntegerProperty extends PropertyModel {
      *
      * @param string $fieldName     Имя поля БД
      * @param bool   $primaryKey    Признак первичного ключа
-     * @param bool   $readOnly      Признак поля только для чтения
+     * @param int    $accessType    Определение доступа
      * @param bool   $autoIncrement Признак поля с автоинкрементом
-     *     */
-    public function __construct(string $fieldName, bool $primaryKey = false, bool $readOnly = false, bool $autoIncrement = false) {
-        parent::__construct(DataTypes::DT_INTEGER, 0, 0, $fieldName, $primaryKey, $readOnly, $autoIncrement);
+     */
+    public function __construct(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT, bool $autoIncrement = false) {
+        parent::__construct(DataTypes::DT_INTEGER, 0, 0, $fieldName, $primaryKey, $accessType, $autoIncrement);
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * CacheStorage.php
@@ -10,17 +10,16 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\Db\Utils;
+namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Interfaces\ICacheStorage;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
-use XEAF\Rack\API\Utils\Storage;
-use XEAF\Rack\Interfaces\ICacheStorage;
 
 /**
  * Реализует методы работы с кешем
  *
- * @package XEAF\Rack\Db\Utils
+ * @package XEAF\Rack\API\Utils
  */
 class CacheStorage implements ICacheStorage {
 
@@ -198,7 +197,7 @@ class CacheStorage implements ICacheStorage {
      *
      * @param string $name Имя объекта
      *
-     * @return \XEAF\Rack\Interfaces\ICacheStorage
+     * @return \XEAF\Rack\API\Interfaces\ICacheStorage
      */
     public static function getInstance(string $name = Factory::DEFAULT_NAME): ICacheStorage {
         $result = Factory::getFactoryNamedObject(self::class, $name);

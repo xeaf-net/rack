@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * StatusProperty.php
@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
+
 /**
  * Реализует методы свойства типа состояния записи
  *
@@ -22,22 +24,22 @@ class StatusProperty extends EnumProperty {
     /**
      * Сущность активна
      */
-    public const ACTIVE = 'ACT';
+    public const ACTIVE = 'ACTIVE';
 
     /**
      * Сущность архивирована
      */
-    public const ARCHIVED = 'ARC';
+    public const ARCHIVED = 'ARCHIVED';
 
     /**
      * Действие сущности приостановлена
      */
-    public const STOPPED = 'STP';
+    public const STOPPED = 'STOPPED';
 
     /**
      * Сущность помечена на удаление
      */
-    public const DELETED = 'DEL';
+    public const DELETED = 'DELETED';
 
     /**
      * Список возможных состояний сущностей
@@ -52,11 +54,11 @@ class StatusProperty extends EnumProperty {
     /**
      * Конструктор класса
      *
-     * @param string $fieldName Имя поля базы данных
-     * @param bool   $readOnly  Признак поля только для чтения
+     * @param string $fieldName  Имя поля базы данных
+     * @param int    $accessType Определение доступа
      *
      */
-    public function __construct(string $fieldName, bool $readOnly = false) {
-        parent::__construct($fieldName, self::STATUSES, $readOnly);
+    public function __construct(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct($fieldName, self::STATUSES, $accessType);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ErrorResult.php
@@ -12,21 +12,23 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
-use XEAF\Rack\API\Core\ActionResult;
-use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\API\Interfaces\IActionResult;
+use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
-use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Serializer;
 
 /**
  * Реализует методы результата возвращающего информацию о ошибке
  *
- * @property       string $message      Текст сообщения об ошибке
- * @property-read  array  $objectErrors Информация об ошибках по объектам
+ * @property string $message Текст сообщения об ошибке
+ * @property string $tag     Тег
  *
  * @package XEAF\Rack\API\Models\Results
  */
-class ErrorResult extends ActionResult {
+class ErrorResult extends StatusResult {
+
+    use CommonErrorsTrait;
 
     /**
      * Текст сообщения об ошибке
@@ -35,21 +37,24 @@ class ErrorResult extends ActionResult {
     protected $_message = '';
 
     /**
-     * Список ошибок по объектам
-     * @var \XEAF\Rack\API\Interfaces\IKeyValue
+     * Тег
+     * @var string
      */
-    protected $_objectErrors = null;
+    protected $_tag = '';
 
     /**
      * Конструктор класса
      *
-     * @param string $message Сообщение об ошибке
-     * @param int    $status  Код статуса HTTP
+     * @param int    $status  Код состояния HTTP
+     * @param string $langFmt Имя языковой переменной или формат сообщения
+     * @param array  $args    Аргементы сообщения
+     * @param string $tag     Тег
      */
-    public function __construct(string $message = '', int $status = HttpResponse::OK) {
+    public function __construct(int $status, string $langFmt = '', array $args = [], string $tag = '') {
         parent::__construct($status);
-        $this->_message      = $message;
-        $this->_objectErrors = new KeyValue();
+        $format         = Localization::getInstance()->getLanguageVar($langFmt);
+        $this->_message = vsprintf($format, $args);
+        $this->_tag     = $tag;
     }
 
     /**
@@ -73,37 +78,71 @@ class ErrorResult extends ActionResult {
     }
 
     /**
-     * Возвращает информацию об ошибках объектов
-     *
-     * @return \XEAF\Rack\API\Interfaces\IKeyValue
+     * Возвращает тег
+     * @return string
      */
-    public function getObjectErrors(): IKeyValue {
-        return $this->_objectErrors;
+    public function getTag(): string {
+        return $this->_tag;
     }
 
     /**
-     * Добавляет информацию об ошибке объекта
+     * Задает значение тега
      *
-     * @param string $id      Идентификатор объекта
-     * @param string $message Текст сообщения
-     *
-     * @return void
+     * @param string $tag Тег
      */
-    public function addObjectError(string $id, string $message): void {
-        $this->_objectErrors->put($id, $message);
+    public function setTag(string $tag): void {
+        $this->_tag = $tag;
     }
 
     /**
      * @inheritDoc
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
+        $result = [
+            'status'  => $this->getStatusCode(),
+            'message' => $this->getMessage(),
+            'tag'     => $this->getTag()
+        ];
+
         $headers    = HttpResponse::getInstance();
-        $serializer = Serializer::getInstance();
-        $headers->responseCode($this->getStatusCode());
-        if ($this->getMessage() || !$this->getObjectErrors()->isEmpty()) {
-            $headers->contentJSON();
-            print $serializer->jsonDataObjectEncode($this);
+        $headerCode = $this->getHeaderStatusCode();
+        $headers->responseCode($headerCode);
+        $headers->authenticateBearer($headerCode);
+
+        $headers->contentJSON();
+
+        if ($result['message'] == '') {
+            $result['message'] = HttpResponse::MESSAGES[$this->getStatusCode()] ?? '';
         }
+        if ($result['tag'] == '') {
+            unset($result['tag']);
+        }
+
+        print Serializer::getInstance()->jsonArrayEncode($result);
+    }
+
+    /**
+     * Возвращает код состояния HTTP для установки в заголовок
+     *
+     * @return int
+     */
+    protected function getHeaderStatusCode(): int {
+        return $this->getStatusCode();
+    }
+
+    /**
+     * Сообщение об ошибке аргумента
+     *
+     * @param string $id      Идентификатор аргумента
+     * @param string $langFmt Имя языковой переменной или формат сообщения
+     * @param array  $args    Аргументы сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     */
+    public static function argument(string $id, string $langFmt, array $args = []): IActionResult {
+        return new ErrorResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
     }
 }

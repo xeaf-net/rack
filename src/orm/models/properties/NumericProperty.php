@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * NumericProperty.php
@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
@@ -28,10 +29,10 @@ class NumericProperty extends PropertyModel {
      * @param int    $size       Размер
      * @param int    $precision  Точность
      * @param bool   $primaryKey Признак первичного ключа
-     * @param bool   $readOnly   Признак поля только для чтения
+     * @param int    $accessType Определение доступа
      */
-    public function __construct(string $fieldName, int $size, int $precision, bool $primaryKey = false, bool $readOnly = false) {
-        parent::__construct(DataTypes::DT_NUMERIC, $size, $precision, $fieldName, $primaryKey, $readOnly);
+    public function __construct(string $fieldName, int $size, int $precision, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT) {
+        parent::__construct(DataTypes::DT_NUMERIC, $size, $precision, $fieldName, $primaryKey, $accessType);
     }
 
     /**

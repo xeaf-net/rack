@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Crypto.php
@@ -117,7 +117,7 @@ class Crypto implements ICrypto {
      */
     public function randomBytes(int $length): string {
         $result = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($counter = 0; $counter < $length; $counter++) {
             $result .= chr(mt_rand(0, 255));
         }
         return $result;
@@ -158,6 +158,25 @@ class Crypto implements ICrypto {
     /**
      * @inheritDoc
      */
+    public function requestHeaderBearer(): ?string {
+        $result = null;
+        $params = Parameters::getInstance();
+        $auth   = $params->getHeader(Session::SESSION_AUTH);
+        if ($auth) {
+            $apiId  = Session::getInstance()->getApiId();
+            $result = trim(substr($auth, strlen($apiId) + 1));
+            if ($result == '') {
+                $result = null;
+            } else {
+                $result = $this->base64Decode($result);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function jwtPrivateKey(): string {
         if (!$this->_jwtPrivateKey) {
             $fileName             = __RACK_CONFIG_DIR__ . '/' . self::JWT_PRIVATE_FILE_NAME;
@@ -181,19 +200,6 @@ class Crypto implements ICrypto {
             }
         }
         return $this->_jwtPublicKey;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function requestHeaderJWT(): ?string {
-        $result = null;
-        $params = Parameters::getInstance();
-        $auth   = $params->getHeader(Session::SESSION_AUTH);
-        if ($auth) {
-            $result = substr($auth, strlen('Bearer') + 1);
-        }
-        return $result;
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * PropertyModel.php
@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Models\Properties;
 
 use XEAF\Rack\API\Core\DataModel;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 
 /**
  * Реализует методы свойства сущности
@@ -22,9 +23,14 @@ use XEAF\Rack\API\Core\DataModel;
  * @property-read int    $size          Размер
  * @property-read int    $precision     Точность
  * @property-read bool   $primaryKey    Признак первичного ключа
- * @property-read bool   $readOnly      Признак поля только для чтения
+ * @property-read int    $accessType    Определение доступа
  * @property-read bool   $autoIncrement Признак поля с автоинкрементом
  * @property-read mixed  $defaultValue  Значение по умолчанию
+ *
+ * @property-read bool   $isReadable    Признак читаемого свойства
+ * @property-read bool   $isInsertable  Признак вставляемого свойства
+ * @property-read bool   $isUpdatable   Признак изменяемого свойства
+ * @property-read bool   $isCalculated  Признак вычисляемого свойства
  *
  * @package XEAF\Rack\ORM\Models\Properties
  */
@@ -61,10 +67,10 @@ abstract class PropertyModel extends DataModel {
     private $_primaryKey = false;
 
     /**
-     * Признак поля только для чтения
-     * @var bool
+     * Определение доступа
+     * @var int
      */
-    private $_readOnly = false;
+    private $_accessType = AccessTypes::AC_DEFAULT;
 
     /**
      * Признак поля с автоинкрементом
@@ -80,17 +86,17 @@ abstract class PropertyModel extends DataModel {
      * @param int    $precision     Точность
      * @param string $fieldName     Имя поля таблицы БД
      * @param bool   $primaryKey    Признак первичного ключа
-     * @param bool   $readOnly      Признак поля только для чтения
+     * @param int    $accessType    Определение доступа
      * @param bool   $autoIncrement Признак поля с автоинкрементом
      */
-    public function __construct(int $dataType, int $size, int $precision, string $fieldName = '', bool $primaryKey = false, bool $readOnly = false, bool $autoIncrement = false) {
+    public function __construct(int $dataType, int $size, int $precision, string $fieldName = '', bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT, bool $autoIncrement = false) {
         parent::__construct();
         $this->_dataType      = $dataType;
         $this->_size          = $size;
         $this->_precision     = $precision;
         $this->_fieldName     = $fieldName;
         $this->_primaryKey    = $primaryKey;
-        $this->_readOnly      = $readOnly;
+        $this->_accessType    = $accessType;
         $this->_autoIncrement = $autoIncrement;
     }
 
@@ -140,10 +146,12 @@ abstract class PropertyModel extends DataModel {
     }
 
     /**
-     * @inheritDoc
+     * Возвращает определение доступа к свойству
+     *
+     * @return int
      */
-    public function getReadOnly(): bool {
-        return $this->_readOnly || $this->getAutoIncrement();
+    public function getAccessType(): int {
+        return $this->getAutoIncrement() ? AccessTypes::AC_READABLE : $this->_accessType;
     }
 
     /**
@@ -153,6 +161,42 @@ abstract class PropertyModel extends DataModel {
      */
     public function getAutoIncrement(): bool {
         return $this->_autoIncrement;
+    }
+
+    /**
+     * Возвращает признак читаемого свойства
+     *
+     * @return bool
+     */
+    public function getIsReadable(): bool {
+        return ($this->getAccessType() & AccessTypes::AC_READABLE) > 0;
+    }
+
+    /**
+     * Возвращает признак вставляемого свойства
+     *
+     * @return bool
+     */
+    public function getIsInsertable(): bool {
+        return ($this->getAccessType() & AccessTypes::AC_INSERTABLE) > 0;
+    }
+
+    /**
+     * Возвращает признак обновляемого свойства
+     *
+     * @return bool
+     */
+    public function getIsUpdatable(): bool {
+        return ($this->getAccessType() & AccessTypes::AC_UPDATABLE) > 0;
+    }
+
+    /**
+     * Возвращает признак вычисляемого свойства
+     *
+     * @return bool
+     */
+    public function getIsCalculated(): bool {
+        return $this->getAccessType() == AccessTypes::AC_CALCULATED;
     }
 
     /**

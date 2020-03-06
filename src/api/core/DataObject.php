@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * DataObject.php
@@ -100,10 +100,10 @@ class DataObject extends StdObject {
                 if ($data instanceof ICollection) {
                     $subMap            = $map['property'] ?? [];
                     $result[$property] = $data->toArray($subMap);
-                } else if ($data instanceof DataObject) {
+                } elseif ($data instanceof DataObject) {
                     $subMap            = $map['property'] ?? [];
                     $result[$property] = $data->toArray($subMap);
-                } else if ($data instanceof IKeyValue) {
+                } elseif ($data instanceof IKeyValue) {
                     $result[$property] = $data->toArray();
                 } else {
                     $result[$property] = $data;

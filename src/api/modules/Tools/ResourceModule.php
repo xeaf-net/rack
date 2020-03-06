@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * ResourceModule.php
@@ -89,6 +89,8 @@ class ResourceModule extends Module {
 
     /**
      * @inheritDoc
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function execute(): ?IActionResult {
         $actionName = $this->args()->getActionPath();

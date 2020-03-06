@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Serializer.php
@@ -207,7 +207,7 @@ class Serializer implements ISerializer {
                 $data    = base64_decode($data);
                 $crypto  = Crypto::getInstance();
                 $newHash = $crypto->hash($data, $password);
-                if ($crypto->hashEquals($newHash, $hash)) {
+                if ($crypto->hashEquals($newHash, (string) $hash)) {
                     $result = unserialize($data);
                 } else {
                     throw SerializerException::dataHashValidationError();

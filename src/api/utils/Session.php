@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Session.php
@@ -60,6 +60,12 @@ class Session implements ISession {
     private $_provider = null;
 
     /**
+     * Признак изменения переменных сессии
+     * @var bool
+     */
+    private $_modified = false;
+
+    /**
      * Конструктор класса
      *
      * @throws \XEAF\Rack\API\Utils\Exceptions\ConfigurationException
@@ -74,6 +80,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function clear(): void {
+        $this->_modified = true;
         $this->_provider->clear();
     }
 
@@ -95,6 +102,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function put(string $key, $value = null): void {
+        $this->_modified = true;
         $this->_provider->put($key, $value);
     }
 
@@ -102,6 +110,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function delete(string $key): void {
+        $this->_modified = true;
         $this->_provider->delete($key);
     }
 
@@ -143,6 +152,20 @@ class Session implements ISession {
     /**
      * @inheritDoc
      */
+    public function getApiId(): string {
+        return $this->_provider->getApiId();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setApiId(string $apiId): void {
+        $this->_provider->setApiId($apiId);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUserId(): ?string {
         return $this->_provider->getUserId();
     }
@@ -151,6 +174,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function setUserId(?string $userId): void {
+        $this->_modified = true;
         $this->_provider->setUserId($userId);
     }
 
@@ -165,6 +189,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function setLocale(?string $locale): void {
+        $this->_modified = true;
         $this->_provider->setLocale($locale);
     }
 
@@ -179,7 +204,9 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function saveSessionVars(): void {
-        $this->_provider->saveSessionVars();
+        if ($this->_modified) {
+            $this->_provider->saveSessionVars();
+        }
     }
 
     /**

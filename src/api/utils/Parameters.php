@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Parameters.php
@@ -17,6 +17,7 @@ use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Core\ActionArgs;
 use XEAF\Rack\API\Interfaces\IActionArgs;
 use XEAF\Rack\API\Models\Config\PortalConfig;
+use XEAF\Rack\API\Models\Results\StatusResult;
 
 /**
  * Реализует методы разбора параметров
@@ -87,9 +88,12 @@ class Parameters extends ActionArgs {
             case self::OPTIONS_METHOD_NAME:
                 $this->processInputJsonStream();
                 $this->processOptionsHeaders();
+                die(); // Только заголовки
                 break;
             default:
-                Logger::fatalError('Invalid HTTP Method, ' . $this->_methodName . '.');
+                $result = StatusResult::notImplemented();
+                $result->processResult();
+                die();
                 break;
         }
         $this->postProcessParameters();

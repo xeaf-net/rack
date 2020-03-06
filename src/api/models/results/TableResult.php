@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * TableResult.php
@@ -103,6 +103,8 @@ class TableResult extends ListResult {
      * @inheritDoc
      *
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
         $headers    = HttpResponse::getInstance();
