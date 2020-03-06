@@ -12,8 +12,10 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
+use XEAF\Rack\API\Core\ActionResult;
 use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Serializer;
 
 /**
@@ -44,12 +46,14 @@ class ErrorResult extends StatusResult {
      * Конструктор класса
      *
      * @param int    $status  Код состояния HTTP
-     * @param string $message Сообщение об ошибке
+     * @param string $langFmt Имя языковой переменной или формат сообщения
+     * @param array  $args    Аргементы сообщения
      * @param string $tag     Тег
      */
-    public function __construct(int $status, string $message = '', string $tag = '') {
+    public function __construct(int $status, string $langFmt = '', array $args = [], string $tag = '') {
         parent::__construct($status);
-        $this->_message = $message;
+        $format         = Localization::getInstance()->getLanguageVar($langFmt);
+        $this->_message = vsprintf($format, $args);
         $this->_tag     = $tag;
     }
 
@@ -124,5 +128,18 @@ class ErrorResult extends StatusResult {
      */
     protected function getHeaderStatusCode(): int {
         return $this->getStatusCode();
+    }
+
+    /**
+     * Сообщение об ошибке аргумента
+     *
+     * @param string $id      Идентификатор аргумента
+     * @param string $langFmt Имя языковой переменной или формат сообщения
+     * @param array  $args    Аргументы сообщения
+     *
+     * @return \XEAF\Rack\API\Core\ActionResult
+     */
+    public static function argument(string $id, string $langFmt, array $args = []): ActionResult {
+        return new ErrorResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
     }
 }
