@@ -89,14 +89,14 @@ class Strings implements IStrings {
      * @inheritDoc
      */
     public function isInteger(?string $buf): bool {
-        return filter_var($buf, FILTER_VALIDATE_INT) === 0 || filter_var($buf, FILTER_VALIDATE_INT);
+        return filter_var($buf, FILTER_VALIDATE_INT) === 0 || (filter_var($buf, FILTER_VALIDATE_INT) !== false);
     }
 
     /**
      * @inheritDoc
      */
     public function isFloat(?string $buf): bool {
-        return $this->isInteger($buf) || filter_var($buf, FILTER_VALIDATE_FLOAT);
+        return $this->isInteger($buf) || (filter_var($buf, FILTER_VALIDATE_FLOAT) !== false);
     }
 
     /**
@@ -110,17 +110,18 @@ class Strings implements IStrings {
      * @inheritDoc
      */
     public function isUUID(?string $buf): bool {
-        if ($buf == null) {
-            return false;
+        $result = false;
+        if ($buf != null) {
+            $result = preg_match(self::UUID_PATTERN, $buf) !== false;
         }
-        return preg_match(self::UUID_PATTERN, $buf);
+        return $result;
     }
 
     /**
      * @inheritDoc
      */
     public function isEmail(?string $buf): bool {
-        return filter_var($buf, FILTER_VALIDATE_EMAIL);
+        return filter_var($buf, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
