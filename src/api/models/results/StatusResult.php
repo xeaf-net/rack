@@ -15,7 +15,6 @@ namespace XEAF\Rack\API\Models\Results;
 use XEAF\Rack\API\Core\ActionResult;
 use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
-use XEAF\Rack\API\Utils\Session;
 
 /**
  * Реализует методы результата возвращающего код статуса

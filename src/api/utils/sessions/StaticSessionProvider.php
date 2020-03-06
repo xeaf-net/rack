@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\API\Utils\Sessions;
 
+use XEAF\Rack\API\App\Application;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ISessionProvider;
@@ -32,6 +33,12 @@ class StaticSessionProvider extends KeyValue implements ISessionProvider {
      * Имя провайдера
      */
     public const PROVIDER_NAME = 'static';
+
+    /**
+     * Идентификатор API приложения
+     * @var string
+     */
+    private $_apiId = Application::DEFAULT_API_ID;
 
     /**
      * Конструктор класса
@@ -64,6 +71,20 @@ class StaticSessionProvider extends KeyValue implements ISessionProvider {
      */
     public function setId(?string $sessionId): void {
         $this->put(Session::SESSION_ID, $sessionId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getApiId(): string {
+        return $this->_apiId;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setApiId(string $apiId): void {
+        $this->_apiId = $apiId;
     }
 
     /**

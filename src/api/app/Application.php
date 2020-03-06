@@ -41,6 +41,11 @@ use XEAF\Rack\API\Utils\Session;
 class Application extends Extension {
 
     /**
+     * Идентификатор API по умолчанию
+     */
+    public const DEFAULT_API_ID = 'rackAPI';
+
+    /**
      * Объект методов работы с маршрутами
      * @var \XEAF\Rack\API\Interfaces\IRouter|null
      */

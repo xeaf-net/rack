@@ -36,6 +36,22 @@ interface ISessionActions extends IKeyValue {
     public function setId(?string $sessionId): void;
 
     /**
+     * Возвращает идентификатор API приложения
+     *
+     * @return string
+     */
+    public function getApiId(): string;
+
+    /**
+     * Задает идетификатор API приложения
+     *
+     * @param string $apiId Идентификатор API приложения
+     *
+     * @return void
+     */
+    public function setApiId(string $apiId): void;
+
+    /**
      * Возвращает идентификатор пользователя сессии
      *
      * @return string|null
