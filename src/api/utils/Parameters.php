@@ -88,6 +88,7 @@ class Parameters extends ActionArgs {
             case self::OPTIONS_METHOD_NAME:
                 $this->processInputJsonStream();
                 $this->processOptionsHeaders();
+                die(); // Только заголовки
                 break;
             default:
                 $result = StatusResult::notImplemented();
