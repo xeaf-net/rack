@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\API\Models\Results;
 
+use XEAF\Rack\API\Core\ActionResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
 
@@ -36,7 +37,7 @@ class FormResult extends ErrorResult {
     }
 
     /**
-     * Возвращает код состояния HTTP для устаовки в заголовок
+     * Возвращает код состояния HTTP для установки в заголовок
      *
      * @return int
      *
@@ -47,69 +48,92 @@ class FormResult extends ErrorResult {
     }
 
     /**
-     * Результат успешной операции
+     * Сообщение об ошибке аргумента
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
-     */
-    public static function ok(): self {
-        return new self(HttpResponse::OK);
-    }
-
-    /**
-     * Результат ошибочных параметров запроса
-     *
-     * @param string $tag     Тег
+     * @param string $id      Идентификатор аргумента
      * @param string $langFmt Имя языковой переменной с форматом сообщения
      * @param array  $args    Аргументы сообщения
      *
      * @return \XEAF\Rack\API\Models\Results\FormResult
      */
-    public static function argument(string $tag, string $langFmt, array $args = []): self {
-        return new self(HttpResponse::BAD_REQUEST, $langFmt, $args, $tag);
+    public static function argument(string $id, string $langFmt, array $args = []): FormResult {
+        return new FormResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
     }
 
     /**
-     * Результат - 400 BAD REQUEST
+     * Результат успешной операции
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function badRequest(): self {
-        return new self(HttpResponse::BAD_REQUEST);
+    public static function ok(): ActionResult {
+        return new FormResult(HttpResponse::OK);
     }
 
     /**
-     * Результат - 401 UNAUTHORIZED
+     * Создает объект, возвращающий ошибку 400 - BAD REQUEST
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function unauthorized(): self {
-        return new self(HttpResponse::UNAUTHORIZED);
+    public static function badRequest(): ActionResult {
+        return new FormResult(HttpResponse::BAD_REQUEST);
     }
 
     /**
-     * Результат - 403 FORBIDDEN
+     * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function forbidden(): self {
-        return new self(HttpResponse::FORBIDDEN);
+    public static function unauthorized(): ActionResult {
+        return new FormResult(HttpResponse::UNAUTHORIZED);
     }
 
     /**
-     * Результат - 404 NOT FOUND
+     * Создает объект, возвращающий ошибку 403 - FORBIDDEN
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function notFound(): self {
-        return new self(HttpResponse::NOT_FOUND);
+    public static function forbidden(): ActionResult {
+        return new FormResult(HttpResponse::FORBIDDEN);
     }
 
     /**
-     * Результат - 500 INTERNAL SERVER ERROR
+     * Создает объект, возвращающий ошибку 404 - NOT FOUND
      *
-     * @return \XEAF\Rack\API\Models\Results\FormResult
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function internalServerError(): self {
-        return new self(HttpResponse::FATAL_ERROR);
+    public static function notFound(): ActionResult {
+        return new FormResult(HttpResponse::NOT_FOUND);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
+     *
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function internalServerError(): ActionResult {
+        return new FormResult(HttpResponse::FATAL_ERROR);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
+     *
+     * @return \XEAF\Rack\API\Core\ActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function notImplemented(): ActionResult {
+        return new FormResult(HttpResponse::NOT_IMPLEMENTED);
     }
 }

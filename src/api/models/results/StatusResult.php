@@ -23,73 +23,73 @@ use XEAF\Rack\API\Utils\HttpResponse;
 class StatusResult extends ActionResult {
 
     /**
+     * @inheritDoc
+     */
+    public function processResult(): void {
+        $headers = HttpResponse::getInstance();
+        $headers->responseCode($this->getStatusCode());
+    }
+
+    /**
      * Создает объект, возвращающий код завершения 200 - OK
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function ok(): self {
+    public static function ok(): ActionResult {
         return new self(HttpResponse::OK);
     }
 
     /**
      * Создает объект, возвращающий ошибку 400 - BAD REQUEST
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function badRequest(): self {
+    public static function badRequest(): ActionResult {
         return new self(HttpResponse::BAD_REQUEST);
     }
 
     /**
      * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function unauthorized(): self {
+    public static function unauthorized(): ActionResult {
         return new self(HttpResponse::UNAUTHORIZED);
     }
 
     /**
      * Создает объект, возвращающий ошибку 403 - FORBIDDEN
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function forbidden(): self {
+    public static function forbidden(): ActionResult {
         return new self(HttpResponse::FORBIDDEN);
     }
 
     /**
      * Создает объект, возвращающий ошибку 404 - NOT FOUND
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function notFound(): self {
+    public static function notFound(): ActionResult {
         return new self(HttpResponse::NOT_FOUND);
     }
 
     /**
      * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function internalServerError(): self {
+    public static function internalServerError(): ActionResult {
         return new self(HttpResponse::FATAL_ERROR);
     }
 
     /**
      * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
      *
-     * @return \XEAF\Rack\API\Models\Results\StatusResult
+     * @return \XEAF\Rack\API\Core\ActionResult
      */
-    public static function notImplemented(): self {
+    public static function notImplemented(): ActionResult {
         return new self(HttpResponse::NOT_IMPLEMENTED);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function processResult(): void {
-        $headers = HttpResponse::getInstance();
-        $headers->responseCode($this->getStatusCode());
     }
 }
