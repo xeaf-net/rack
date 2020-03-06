@@ -110,6 +110,9 @@ class Strings implements IStrings {
      * @inheritDoc
      */
     public function isUUID(?string $buf): bool {
+        if ($buf == null) {
+            return false;
+        }
         return preg_match(self::UUID_PATTERN, $buf);
     }
 

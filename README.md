@@ -18,7 +18,9 @@
     * изменено поведение классов ErrorResult и FormResult
     * добавлена поддержка API_ID
 * `1.0.10` - несколько изменений:
-    * исправлена ошибка в методе Tokenizer::prepareXQL
+    * Исправлена ошибка в методе Tokenizer::prepareXQL
+    * Исправлена ошибка в методе Strings::isUUID
     * StatusProperty::STOPPED переименована в SUSPENDED
+    * Добавлена проверка Session::getId() на соответствие UUID
     * Добавлена проверка Session::getId() на соответствие UUID
     
