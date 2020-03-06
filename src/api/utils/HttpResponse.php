@@ -165,7 +165,7 @@ class HttpResponse implements IHttpResponse {
      * @inheritDoc
      */
     public function contentType(string $mimeType, string $charset = ''): void {
-        $header = "Content - type: $mimeType";
+        $header = "Content-Type: $mimeType";
         if ($charset) {
             $header .= "; charset = $charset";
         }
