@@ -192,7 +192,7 @@ class Localization implements ILocalization {
      */
     public function getLanguageVars(string $locale = null): IKeyValue {
         $loc = $locale == null ? $this->_defaultLocale : $locale;
-        $this->reloadLanguageFiles($locale);
+        $this->reloadLanguageFiles($loc);
         return $this->_languageVars->get($loc) ?? new KeyValue();
     }
 
