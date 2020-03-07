@@ -112,7 +112,8 @@ class Strings implements IStrings {
     public function isUUID(?string $buf): bool {
         $result = false;
         if ($buf != null) {
-            $result = preg_match(self::UUID_PATTERN, $buf) !== false;
+            $preg   = preg_match(self::UUID_PATTERN, $buf);
+            $result = $preg !== false && $preg > 0;
         }
         return $result;
     }
