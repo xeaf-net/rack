@@ -13,9 +13,7 @@
 namespace XEAF\Rack\API\Models\Results;
 
 use XEAF\Rack\API\Interfaces\IActionResult;
-use XEAF\Rack\API\Traits\CommonErrorsTrait;
 use XEAF\Rack\API\Utils\HttpResponse;
-use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Serializer;
 
 /**
@@ -28,8 +26,6 @@ use XEAF\Rack\API\Utils\Serializer;
  */
 class ErrorResult extends StatusResult {
 
-    use CommonErrorsTrait;
-
     /**
      * Текст сообщения об ошибке
      * @var string
@@ -37,24 +33,14 @@ class ErrorResult extends StatusResult {
     protected $_message = '';
 
     /**
-     * Тег
-     * @var string
-     */
-    protected $_tag = '';
-
-    /**
      * Конструктор класса
      *
      * @param int    $status  Код состояния HTTP
-     * @param string $langFmt Имя языковой переменной или формат сообщения
-     * @param array  $args    Аргементы сообщения
-     * @param string $tag     Тег
+     * @param string $message Сообщение об ошибке
      */
-    public function __construct(int $status, string $langFmt = '', array $args = [], string $tag = '') {
+    public function __construct(int $status, string $message) {
         parent::__construct($status);
-        $format         = Localization::getInstance()->getLanguageVar($langFmt);
-        $this->_message = vsprintf($format, $args);
-        $this->_tag     = $tag;
+        $this->_message = $message;
     }
 
     /**
@@ -78,23 +64,6 @@ class ErrorResult extends StatusResult {
     }
 
     /**
-     * Возвращает тег
-     * @return string
-     */
-    public function getTag(): string {
-        return $this->_tag;
-    }
-
-    /**
-     * Задает значение тега
-     *
-     * @param string $tag Тег
-     */
-    public function setTag(string $tag): void {
-        $this->_tag = $tag;
-    }
-
-    /**
      * @inheritDoc
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      *
@@ -103,46 +72,122 @@ class ErrorResult extends StatusResult {
     public function processResult(): void {
         $result = [
             'status'  => $this->getStatusCode(),
-            'message' => $this->getMessage(),
-            'tag'     => $this->getTag()
+            'message' => $this->getMessage()
         ];
 
         $headers    = HttpResponse::getInstance();
-        $headerCode = $this->getHeaderStatusCode();
+        $headerCode = $this->getStatusCode();
         $headers->responseCode($headerCode);
         $headers->authenticateBearer($headerCode);
 
         $headers->contentJSON();
 
         if ($result['message'] == '') {
-            $result['message'] = HttpResponse::MESSAGES[$this->getStatusCode()] ?? '';
-        }
-        if ($result['tag'] == '') {
-            unset($result['tag']);
+            unset($result['message']);
         }
 
         print Serializer::getInstance()->jsonArrayEncode($result);
     }
 
     /**
-     * Возвращает код состояния HTTP для установки в заголовок
+     * Отправляет код 200 - OK
      *
-     * @return int
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    protected function getHeaderStatusCode(): int {
-        return $this->getStatusCode();
+    public static function ok(): IActionResult {
+        return new ErrorResult(HttpResponse::OK, '');
     }
 
     /**
-     * Сообщение об ошибке аргумента
+     * Создает объект, возвращающий ошибку 400 - BAD REQUEST
      *
-     * @param string $id      Идентификатор аргумента
-     * @param string $langFmt Имя языковой переменной или формат сообщения
-     * @param array  $args    Аргументы сообщения
+     * @param string $message Текст сообщения
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function argument(string $id, string $langFmt, array $args = []): IActionResult {
-        return new ErrorResult(HttpResponse::BAD_REQUEST, $langFmt, $args, $id);
+    public static function badRequest(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::BAD_REQUEST, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function unauthorized(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::UNAUTHORIZED, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 403 - FORBIDDEN
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function forbidden(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::FORBIDDEN, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 404 - NOT FOUND
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function notFound(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::NOT_FOUND, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 409 - CONFLICT
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function conflict(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::CONFLICT, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function internalServerError(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::FATAL_ERROR, $message);
+    }
+
+    /**
+     * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
+     *
+     * @param string $message Текст сообщения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public static function notImplemented(string $message = ''): IActionResult {
+        return new ErrorResult(HttpResponse::NOT_IMPLEMENTED, $message);
     }
 }
