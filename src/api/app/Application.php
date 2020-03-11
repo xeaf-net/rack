@@ -223,10 +223,21 @@ class Application extends Extension {
                 }
             }
         } catch (Throwable $exception) {
-            $this->defaultLogger()->exception($exception);
-            $result = StatusResult::internalServerError();
+            $result = $this->processException($exception);
         }
         return $result;
+    }
+
+    /**
+     * Возвращает результат исполнения действия при ошибке
+     *
+     * @param \Throwable $exception Объект исключения
+     *
+     * @return \XEAF\Rack\API\Interfaces\IActionResult
+     */
+    protected function processException(Throwable $exception): IActionResult {
+        $this->defaultLogger()->exception($exception);
+        return StatusResult::internalServerError();
     }
 
     /**

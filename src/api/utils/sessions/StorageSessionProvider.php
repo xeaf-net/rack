@@ -99,8 +99,9 @@ class StorageSessionProvider extends StaticSessionProvider {
     protected function resolveSessionId(): void {
         if (!$this->_useJWT) {
             $crypto    = Crypto::getInstance();
+            $strings = Strings::getInstance();
             $sessionId = $crypto->requestHeaderBearer();
-            if ($sessionId == null) {
+            if (!$strings->isUUID($sessionId)) {
                 $params    = Parameters::getInstance();
                 $sessionId = $params->get(strtolower(Session::SESSION_ID));
             }
