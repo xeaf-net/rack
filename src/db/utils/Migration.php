@@ -67,7 +67,7 @@ class Migration implements IMigration {
         return '
             select migration_version 
                 from 
-                     rack_migrations 
+                     migrations 
                 where
                     migration_product = :product
                 order by
