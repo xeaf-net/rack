@@ -24,7 +24,6 @@ use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
-use XEAF\Rack\ORM\Models\Properties\StatusProperty;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
@@ -419,18 +418,6 @@ abstract class Entity extends DataObject {
      */
     public static function object(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ObjectProperty {
         return new ObjectProperty($fieldName, $accessType);
-    }
-
-    /**
-     * Создает описание свойства типа Код состояния сущности
-     *
-     * @param string $fieldName  Имя поля БД
-     * @param int    $accessType Определение доступа
-     *
-     * @return \XEAF\Rack\ORM\Models\Properties\StatusProperty
-     */
-    public static function status(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): StatusProperty {
-        return new StatusProperty($fieldName, $accessType);
     }
 
     /**
