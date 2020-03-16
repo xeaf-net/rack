@@ -477,6 +477,6 @@ abstract class EntityManager {
         } catch (SerializerException $exception) {
             throw EntityException::internalError($exception);
         }
-        return $result;
+        return (string) $result;
     }
 }

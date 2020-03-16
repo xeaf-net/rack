@@ -1,7 +1,7 @@
 {
     "name": "rack",
     "description": "Каркас для быстрой разработки приложений на PHP",
-    "version": "1.0.2",
+    "version": "1.0.11",
     "main": "",
     "scripts": {
         "clean": "gulp clean",

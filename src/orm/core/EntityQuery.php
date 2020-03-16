@@ -581,7 +581,7 @@ class EntityQuery extends DataModel {
         $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            $value = $record[$property->getFieldName()];
+            $value = (string) $record[$property->getFieldName()];
             switch ($property->getDataType()) {
                 case DataTypes::DT_BOOL:
                     $result[$name] = $db->sqlBool($value);

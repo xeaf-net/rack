@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.10",
+    "version"          : "1.0.11",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
@@ -76,7 +76,6 @@
             "XEAF\\Rack\\WWW\\"                        : "src/www/"
         },
         "files": [
-            "src/autoload.php",
             "src/api/autoload.php",
             "src/db/autoload.php",
             "src/db.mysql/autoload.php",
