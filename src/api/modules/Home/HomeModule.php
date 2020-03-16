@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\API\Modules\Home;
 
+use XEAF\Rack\API\App\Application;
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\DataResult;
@@ -31,7 +32,7 @@ class HomeModule extends Module {
     protected function processGet(): ?IActionResult {
         $data = [
             'title'     => 'XEAF Rack',
-            'version'   => __RACK_VERSION__,
+            'version'   => Application::rackVersion(),
             'debugMode' => __RACK_DEBUG_MODE__
         ];
         return DataResult::dataArray($data);
