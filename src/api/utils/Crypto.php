@@ -168,7 +168,7 @@ class Crypto implements ICrypto {
             if ($result == '') {
                 $result = null;
             } else {
-                $result = $this->base64Decode($result);
+                $result = trim($this->base64Decode($result));
             }
         }
         return $result;
