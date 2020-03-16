@@ -164,7 +164,7 @@ class Crypto implements ICrypto {
         $auth   = $params->getHeader(Session::SESSION_AUTH);
         if ($auth) {
             $bearer = PortalConfig::getInstance()->getBearer();
-            $result = trim(substr($auth, strlen($bearer) + 1));
+            $result = trim(substr($auth, strlen($bearer)));
             if ($result == '') {
                 $result = null;
             } else {
