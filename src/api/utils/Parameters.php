@@ -207,8 +207,8 @@ class Parameters extends ActionArgs {
      */
     protected function postProcessParameters(): void {
         foreach ($this->_parameters as $name => $value) {
-            if (!is_array($value)) {
-                $this->_parameters[$name] = trim($value);
+            if ($value != null && !is_array($value)) {
+                $this->_parameters[$name] = trim((string)$value);
             }
         }
     }
