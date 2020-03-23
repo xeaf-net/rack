@@ -146,4 +146,18 @@ interface IRouter extends IFactoryObject {
      * @return string|null
      */
     public function moduleNodeClassName():?string;
+
+    /**
+     * Возвращает массив зарегистрированных маршрутов
+     *
+     * @return array
+     */
+    public function registeredRoutes(): array;
+
+    /**
+     * Возвращает массив зарегистрированных узлов маршрутов
+     *
+     * @return array
+     */
+    public function registeredRouteNodes(): array;
 }
