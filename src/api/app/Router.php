@@ -180,6 +180,24 @@ class Router implements IRouter {
     }
 
     /**
+     * Возвращает массив зарегистрированных маршрутов
+     *
+     * @return array
+     */
+    public function registeredRoutes(): array {
+        return $this->_routes->toArray();
+    }
+
+    /**
+     * Возвращает массив зарегистрированных узлов маршрутов
+     *
+     * @return array
+     */
+    public function registeredRouteNodes(): array {
+        return $this->_routeNodes->toArray();
+    }
+
+    /**
      * Возвращает единичный экземпляр объекта класса
      *
      * @return \XEAF\Rack\API\Interfaces\IRouter

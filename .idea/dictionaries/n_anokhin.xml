@@ -8,8 +8,10 @@
       <w>mbstring</w>
       <w>outform</w>
       <w>pgsql</w>
+      <w>phpmailer</w>
       <w>postgre</w>
       <w>pubout</w>
+      <w>smtp</w>
       <w>tsify</w>
       <w>unpop</w>
       <w>unpush</w>

@@ -177,7 +177,7 @@ class RestAPI implements IRestAPI {
     }
 
     /**
-     * Пеобразует полученный код состояния
+     * Преобразует полученный код состояния
      *
      * @param resource|null $api Ресурс подключения к API
      *

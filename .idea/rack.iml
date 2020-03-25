@@ -67,6 +67,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/api/modules" isTestSource="false" packagePrefix="XEAF\Rack\API\Modules\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/firebase/php-jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpmailer/phpmailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/smarty/smarty" />
     </content>
     <orderEntry type="inheritedJdk" />

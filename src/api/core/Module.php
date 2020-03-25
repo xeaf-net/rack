@@ -24,6 +24,7 @@ use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Reflection;
+use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Реализует базовые методы модуля проекта
@@ -36,11 +37,6 @@ class Module extends Extension implements IModule {
      * Префикс метода исполнения действия модуля
      */
     private const ACTION_METHOD_PREFIX = 'process';
-
-    /**
-     * Префикс метода исполнения действия модуля в режима API
-     */
-    private const ACTION_METHOD_API_SUFFIX = 'API';
 
     /**
      * @inheritDoc
@@ -101,14 +97,9 @@ class Module extends Extension implements IModule {
      * @return string|null
      */
     protected function actionModeMethod(?string $actionMode, string $methodName = Parameters::GET_METHOD_NAME): ?string {
-        $mode   = ($actionMode) ? $actionMode : '';
-        $result = self::ACTION_METHOD_PREFIX . ucfirst(strtolower($methodName)) . ucfirst($mode);
-        if ($this->isApiMode()) {
-            $apiMethod = $result . self::ACTION_METHOD_API_SUFFIX;
-            if (method_exists($this, $apiMethod)) {
-                return $apiMethod;
-            }
-        }
+        $mode    = ($actionMode) ? $actionMode : '';
+        $strings = Strings::getInstance();
+        $result  = self::ACTION_METHOD_PREFIX . ucfirst(strtolower($methodName)) . $strings->kebabToCamel($mode);
         return method_exists($this, $result) ? $result : null;
     }
 

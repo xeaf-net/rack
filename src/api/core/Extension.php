@@ -17,7 +17,6 @@ use XEAF\Rack\API\Interfaces\ILogger;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
-use XEAF\Rack\API\Utils\Session;
 
 /**
  * Реализует базовые методы для всех расширений проекта
@@ -104,15 +103,5 @@ class Extension extends StdObject {
      */
     protected function defaultLogger(): ILogger {
         return Logger::getInstance();
-    }
-
-    /**
-     * Возвращает признак режима API
-     *
-     * @return bool
-     */
-    protected function isApiMode(): bool {
-        $session = Session::getInstance();
-        return $session->isNative();
     }
 }
