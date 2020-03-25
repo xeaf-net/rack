@@ -85,19 +85,20 @@
         ]
     },
     "require"          : {
-        "php"             : ">=7.3",
-        "ext-curl"        : "*",
-        "ext-gd"          : "*",
-        "ext-json"        : "*",
-        "ext-mbstring"    : "*",
-        "ext-pdo"         : "*",
-        "ext-pdo_sqlite"  : "*",
-        "ext-pdo_mysql"   : "*",
-        "ext-pdo_pgsql"   : "*",
-        "ext-redis"       : "*",
-        "ext-imagick"     : "*",
-        "ext-zip"         : "*",
-        "firebase/php-jwt": "5.0.*",
-        "smarty/smarty"   : "3.1.*"
+        "php"                : ">=7.3",
+        "ext-curl"           : "*",
+        "ext-gd"             : "*",
+        "ext-json"           : "*",
+        "ext-mbstring"       : "*",
+        "ext-pdo"            : "*",
+        "ext-pdo_sqlite"     : "*",
+        "ext-pdo_mysql"      : "*",
+        "ext-pdo_pgsql"      : "*",
+        "ext-redis"          : "*",
+        "ext-imagick"        : "*",
+        "ext-zip"            : "*",
+        "firebase/php-jwt"   : "5.0.*",
+        "smarty/smarty"      : "3.1.*",
+        "phpmailer/phpmailer": "6.1.*"
     }
 }
