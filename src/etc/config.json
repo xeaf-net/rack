@@ -16,14 +16,15 @@
         "reserve": "mysql:host=mysql.xeaf.php;port=3306;dbname=rack;user=rack;password=manager;charset=utf8"
     },
     "mailer"     : {
-        "smtp"    : true,
-        "host"    : "localhost",
-        "port"    : 25,
-        "auth"    : false,
-        "secure"  : "ssl",
-        "userName": "",
-        "password": "",
-        "sendFrom": "me@example.com"
+        "smtp"      : true,
+        "host"      : "localhost",
+        "port"      : 25,
+        "auth"      : false,
+        "secure"    : "ssl",
+        "userName"  : "",
+        "password"  : "",
+        "sendFrom"  : "me@example.com",
+        "senderName": "rackAPI"
     },
     "logger"     : {
         "default": "file:level=DEBUG;path=/tmp;prefix=rack"

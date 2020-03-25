@@ -15,23 +15,25 @@ namespace XEAF\Rack\API\Models\Config;
 use PHPMailer\PHPMailer\PHPMailer;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\ConfigModel;
+use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Описывает параметры конфигурации отправки электронной почты
  *
- * @property-read bool   $smtp     Признак использования SMTP
- * @property-read string $host     Имя хоста
- * @property-read int    $port     Номер порта
- * @property-read bool   $auth     Признак необходимости авторизации
- * @property-read string $secure   Способ защиты соединения
- * @property-read string $userName Имя пользователя
- * @property-read string $password Пароль
- * @property-read string $sendFrom Отправитель
+ * @property-read bool   $smtp       Признак использования SMTP
+ * @property-read string $host       Имя хоста
+ * @property-read int    $port       Номер порта
+ * @property-read bool   $auth       Признак необходимости авторизации
+ * @property-read string $secure     Способ защиты соединения
+ * @property-read string $userName   Имя пользователя
+ * @property-read string $password   Пароль
+ * @property-read string $sendFrom   Адрес отправителя
+ * @property-read string $senderName Имя отправителя
  *
  * @package  XEAF\Rack\API\Models\Config
  */
-class MailerConfig extends ConfigModel {
+class MailerConfig extends ConfigModel implements IFactoryObject {
 
     /**
      * Имя секции файла конфигурации
@@ -74,9 +76,14 @@ class MailerConfig extends ConfigModel {
     private const DEFAULT_PASSWORD = '';
 
     /**
-     * Отправитель по умолчанию
+     * Адрес отправителя по умолчанию
      */
     private const DEFAULT_SEND_FROM = '';
+
+    /**
+     * Имя отправителя по умолчанию
+     */
+    private const DEFAULT_SENDER_NAME = '';
 
     /**
      * Признак использования SMTP
@@ -121,17 +128,32 @@ class MailerConfig extends ConfigModel {
     private $_password = self::DEFAULT_PASSWORD;
 
     /**
-     * Отправитель
+     * Адрес отправителя
      * @var string
      */
     private $_sendFrom = self::DEFAULT_SEND_FROM;
+
+    /**
+     * Имя отправителя
+     * @var string
+     */
+    private $_senderName = self::DEFAULT_SENDER_NAME;
+
+    /**
+     * Конструктор класса
+     *
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ConfigurationException
+     */
+    public function __construct() {
+        parent::__construct(self::SECTION_NAME);
+    }
 
     /**
      * Возвращает признак использования SMTP
      *
      * @return bool
      */
-    public function isSmtp(): bool {
+    public function getSmtp(): bool {
         return $this->_smtp;
     }
 
@@ -190,7 +212,7 @@ class MailerConfig extends ConfigModel {
     }
 
     /**
-     * Возвращает отправителя
+     * Возвращает адрес отправителя
      *
      * @return string
      */
@@ -199,18 +221,28 @@ class MailerConfig extends ConfigModel {
     }
 
     /**
+     * Возвращает имя отправителя
+     *
+     * @return string
+     */
+    public function getSenderName(): string {
+        return $this->_senderName;
+    }
+
+    /**
      * @inheritDoc
      */
     public function parseConfigurationSection(object $data): void {
-        $strings         = Strings::getInstance();
-        $this->_smtp     = (bool)$data->{'smtp'} ?? self::DEFAULT_SMTP;
-        $this->_host     = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port     = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
-        $this->_auth     = (bool)$data->{'auth'} ?? self::DEFAULT_AUTH;
-        $this->_secure   = $data->{'secure'} ?? self::DEFAULT_SECURE;
-        $this->_userName = $data->{'userName'} ?? self::DEFAULT_USERNAME;
-        $this->_password = $data->{'password'} ?? self::DEFAULT_PASSWORD;
-        $this->_sendFrom = $data->{'sendFrom'} ?? self::DEFAULT_SEND_FROM;
+        $strings           = Strings::getInstance();
+        $this->_smtp       = (bool)$data->{'smtp'} ?? self::DEFAULT_SMTP;
+        $this->_host       = $data->{'host'} ?? self::DEFAULT_HOST;
+        $this->_port       = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_auth       = (bool)$data->{'auth'} ?? self::DEFAULT_AUTH;
+        $this->_secure     = $data->{'secure'} ?? self::DEFAULT_SECURE;
+        $this->_userName   = $data->{'userName'} ?? self::DEFAULT_USERNAME;
+        $this->_password   = $data->{'password'} ?? self::DEFAULT_PASSWORD;
+        $this->_sendFrom   = $data->{'sendFrom'} ?? self::DEFAULT_SEND_FROM;
+        $this->_senderName = $data->{'senderName'} ?? self::DEFAULT_SENDER_NAME;
     }
 
     /**
