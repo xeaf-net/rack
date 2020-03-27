@@ -39,6 +39,11 @@ class FileLoggerProvider implements ILoggerProvider {
     protected const FILE_NAME_EXT = 'log';
 
     /**
+     * Режим файла
+     */
+    protected const FILE_MODE = 0666;
+
+    /**
      * Префиксы записей журала
      */
     public const LEVEL_PREFIXES = [
@@ -85,6 +90,7 @@ class FileLoggerProvider implements ILoggerProvider {
     public function writeLog(int $level, string $message, $data = null): void {
         $text = self::logText($level, $message, $data);
         file_put_contents($this->_fileName, $text, FILE_APPEND | LOCK_EX);
+        chmod($this->_fileName, self::FILE_MODE);
     }
 
     /**
