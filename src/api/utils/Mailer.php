@@ -14,7 +14,8 @@ namespace XEAF\Rack\API\Utils;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use Throwable;
-use XEAF\Rack\API\Interfaces\IFactoryObject;
+use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Interfaces\IMailer;
 use XEAF\Rack\API\Models\Config\MailerConfig;
 
 /**
@@ -22,7 +23,7 @@ use XEAF\Rack\API\Models\Config\MailerConfig;
  *
  * @package  XEAF\Rack\API\Utils
  */
-class Mailer implements IFactoryObject {
+class Mailer implements IMailer {
 
     /**
      * Служба отправики сообщений
@@ -46,17 +47,19 @@ class Mailer implements IFactoryObject {
      * @inheritDoc
      */
     public function __construct() {
-        $this->_logger    = Logger::getInstance();
+        $this->_logger = Logger::getInstance();
+        $this->clear();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function clear(): void {
         $this->_phpMailer = $this->createPhpMailer();
     }
 
     /**
-     * Добавляет нового получателя
-     *
-     * @param string $email Адрес электронной почты
-     * @param string $name  Имя получателя
-     *
-     * @return void
+     * @inheritDoc
      */
     public function addAddress(string $email, string $name = ''): void {
         try {
@@ -69,12 +72,7 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Добавляет новый адрес для ответа
-     *
-     * @param string $email Адрес электронной почты
-     * @param string $name  Имя отправителя
-     *
-     * @return void
+     * @inheritDoc
      */
     public function addReplayTo(string $email, string $name = ''): void {
         try {
@@ -87,12 +85,7 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Добавляет нового получателя копии
-     *
-     * @param string $email Адрес электронной почты
-     * @param string $name  Имя получателя
-     *
-     * @return void
+     * @inheritDoc
      */
     public function addCC(string $email, string $name): void {
         try {
@@ -105,12 +98,7 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Добавляет нового получателя скрытой копии
-     *
-     * @param string $email Адрес электронной почты
-     * @param string $name  Имя получателя
-     *
-     * @return void
+     * @inheritDoc
      */
     public function addBCC(string $email, string $name): void {
         try {
@@ -123,12 +111,7 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Добавляет новое вложение
-     *
-     * @param string $filePath Путь к файлу
-     * @param string $fileName Имя файла
-     *
-     * @return void
+     * @inheritDoc
      */
     public function addAttachment(string $filePath, string $fileName = ''): void {
         try {
@@ -141,24 +124,14 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Задает пирзнак отправки почты в формате HTML
-     *
-     * @param bool $isHTML Признак отправки в виде HTML
-     *
-     * @return void
+     * @inheritDoc
      */
     public function setHtml(bool $isHTML): void {
         $this->_phpMailer->isHTML($isHTML);
     }
 
     /**
-     * Отправляет электронное пиьмо
-     *
-     * @param string $subject Тема письма
-     * @param string $body    Тело сообщения
-     * @param string $altBody Альтернативное тело (не HTML)
-     *
-     * @return void
+     * @inheritDoc
      */
     public function send(string $subject, string $body, string $altBody = ''): void {
         try {
@@ -174,9 +147,7 @@ class Mailer implements IFactoryObject {
     }
 
     /**
-     * Возвращет результат последней операции
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function getLastError(): ?string {
         return $this->_lastError;
@@ -209,6 +180,17 @@ class Mailer implements IFactoryObject {
             $this->_lastError = $me->getMessage();
             $result           = null;
         }
+        return $result;
+    }
+
+    /**
+     * Возврвщает единичный экземпляр объекта
+     *
+     * @return \XEAF\Rack\API\Interfaces\IMailer
+     */
+    public static function getInstance(): IMailer {
+        $result = Factory::getFactoryObject(self::class);
+        assert($result instanceof IMailer);
         return $result;
     }
 }
