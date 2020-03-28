@@ -12,11 +12,11 @@
  */
 namespace XEAF\Rack\API\Modules\Home;
 
-use XEAF\Rack\API\App\Application;
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\DataResult;
+use XEAF\Rack\API\Utils\Versions;
 
 /**
  * Демонстрационный модуль домашней страницы
@@ -31,10 +31,11 @@ class HomeModule extends Module {
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
     protected function processGet(): ?IActionResult {
-        $config = PortalConfig::getInstance();
-        $data   = [
+        $config  = PortalConfig::getInstance();
+        $version = Versions::getInstance();
+        $data    = [
             'title'     => 'XEAF Rack',
-            'version'   => Application::rackVersion(),
+            'version'   => $version->getRackVersion(),
             'debugMode' => $config->getDebugMode()
         ];
         return DataResult::dataArray($data);

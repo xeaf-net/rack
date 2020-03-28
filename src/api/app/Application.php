@@ -26,13 +26,11 @@ use XEAF\Rack\API\Modules\Home\HomeModule;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Modules\Tools\SessionModule;
 use XEAF\Rack\API\Utils\Assets;
-use XEAF\Rack\API\Utils\Exceptions\SerializerException;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Reflection;
-use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\API\Utils\Session;
 
 /**
@@ -260,22 +258,5 @@ class Application extends Extension {
             $this->defaultLogger()->error($errorMsg, $reason);
             Logger::fatalError($errorMsg, $reason);
         }
-    }
-
-    /**
-     * Возвращает номер версии библиотеки XEAF/Rack
-     *
-     * @return string|null
-     */
-    public static function rackVersion(): ?string {
-        try {
-            $serializer = Serializer::getInstance();
-            $fileName   = __DIR__ . '/../../../composer.json';
-            $composer   = $serializer->jsonDecodeFileArray($fileName);
-            $result     = $composer['version'] ?? null;
-        } catch (SerializerException $exception) {
-            $result = null;
-        }
-        return $result;
     }
 }

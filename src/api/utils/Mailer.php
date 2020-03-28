@@ -184,7 +184,7 @@ class Mailer implements IMailer {
     }
 
     /**
-     * Возврвщает единичный экземпляр объекта
+     * Возвращает единичный экземпляр объекта
      *
      * @return \XEAF\Rack\API\Interfaces\IMailer
      */
