@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.12",
+    "version"          : "1.0.13",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
@@ -67,7 +67,6 @@
             "XEAF\\Rack\\UI\\Models\\"                 : "src/ui/models/",
             "XEAF\\Rack\\UI\\Models\\Config\\"         : "src/ui/models/config/",
             "XEAF\\Rack\\UI\\Models\\Results\\"        : "src/ui/models/results/",
-            "XEAF\\Rack\\UI\\Modules\\"                : "src/ui/modules/",
             "XEAF\\Rack\\UI\\Plugins\\"                : "src/ui/plugins/",
             "XEAF\\Rack\\UI\\Templates\\"              : "src/ui/templates/",
             "XEAF\\Rack\\UI\\Utils\\"                  : "src/ui/utils/",

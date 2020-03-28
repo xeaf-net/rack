@@ -1,11 +1,12 @@
 {
     "portal"     : {
-        "url"     : "http://localhost",
-        "origin"  : "*",
-        "bearer"  : "rackAPI",
-        "locale"  : "en_GB",
-        "session" : "native",
-        "tempPath": "/tmp"
+        "url"      : "http://localhost",
+        "origin"   : "*",
+        "bearer"   : "rackAPI",
+        "locale"   : "en_GB",
+        "session"  : "native",
+        "tempPath" : "/tmp",
+        "debugMode": "true"
     },
     "storage"    : {
         "default": "file:path=/tmp",

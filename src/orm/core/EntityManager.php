@@ -461,13 +461,13 @@ abstract class EntityManager {
         try {
             switch ($property->getDataType()) {
                 case DataTypes::DT_BOOL:
-                    $result = $this->_db->formatBool($result);
+                    $result = $this->_db->formatBool((bool) $result);
                     break;
                 case DataTypes::DT_DATE:
-                    $result = $this->_db->formatDate($result);
+                    $result = $this->_db->formatDate((int) $result);
                     break;
                 case DataTypes::DT_DATETIME:
-                    $result = $this->_db->formatDateTime($result);
+                    $result = $this->_db->formatDateTime((int) $result);
                     break;
                 case DataTypes::DT_ARRAY:
                 case DataTypes::DT_OBJECT:

@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Utils\Loggers;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ILoggerProvider;
 use XEAF\Rack\API\Models\Config\FileLoggerConfig;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Calendar;
 use XEAF\Rack\API\Utils\Logger;
@@ -37,6 +38,11 @@ class FileLoggerProvider implements ILoggerProvider {
      * Расширение имени файла
      */
     protected const FILE_NAME_EXT = 'log';
+
+    /**
+     * Режим файла
+     */
+    protected const FILE_MODE = 0666;
 
     /**
      * Префиксы записей журала
@@ -85,6 +91,7 @@ class FileLoggerProvider implements ILoggerProvider {
     public function writeLog(int $level, string $message, $data = null): void {
         $text = self::logText($level, $message, $data);
         file_put_contents($this->_fileName, $text, FILE_APPEND | LOCK_EX);
+        chmod($this->_fileName, self::FILE_MODE);
     }
 
     /**
@@ -129,9 +136,10 @@ class FileLoggerProvider implements ILoggerProvider {
      * @return string
      */
     protected function logText(int $level, string $message, $data = null): string {
+        $config = PortalConfig::getInstance();
         $prefix = '[' . self::LEVEL_PREFIXES[$level] . '] ';
         $time   = $this->getFormattedDateTime();
-        $debug  = __RACK_DEBUG_MODE__ && $data != null ? "\n" . print_r($data, true) : '';
+        $debug  = $config->getDebugMode() && $data != null ? "\n" . print_r($data, true) : '';
         $lines  = explode("\n", $time . ' ' . $message . $debug);
         return $prefix . implode("\n" . $prefix, $lines) . "\n";
     }
