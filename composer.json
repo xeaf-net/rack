@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.13-dev",
+    "version"          : "1.0.13",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
