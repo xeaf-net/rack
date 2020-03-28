@@ -105,7 +105,7 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
      * @return bool
      */
     public function getForceCompile(): bool {
-        if (__RACK_DEBUG_MODE__){
+        if (PortalConfig::getInstance()->getDebugMode()) {
             return true;
         }
         return $this->_forceCompile;

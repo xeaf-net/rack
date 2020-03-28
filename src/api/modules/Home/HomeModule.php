@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Modules\Home;
 use XEAF\Rack\API\App\Application;
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\DataResult;
 
 /**
@@ -30,10 +31,11 @@ class HomeModule extends Module {
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
     protected function processGet(): ?IActionResult {
-        $data = [
+        $config = PortalConfig::getInstance();
+        $data   = [
             'title'     => 'XEAF Rack',
             'version'   => Application::rackVersion(),
-            'debugMode' => __RACK_DEBUG_MODE__
+            'debugMode' => $config->getDebugMode()
         ];
         return DataResult::dataArray($data);
     }

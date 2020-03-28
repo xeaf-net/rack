@@ -17,6 +17,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ILogger;
 use XEAF\Rack\API\Interfaces\ILoggerProvider;
 use XEAF\Rack\API\Models\Config\LoggerConfig;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Config\ProviderConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Traits\ProviderFactoryTrait;
@@ -74,6 +75,12 @@ class Logger implements ILogger {
     private $_level = self::ERROR;
 
     /**
+     * Признак редима отладки
+     * @var bool
+     */
+    private $_debugMode = false;
+
+    /**
      * Конструктор класса
      *
      * @param string $name Имя объекта
@@ -82,8 +89,9 @@ class Logger implements ILogger {
      * @throws \XEAF\Rack\API\Utils\Exceptions\ProviderException
      */
     public function __construct(string $name = Factory::DEFAULT_NAME) {
-        $this->_name     = $name;
-        $this->_provider = $this->createProvider();
+        $this->_name      = $name;
+        $this->_provider  = $this->createProvider();
+        $this->_debugMode = PortalConfig::getInstance()->getDebugMode();
         $this->setLevel($this->_provider->getConfigLevel());
     }
 
@@ -105,7 +113,7 @@ class Logger implements ILogger {
      * @inheritDoc
      */
     public function debug(string $message, $data = null): void {
-        if (__RACK_DEBUG_MODE__ && $this->getLevel() >= self::DEBUG) {
+        if ($this->_debugMode && $this->getLevel() >= self::DEBUG) {
             $this->_provider->writeLog(self::DEBUG, $message, $data);
         }
     }
@@ -153,8 +161,9 @@ class Logger implements ILogger {
      * @return void
      */
     public static function fatalError(string $message, $data = null): void {
+        $debugMode = PortalConfig::getInstance()->getDebugMode();
         print "FTL: $message\n\n";
-        if (__RACK_DEBUG_MODE__ && $data != null) {
+        if ($debugMode && $data != null) {
             print_r($data);
         }
         die();

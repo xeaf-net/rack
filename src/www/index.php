@@ -25,12 +25,10 @@ define('__RACK_CONFIG_DIR__', __DIR__ . '/../etc');
 define('__RACK_VENDOR_DIR__', __DIR__ . '/../../vendor');
 
 /**
- * Признак режима отладки
- */
-define('__RACK_DEBUG_MODE__', true);
-
-/**
  * Подгрузка autoload.php
+ *
+ * @noinspection PhpIncludeInspection
+ * @noinspection RedundantSuppression
  */
 require_once __RACK_VENDOR_DIR__ . '/autoload.php';
 

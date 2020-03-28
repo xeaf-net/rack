@@ -28,6 +28,7 @@ use XEAF\Rack\API\Utils\Parameters;
  * @property-read string $session   Провайдер сессии
  * @property-read string $locale    Имя локали
  * @property-read string $tempPath  Директория временных файлов
+ * @property-read bool   $debugMode Признак режима отладки
  *
  * @package XEAF\Rack\API\Models\Config
  */
@@ -69,6 +70,11 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     private const DEFAULT_TEMP_PATH = '/tmp';
 
     /**
+     * Признак режима отладки по умолчанию
+     */
+    private const DEFAULT_DEBUG_MODE = false;
+
+    /**
      * URL портала
      * @var string
      */
@@ -103,6 +109,12 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * @var string
      */
     private $_tempPath = self::DEFAULT_TEMP_PATH;
+
+    /**
+     * Признак режима отладки
+     * @var bool
+     */
+    private $_debugMode = self::DEFAULT_DEBUG_MODE;
 
     /**
      * Конструктор класса
@@ -178,15 +190,25 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     }
 
     /**
+     * Возвращает признак режима отладки
+     *
+     * @return bool
+     */
+    public function getDebugMode(): bool {
+        return $this->_debugMode;
+    }
+
+    /**
      * @inheritDoc
      */
     public function parseConfigurationSection(object $data): void {
-        $this->_url      = $data->{'url'} ?? self::DEFAULT_URL;
-        $this->_origin   = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
-        $this->_bearer   = $data->{'bearer'} ?? self::DEFAULT_BEARER;
-        $this->_locale   = $data->{'locale'} ?? self::DEFAULT_LOCALE;
-        $this->_session  = $data->{'session'} ?? self::DEFAULT_SESSION;
-        $this->_tempPath = $data->{'tempPath'} ?? self::DEFAULT_TEMP_PATH;
+        $this->_url       = $data->{'url'} ?? self::DEFAULT_URL;
+        $this->_origin    = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
+        $this->_bearer    = $data->{'bearer'} ?? self::DEFAULT_BEARER;
+        $this->_locale    = $data->{'locale'} ?? self::DEFAULT_LOCALE;
+        $this->_session   = $data->{'session'} ?? self::DEFAULT_SESSION;
+        $this->_tempPath  = $data->{'tempPath'} ?? self::DEFAULT_TEMP_PATH;
+        $this->_debugMode = (bool)($data->{'debugMode'} ?? self::DEFAULT_DEBUG_MODE);
     }
 
     /**
