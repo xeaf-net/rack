@@ -88,6 +88,22 @@ class Crypto implements ICrypto {
     }
 
     /**
+     * Преобразует содержимое файл в строку с данными в формате BASE64
+     *
+     * @param string $filePath Путь к файлу
+     *
+     * @return string|null
+     */
+    public function base64FileEncode(string $filePath): ?string {
+        $fs = FileSystem::getInstance();
+        if ($fs->fileExists($filePath)) {
+            $data = file_get_contents($filePath);
+            return $this->base64Encode($data);
+        }
+        return null;
+    }
+
+    /**
      * @inheritDoc
      */
     public function base64Decode(string $base64): string {
@@ -96,6 +112,19 @@ class Crypto implements ICrypto {
             $result = '';
         }
         return $result;
+    }
+
+    /**
+     * Преобразует данные из формата BASE64 и сохраняет в файл
+     *
+     * @param string $base64   Данные в фомате BASE64
+     * @param string $filePath Путь к файлу
+     *
+     * @return void
+     */
+    public function base64FileDecode(string $base64, string $filePath): void {
+        $data = $this->base64Decode($base64);
+        file_put_contents($filePath, $data);
     }
 
     /**

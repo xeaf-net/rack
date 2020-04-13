@@ -31,6 +31,15 @@ interface ICrypto extends IFactoryObject {
     public function base64Encode(string $source): string;
 
     /**
+     * Преобразует содержимое файл в строку с данными в формате BASE64
+     *
+     * @param string $filePath Путь к файлу
+     *
+     * @return string|null
+     */
+    public function base64FileEncode(string $filePath): ?string;
+
+    /**
      * Преобразует данные в формате BASE64 в строку символов
      *
      * @param string $base64 Данные в формате BASE64
@@ -38,6 +47,16 @@ interface ICrypto extends IFactoryObject {
      * @return string
      */
     public function base64Decode(string $base64): string;
+
+    /**
+     * Преобразует данные из формата BASE64 и сохраняет в файл
+     *
+     * @param string $base64   Данные в фомате BASE64
+     * @param string $filePath Путь к файлу
+     *
+     * @return void
+     */
+    public function base64FileDecode(string $base64, string $filePath): void;
 
     /**
      * Генерирует хеш на основе пароля и строковых данных
