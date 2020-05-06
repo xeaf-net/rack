@@ -42,7 +42,7 @@ class FileLoggerProvider implements ILoggerProvider {
     /**
      * Режим файла
      */
-    protected const FILE_MODE = 0666;
+    protected const FILE_MODE = 0666; // rw-rw-rw-
 
     /**
      * Префиксы записей журала
