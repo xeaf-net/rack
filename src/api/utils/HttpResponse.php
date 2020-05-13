@@ -84,6 +84,16 @@ class HttpResponse implements IHttpResponse {
     public const NOT_IMPLEMENTED = 501;
 
     /**
+     * Имя параметра контента
+     */
+    public const CONTENT_TYPE = 'Content-Type';
+
+    /**
+     * Тип контента JSON
+     */
+    public const APPLICATION_JSON = 'application/json';
+
+    /**
      * Тексты сообщений для кодов ответов HTTP протокола
      */
     public const MESSAGES = [

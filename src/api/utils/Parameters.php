@@ -79,18 +79,15 @@ class Parameters extends ActionArgs {
         $this->processRequestHeaders();
         switch ($this->_methodName) {
             case self::GET_METHOD_NAME:
+            case self::DELETE_METHOD_NAME:
                 $this->processRequestParameters($_GET);
                 break;
             case self::POST_METHOD_NAME:
             case self::PATCH_METHOD_NAME:
                 $this->processRequestParameters($_GET);
                 $this->processRequestParameters($_POST);
-                $this->processInputJsonStream();
+                $this->processInputStream();
                 $this->processRequestFiles();
-                break;
-            case self::DELETE_METHOD_NAME:
-                $this->processRequestParameters($_GET);
-                $this->processInputJsonStream();
                 break;
             case self::OPTIONS_METHOD_NAME:
                 $this->processOptionsHeaders();
@@ -158,23 +155,26 @@ class Parameters extends ActionArgs {
     }
 
     /**
-     * Разбирает данные из входного JSON потока
+     * Разбирает данные из входного потока
      *
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    protected function processInputJsonStream(): void {
-        $strings  = Strings::getInstance();
-        $jsonData = file_get_contents('php://input');
-        if (!$strings->isEmpty($jsonData)) {
-            $serializer = Serializer::getInstance();
-            $params     = $serializer->jsonArrayDecode($jsonData);
-            if (is_array($params)) {
-                foreach ($params as $name => $value) {
-                    $this->_parameters[$name] = $value;
+    protected function processInputStream(): void {
+        $contentType = $this->getHeader(HttpResponse::CONTENT_TYPE);
+        if ($contentType == HttpResponse::APPLICATION_JSON) {
+            $strings  = Strings::getInstance();
+            $jsonData = file_get_contents('php://input');
+            if (!$strings->isEmpty($jsonData)) {
+                $serializer = Serializer::getInstance();
+                $params     = $serializer->jsonArrayDecode($jsonData);
+                if (is_array($params)) {
+                    foreach ($params as $name => $value) {
+                        $this->_parameters[$name] = $value;
+                    }
                 }
             }
-        }
+        } // @todo Добавить разбор бинарного потока
     }
 
     /**
