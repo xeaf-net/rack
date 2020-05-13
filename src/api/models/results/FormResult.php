@@ -16,6 +16,7 @@ use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Serializer;
+use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Реализует методы результата возвращающего информацию о ошибке форм ввода
@@ -99,8 +100,14 @@ class FormResult extends ErrorResult {
      * @noinspection PhpMissingParentCallCommonInspection
      */
     public function processResult(): void {
+        $strings = Strings::getInstance();
+        $code    = $this->getCode();
+        if ($strings->startsWith($code, 'error.')) {
+            $code = substr($code, mb_strlen($code));
+        }
+
         $result = [
-            'error'   => $this->getCode(),
+            'error'   => $code,
             'message' => $this->getMessage(),
             'tag'     => $this->getTag(),
         ];
@@ -109,14 +116,13 @@ class FormResult extends ErrorResult {
         $headerCode = $this->getStatusCode();
         $headers->responseCode($headerCode);
         $headers->authenticateBearer($headerCode);
-
         $headers->contentJSON();
 
-        if ($result['message'] == '') {
+        if ($strings->isEmpty($result['message'])) {
             unset($result['message']);
         }
-        if ($result['tag'] == '') {
-            unset($result['message']);
+        if ($strings->isEmpty($result['tag'])) {
+            unset($result['tag']);
         }
 
         print Serializer::getInstance()->jsonArrayEncode($result);
