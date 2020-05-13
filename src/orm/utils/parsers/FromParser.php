@@ -83,7 +83,6 @@ class FromParser extends Parser {
                     $fromModel = new FromModel($this->_previous->getText(), $this->_previous->getText());
                     $this->_queryModel->addFromModel($fromModel);
                 }
-                print " current: " . $this->_current->getText() . ' ';
                 switch ($this->_current->getType()) {
                     case TokenTypes::KW_LEFT:
                     case TokenTypes::KW_RIGHT:
