@@ -13,6 +13,7 @@
 namespace XEAF\Rack\API\Interfaces;
 
 use XEAF\Rack\API\Models\JsonWebToken;
+use XEAF\Rack\API\Utils\Crypto;
 
 /**
  * Описывает методы работы со случаными и шифрованными данными
@@ -165,7 +166,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?string;
+    public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = Crypto::JWT_DEFAULT_ALGO): ?string;
 
     /**
      * Расшифровывает и проверят подпись JWT
@@ -179,7 +180,7 @@ interface ICrypto extends IFactoryObject {
      *
      * @since 1.0.4
      */
-    public function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = self::JWT_DEFAULT_ALGO): ?JsonWebToken;
+    public function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = Crypto::JWT_DEFAULT_ALGO): ?JsonWebToken;
 
     /**
      * Проверяет корректность данных JWT
