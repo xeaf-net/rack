@@ -70,7 +70,7 @@ class FromParser extends Parser {
     protected function move(string $from, string $dest): void {
         switch ($from . ':' . $dest) {
             case '02:01':
-                $fromModel = new FromModel($this->_current->getText(), $this->_current->getText());
+                $fromModel = new FromModel($this->_previous->getText(), $this->_previous->getText());
                 $this->_queryModel->addFromModel($fromModel);
                 break;
             case '02:03':
