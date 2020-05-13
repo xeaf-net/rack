@@ -30,7 +30,18 @@ class FromParser extends Parser {
     protected const STATES = [
         '00' => [TokenTypes::KW_FROM => '01'],
         '01' => [TokenTypes::ID_UNKNOWN => '02'],
-        '02' => [TokenTypes::ID_UNKNOWN => '03'],
+        '02' => [
+            TokenTypes::ID_UNKNOWN => '03',
+            TokenTypes::ID_STOP    => 'ST',
+            TokenTypes::SP_COMMA   => '01',
+            TokenTypes::KW_LEFT    => 'ST',
+            TokenTypes::KW_RIGHT   => 'ST',
+            TokenTypes::KW_INNER   => 'ST',
+            TokenTypes::KW_OUTER   => 'ST',
+            TokenTypes::KW_WHERE   => 'ST',
+            TokenTypes::KW_ORDER   => 'ST',
+            TokenTypes::KW_FILTER  => 'ST'
+        ],
         '03' => [
             TokenTypes::ID_STOP   => 'ST',
             TokenTypes::SP_COMMA  => '01',
@@ -58,10 +69,15 @@ class FromParser extends Parser {
      */
     protected function move(string $from, string $dest): void {
         switch ($from . ':' . $dest) {
+            case '02:01':
+                $fromModel = new FromModel($this->_current->getText(), $this->_current->getText());
+                $this->_queryModel->addFromModel($fromModel);
+                break;
             case '02:03':
                 $fromModel = new FromModel($this->_previous->getText(), $this->_current->getText());
                 $this->_queryModel->addFromModel($fromModel);
                 break;
+            case '02:ST':
             case '03:ST':
                 switch ($this->_current->getType()) {
                     case TokenTypes::KW_LEFT:
