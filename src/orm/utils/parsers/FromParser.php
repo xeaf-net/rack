@@ -79,6 +79,11 @@ class FromParser extends Parser {
                 break;
             case '02:ST':
             case '03:ST':
+                if ($from == '02') { // Теперь ALIAS не обязателен!
+                    $fromModel = new FromModel($this->_previous->getText(), $this->_previous->getText());
+                    $this->_queryModel->addFromModel($fromModel);
+                }
+                print " current: " . $this->_current->getText() . ' ';
                 switch ($this->_current->getType()) {
                     case TokenTypes::KW_LEFT:
                     case TokenTypes::KW_RIGHT:
