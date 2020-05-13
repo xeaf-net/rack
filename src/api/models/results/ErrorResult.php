@@ -20,7 +20,6 @@ use XEAF\Rack\API\Utils\Serializer;
  * Реализует методы результата возвращающего информацию о ошибке
  *
  * @property string $message Текст сообщения об ошибке
- * @property string $tag     Тег
  *
  * @package XEAF\Rack\API\Models\Results
  */

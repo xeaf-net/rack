@@ -15,32 +15,63 @@ namespace XEAF\Rack\API\Models\Results;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
+use XEAF\Rack\API\Utils\Serializer;
 
 /**
  * Реализует методы результата возвращающего информацию о ошибке форм ввода
+ *
+ * @property string $code Языковая переменная кода ошибки
+ * @property string $tag  Дополнительная информация
  *
  * @package  XEAF\Rack\API\Models\Results
  */
 class FormResult extends ErrorResult {
 
     /**
+     * Код ошибки
+     * @var string
+     */
+    private $_code;
+
+    /**
      * Тег
      * @var string
      */
-    private $_tag = '';
+    private $_tag;
 
     /**
      * Конструктор класса
      *
-     * @param int    $status  Код состояния HTTP
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param int    $status Код состояния HTTP
+     * @param string $code   Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args   Аргументы сообщения
+     * @param string $tag    Тег
      */
-    public function __construct(int $status, string $langVar, array $args = [], string $tag = '') {
-        $message = Localization::getInstance()->fmtLanguageVar($langVar, $args);
+    public function __construct(int $status, string $code, array $args = [], string $tag = '') {
+        $message = Localization::getInstance()->fmtLanguageVar($code, $args);
         parent::__construct($status, $message);
-        $this->_tag = $tag;
+        $this->_code = $code;
+        $this->_tag  = $tag;
+    }
+
+    /**
+     * Возвращает языковую перенную кода ошибки
+     *
+     * @return string
+     */
+    public function getCode(): string {
+        return $this->_code;
+    }
+
+    /**
+     * Задает языковую переменную кода ошибки
+     *
+     * @param string $code Языковая переменная кода ошибки
+     *
+     * @return void
+     */
+    public function setCode(string $code): void {
+        $this->_code = $code;
     }
 
     /**
@@ -62,122 +93,152 @@ class FormResult extends ErrorResult {
     }
 
     /**
+     * @inheritDoc
+     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public function processResult(): void {
+        $result = [
+            'error'   => $this->getCode(),
+            'message' => $this->getMessage(),
+            'tag'     => $this->getTag(),
+        ];
+
+        $headers    = HttpResponse::getInstance();
+        $headerCode = $this->getStatusCode();
+        $headers->responseCode($headerCode);
+        $headers->authenticateBearer($headerCode);
+
+        $headers->contentJSON();
+
+        if ($result['message'] == '') {
+            unset($result['message']);
+        }
+        if ($result['tag'] == '') {
+            unset($result['message']);
+        }
+
+        print Serializer::getInstance()->jsonArrayEncode($result);
+    }
+
+    /**
      * Отправляет код 200 - OK
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function ok(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::OK, $langVar, $args, $tag);
+    public static function ok(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::OK, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 400 - BAD REQUEST
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function badRequest(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::BAD_REQUEST, $langVar, $args, $tag);
+    public static function badRequest(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::BAD_REQUEST, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function unauthorized(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::UNAUTHORIZED, $langVar, $args, $tag);
+    public static function unauthorized(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::UNAUTHORIZED, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 403 - FORBIDDEN
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function forbidden(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::FORBIDDEN, $langVar, $args, $tag);
+    public static function forbidden(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::FORBIDDEN, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 404 - NOT FOUND
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function notFound(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::NOT_FOUND, $langVar, $args, $tag);
+    public static function notFound(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::NOT_FOUND, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 409 - CONFLICT
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function conflict(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::CONFLICT, $langVar, $args, $tag);
+    public static function conflict(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::CONFLICT, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function internalServerError(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::FATAL_ERROR, $langVar, $args, $tag);
+    public static function internalServerError(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::FATAL_ERROR, $code, $args, $tag);
     }
 
     /**
      * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
      *
-     * @param string $langVar Языковая переменная или формат сообщения
-     * @param array  $args    Аргументы сообщения
-     * @param string $tag     Тег
+     * @param string $code Языковая переменная кода ошибки или формат сообщения
+     * @param array  $args Аргументы сообщения
+     * @param string $tag  Тег
      *
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public static function notImplemented(string $langVar = '', array $args = [], string $tag = ''): IActionResult {
-        return new FormResult(HttpResponse::NOT_IMPLEMENTED, $langVar, $args, $tag);
+    public static function notImplemented(string $code = '', array $args = [], string $tag = ''): IActionResult {
+        return new FormResult(HttpResponse::NOT_IMPLEMENTED, $code, $args, $tag);
     }
 }
