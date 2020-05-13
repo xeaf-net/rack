@@ -38,6 +38,11 @@ class Parameters extends ActionArgs {
     public const POST_METHOD_NAME = 'POST';
 
     /**
+     * Идентификатор HTTP метода PATCH
+     */
+    public const PATCH_METHOD_NAME = 'PATCH';
+
+    /**
      * Идентификатор HTTP метода DELETE
      */
     public const DELETE_METHOD_NAME = 'DELETE';
@@ -77,16 +82,17 @@ class Parameters extends ActionArgs {
                 $this->processRequestParameters($_GET);
                 break;
             case self::POST_METHOD_NAME:
+            case self::PATCH_METHOD_NAME:
                 $this->processRequestParameters($_GET);
                 $this->processRequestParameters($_POST);
                 $this->processInputJsonStream();
                 $this->processRequestFiles();
                 break;
             case self::DELETE_METHOD_NAME:
+                $this->processRequestParameters($_GET);
                 $this->processInputJsonStream();
                 break;
             case self::OPTIONS_METHOD_NAME:
-                $this->processInputJsonStream();
                 $this->processOptionsHeaders();
                 die(); // Только заголовки
                 break;
