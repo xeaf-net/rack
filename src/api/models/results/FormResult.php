@@ -29,6 +29,11 @@ use XEAF\Rack\API\Utils\Strings;
 class FormResult extends ErrorResult {
 
     /**
+     * Префикс кода ошибки
+     */
+    private const ERRORS_PREFIX = 'errors.';
+
+    /**
      * Код ошибки
      * @var string
      */
@@ -102,8 +107,8 @@ class FormResult extends ErrorResult {
     public function processResult(): void {
         $strings = Strings::getInstance();
         $code    = $this->getCode();
-        if ($strings->startsWith($code, 'error.')) {
-            $code = substr($code, mb_strlen($code));
+        if ($strings->startsWith($code, self::ERRORS_PREFIX)) {
+            $code = substr($code, mb_strlen(self::ERRORS_PREFIX));
         }
 
         $result = [
