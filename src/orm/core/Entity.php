@@ -154,11 +154,11 @@ abstract class Entity extends DataObject {
      * @inheritDoc
      */
     public function toArray(array $map = []): array {
-        $result     = parent::toArray();
+        $result     = parent::toArray($map);
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if ($property->getIsCalculated()) {
+            if ($property->getIsCalculated() && in_array($name, $map)) {
                 /** @noinspection PhpVariableVariableInspection */
                 $result[$name] = $this->$name;
             }
