@@ -483,10 +483,11 @@ class Generator implements IGenerator {
         $result = [];
         foreach ($orderModels as $orderModel) {
             assert($orderModel instanceof OrderModel);
-            $tableName = $this->tableNameByAlias($orderModel->getAlias());
-            $fieldName = $this->fieldNameByAlias($orderModel->getAlias(), $orderModel->getProperty());
-            $direction = $orderModel->getDirection() == TokenTypes::KW_DESCENDING ? 'descending' : '';
-            $result[]  = "$tableName.$fieldName $direction";
+            // $tableName = $this->tableNameByAlias($orderModel->getAlias());
+            $tableAlias = $orderModel->getAlias();
+            $fieldName  = $this->fieldNameByAlias($orderModel->getAlias(), $orderModel->getProperty());
+            $direction  = $orderModel->getDirection() == TokenTypes::KW_DESCENDING ? 'descending' : '';
+            $result[]   = "$tableAlias.$fieldName $direction";
         }
         return (!$result) ? '' : 'order by ' . implode(', ', $result);
     }
