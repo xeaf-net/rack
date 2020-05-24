@@ -65,6 +65,7 @@ class Application extends Extension {
         if ($actionArgs != null) {
             Factory::setFactoryObject(ActionArgs::class, $actionArgs);
         }
+        $this->_router = Router::getInstance();
         $this->initialization();
     }
 
@@ -74,8 +75,8 @@ class Application extends Extension {
      * @return void
      */
     protected function initialization(): void {
-        $this->_router = Router::getInstance();
-        $locale        = Session::getInstance()->getLocale();
+        $this->defineExtensions();
+        $locale = Session::getInstance()->getLocale();
         if (!$locale) {
             $locale = PortalConfig::getInstance()->getLocale();
         }
@@ -141,7 +142,6 @@ class Application extends Extension {
      * @return void
      */
     protected function beforeExecute(): void {
-        $this->defineExtensions();
         $this->registerPublicFolder();
     }
 
