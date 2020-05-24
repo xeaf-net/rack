@@ -37,7 +37,7 @@ class DataResult extends CachedResult {
      * Конструктор класса
      *
      * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
-     * @param bool                                $useCache   Признак исопльзования кеша
+     * @param bool                                $useCache   Признак использования кеша
      * @param int                                 $status     Код статуса HTTP
      */
     public function __construct(DataObject $dataObject = null, bool $useCache = false, int $status = HttpResponse::OK) {
@@ -78,7 +78,9 @@ class DataResult extends CachedResult {
         if ($this->getUseCache()) {
             $headers->fileCacheHeader();
         }
-        print $serializer->jsonDataObjectEncode($this->getDataObject());
+        print $serializer->jsonArrayEncode([
+            self::RESULT_PROPERTY=>$this->getDataObject()->toArray()
+        ]);
     }
 
     /**
