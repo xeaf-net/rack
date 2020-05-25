@@ -98,12 +98,12 @@ class QueryParser implements IQueryParser {
      * @inheritDoc
      */
     public function buildQueryModel(string $xql): QueryModel {
-        if ($xql != $this->_xql) {
+        // if ($xql != $this->_xql) {
             $this->_xql        = $xql;
             $this->_phase      = self::ALIAS_PHASE;
             $this->_queryModel = new QueryModel();
             $this->processXQL();
-        }
+        // }
         return $this->_queryModel;
     }
 
