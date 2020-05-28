@@ -15,9 +15,13 @@ namespace XEAF\Rack\API\Models\Results;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
+use XEAF\Rack\API\Utils\Serializer;
+use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Реализует методы результата возвращающего информацию о ошибке форм ввода
+ *
+ * @property string $tag Дополнительная информация
  *
  * @package  XEAF\Rack\API\Models\Results
  */
@@ -27,13 +31,13 @@ class FormResult extends ErrorResult {
      * Тег
      * @var string
      */
-    private $_tag = '';
+    private $_tag;
 
     /**
      * Конструктор класса
      *
      * @param int    $status  Код состояния HTTP
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      */
@@ -62,9 +66,36 @@ class FormResult extends ErrorResult {
     }
 
     /**
+     * @inheritDoc
+     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     *
+     * @noinspection PhpMissingParentCallCommonInspection
+     */
+    public function processResult(): void {
+        $strings  = Strings::getInstance();
+        $result   = [
+            'status'  => $this->getStatusCode(),
+            'message' => $this->getMessage(),
+            'tag'     => $this->getTag(),
+        ];
+        $response = HttpResponse::getInstance();
+        $response->responseCode(HttpResponse::OK);
+        $response->contentJSON();
+
+        if ($strings->isEmpty($result['message'])) {
+            unset($result['message']);
+        }
+        if ($strings->isEmpty($result['tag'])) {
+            unset($result['tag']);
+        }
+
+        print Serializer::getInstance()->jsonArrayEncode($result);
+    }
+
+    /**
      * Отправляет код 200 - OK
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -79,7 +110,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 400 - BAD REQUEST
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -94,7 +125,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 401 - UNAUTHORIZED
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -109,7 +140,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 403 - FORBIDDEN
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -124,7 +155,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 404 - NOT FOUND
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -139,7 +170,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 409 - CONFLICT
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -154,7 +185,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 500 - INTERNAL SERVER ERROR
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -169,7 +200,7 @@ class FormResult extends ErrorResult {
     /**
      * Создает объект, возвращающий ошибку 501 - NOT IMPLEMENTED
      *
-     * @param string $langVar Языковая переменная или формат сообщения
+     * @param string $langVar Языковая формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *

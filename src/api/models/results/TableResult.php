@@ -110,9 +110,9 @@ class TableResult extends ListResult {
         $headers    = HttpResponse::getInstance();
         $serializer = Serializer::getInstance();
         $data       = [
-            'data'            => $this->getList()->toArray(),
-            'recordsTotal'    => $this->getRecordsTotal(),
-            'recordsFiltered' => $this->getRecordsFiltered()
+            self::RESULT_PROPERTY => $this->getList()->toArray(),
+            'recordsTotal'        => $this->getRecordsTotal(),
+            'recordsFiltered'     => $this->getRecordsFiltered()
         ];
         $headers->responseCode($this->getStatusCode());
         $headers->contentJSON();

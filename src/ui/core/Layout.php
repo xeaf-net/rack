@@ -32,13 +32,13 @@ abstract class Layout extends Extension {
      * Результат исполнения действия
      * @var \XEAF\Rack\UI\Models\Results\HtmlResult
      */
-    private $_actionResult = null;
+    private $_actionResult;
 
     /**
      * Шаблонизатор
-     * @var \XEAF\Rack\UI\Interfaces\ITemplateEngine|null
+     * @var \XEAF\Rack\UI\Interfaces\ITemplateEngine
      */
-    private $_templateEngine = null;
+    private $_templateEngine;
 
     /**
      * Конструктор класса

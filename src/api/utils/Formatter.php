@@ -32,7 +32,7 @@ class Formatter implements IFormatter {
      * Объект методов локализации
      * @var \XEAF\Rack\API\Interfaces\ILocalization
      */
-    private $_l10n = null;
+    private $_l10n;
 
     /**
      * Конструктор класса

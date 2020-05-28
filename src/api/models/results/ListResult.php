@@ -75,6 +75,8 @@ class ListResult extends CachedResult {
         $serializer = Serializer::getInstance();
         $headers->responseCode($this->getStatusCode());
         $headers->contentJSON();
-        print $serializer->jsonCollectionEncode($this->getList());
+        print $serializer->jsonArrayEncode([
+            self::RESULT_PROPERTY => $this->getList()->toArray()
+        ]);
     }
 }

@@ -58,13 +58,13 @@ class FileLoggerProvider implements ILoggerProvider {
      * Имя файла журнала
      * @var string|null
      */
-    private $_fileName = null;
+    private $_fileName;
 
     /**
      * Уровень записей из файла конфигурации
      * @var int
      */
-    private $_configLevel = Logger::ERROR;
+    private $_configLevel;
 
     /**
      * Конструктор класса

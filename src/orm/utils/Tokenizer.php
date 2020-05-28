@@ -31,9 +31,9 @@ class Tokenizer implements ITokenizer {
 
     /**
      * Список лексем
-     * @var ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection
      */
-    private $_tokens = null;
+    private $_tokens;
 
     /**
      * Символы разобранного текста XQL запроса

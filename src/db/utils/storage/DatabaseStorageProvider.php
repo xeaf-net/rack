@@ -40,26 +40,26 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
 
     /**
      * Параметры конфигурации
-     * @var \XEAF\Rack\Db\Models\Config\DatabaseStorageConfig|null
+     * @var \XEAF\Rack\Db\Models\Config\DatabaseStorageConfig
      */
-    private $_config = null;
+    private $_config;
 
     /**
      * Подключение к базе данных
-     * @var \XEAF\Rack\Db\Interfaces\IDatabase|null
+     * @var \XEAF\Rack\Db\Interfaces\IDatabase
      */
-    private $_database = null;
+    private $_database;
 
     /**
      * Объект методов сериализации
-     * @var \XEAF\Rack\API\Interfaces\ISerializer|null
+     * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer = null;
+    private $_serializer;
 
     /**
-     * @var \XEAF\Rack\API\Interfaces\ILogger| null
+     * @var \XEAF\Rack\API\Interfaces\ILogger
      */
-    private $_logger = null;
+    private $_logger;
 
     /**
      * Конструктор класса

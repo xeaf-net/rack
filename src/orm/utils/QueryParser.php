@@ -77,12 +77,6 @@ class QueryParser implements IQueryParser {
     private $_phase = self::ALIAS_PHASE;
 
     /**
-     * Список лексем
-     * @var \XEAF\Rack\API\Interfaces\ICollection
-     */
-    private $_tokens = null;
-
-    /**
      * Модель запроса
      * @var \XEAF\Rack\ORM\Models\QueryModel
      */
@@ -98,12 +92,10 @@ class QueryParser implements IQueryParser {
      * @inheritDoc
      */
     public function buildQueryModel(string $xql): QueryModel {
-        if ($xql != $this->_xql) {
-            $this->_xql        = $xql;
-            $this->_phase      = self::ALIAS_PHASE;
-            $this->_queryModel = new QueryModel();
-            $this->processXQL();
-        }
+        $this->_xql        = $xql;
+        $this->_phase      = self::ALIAS_PHASE;
+        $this->_queryModel = new QueryModel();
+        $this->processXQL();
         return $this->_queryModel;
     }
 
@@ -114,10 +106,10 @@ class QueryParser implements IQueryParser {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function processXQL(): void {
-        $tokenizer     = Tokenizer::getInstance();
-        $this->_tokens = $tokenizer->tokenize(' ' . $this->_xql);
-        $parser        = null;
-        while ($this->_tokens->count() > 1 && $this->_phase != self::END_PHASE) {
+        $tokenizer = Tokenizer::getInstance();
+        $tokens    = $tokenizer->tokenize(' ' . $this->_xql);
+        $parser    = null;
+        while ($tokens->count() > 1 && $this->_phase != self::END_PHASE) {
             switch ($this->_phase) {
                 case self::ALIAS_PHASE:
                     $parser = new AliasParser($this->_queryModel);
@@ -142,7 +134,7 @@ class QueryParser implements IQueryParser {
                     break;
             }
             if ($this->_phase != self::END_PHASE) {
-                $this->_phase = $parser->parse($this->_tokens);
+                $this->_phase = $parser->parse($tokens);
             }
         }
     }

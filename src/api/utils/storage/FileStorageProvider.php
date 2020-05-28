@@ -42,21 +42,21 @@ class FileStorageProvider extends KeyStorage implements IStorageProvider {
 
     /**
      * Путь из файла конфигурации
-     * @var string|null
+     * @var string
      */
-    private $_path = null;
+    private $_path;
 
     /**
      * Объект методов доступа к файловой системе
-     * @var \XEAF\Rack\API\Interfaces\IFileSystem|null
+     * @var \XEAF\Rack\API\Interfaces\IFileSystem
      */
-    private $_fileSystem = null;
+    private $_fileSystem;
 
     /**
      * Объект метдов сериализации данных
-     * @var \XEAF\Rack\API\Interfaces\ISerializer|null
+     * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer = null;
+    private $_serializer;
 
     /**
      * Конструктор класса

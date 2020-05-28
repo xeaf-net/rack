@@ -24,6 +24,11 @@ use XEAF\Rack\API\Utils\HttpResponse;
 abstract class CachedResult extends ActionResult {
 
     /**
+     * Идентификатор свойства результата
+     */
+    public const RESULT_PROPERTY = 'data';
+
+    /**
      * Признак исопльззования кеша
      * @var bool
      */

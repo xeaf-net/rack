@@ -67,15 +67,15 @@ class Notificator extends RestAPI implements INotificator {
 
     /**
      * Параметры конфигурации
-     * @var \XEAF\Rack\API\Models\Config\NotificatorConfig|null
+     * @var \XEAF\Rack\API\Models\Config\NotificatorConfig
      */
-    private $_config = null;
+    private $_config;
 
     /**
      * Объект методов доступа к сессии
-     * @var \XEAF\Rack\API\Interfaces\ISession|null
+     * @var \XEAF\Rack\API\Interfaces\ISession
      */
-    private $_session = null;
+    private $_session;
 
     /**
      * Конструктор класса

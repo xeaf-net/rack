@@ -77,7 +77,7 @@ class ResourceModule extends Module {
      * Объект методов доступа к файловой системе
      * @var \XEAF\Rack\API\Interfaces\IFileSystem
      */
-    private $_fs = null;
+    private $_fs;
 
     /**
      * Конструктор класса

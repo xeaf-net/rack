@@ -36,9 +36,9 @@ class TemplateEngine implements ITemplateEngine {
 
     /**
      * Объект провайдера шаблонизатора
-     * @var ITemplateEngineProvider|null
+     * @var \XEAF\Rack\UI\Interfaces\ITemplateEngineProvider
      */
-    private $_engine = null;
+    private $_engine;
 
     /**
      * @inheritDoc
@@ -147,7 +147,7 @@ class TemplateEngine implements ITemplateEngine {
     /**
      * @inheritDoc
      */
-    public function parseTemplate(Template $template, string &$pageContent): string {
+    public function parseTemplate(Template $template, string $pageContent): string {
         return $this->_engine->parseTemplate($template, $pageContent);
     }
 

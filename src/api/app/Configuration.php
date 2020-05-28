@@ -40,7 +40,7 @@ class Configuration implements IConfiguration {
      * Имя файла конфигурации
      * @var string
      */
-    private $_filePath = null;
+    private $_filePath;
 
     /**
      * Разобранные данные файла конфигурации
