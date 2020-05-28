@@ -37,36 +37,36 @@ abstract class EntityManager {
      * Подключение к базе данных
      * @var \XEAF\Rack\Db\Utils\Database
      */
-    private $_db = null;
+    private $_db;
 
     /**
      * Определения моделей сущностей
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_entities = null;
+    private $_entities;
 
     /**
      * Определения имен сущностей в разрезе имент таблиц
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_entityTables = null;
+    private $_entityTables;
 
     /**
      * Классы сущностей
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_entityClasses = null;
+    private $_entityClasses;
     /**
      * Хранилище отслеживаемых объектов
      * @var IKeyValue
      */
-    private $_watchedEntities = null;
+    private $_watchedEntities;
 
     /**
      * Хранилище оригинальных версий отслеживаемых сущностей
      * @var IKeyValue
      */
-    private $_watchedOriginals = null;
+    private $_watchedOriginals;
 
     /**
      * Конструктор класса

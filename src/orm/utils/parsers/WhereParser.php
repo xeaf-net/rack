@@ -76,7 +76,7 @@ class WhereParser extends Parser {
      * Модель данных
      * @var \XEAF\Rack\ORM\Models\Parsers\WhereModel
      */
-    private $_whereModel = null;
+    private $_whereModel;
 
     /**
      * Счетчик скобок

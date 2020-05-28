@@ -50,13 +50,13 @@ class EntityQuery extends DataModel {
      * Модель запроса
      * @var \XEAF\Rack\ORM\Models\QueryModel|null
      */
-    private $_model = null;
+    private $_model;
 
     /**
      * Менеджер сущностей
      * @var \XEAF\Rack\ORM\Core\EntityManager
      */
-    private $_em = null;
+    private $_em;
 
     /**
      * Конструктор класса

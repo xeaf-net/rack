@@ -40,43 +40,43 @@ abstract class PropertyModel extends DataModel {
      * Тип данных свойства
      * @var int
      */
-    private $_dataType = 0;
+    private $_dataType;
 
     /**
      * Размер
      * @var int
      */
-    private $_size = 0;
+    private $_size;
 
     /**
      * Точность
      * @var int
      */
-    private $_precision = 0;
+    private $_precision;
 
     /**
      * Имя поля таблицы БД
      * @var string
      */
-    private $_fieldName = '';
+    private $_fieldName;
 
     /**
      * Признак первичного ключа
      * @var bool
      */
-    private $_primaryKey = false;
+    private $_primaryKey;
 
     /**
      * Определение доступа
      * @var int
      */
-    private $_accessType = AccessTypes::AC_DEFAULT;
+    private $_accessType;
 
     /**
      * Признак поля с автоинкрементом
      * @var bool
      */
-    private $_autoIncrement = false;
+    private $_autoIncrement;
 
     /**
      * Конструктор класса

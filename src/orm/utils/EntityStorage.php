@@ -26,27 +26,27 @@ class EntityStorage implements IEntityStorage {
 
     /**
      * Хранилище моделей сущностей
-     * @var \XEAF\Rack\API\Interfaces\IKeyValue|null
+     * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_models = null;
+    private $_models;
 
     /**
      * Хранилище SQL команд вставки записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_insertSQL = null;
+    private $_insertSQL;
 
     /**
      * Хранилище SQL команд изменения записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_updateSQL = null;
+    private $_updateSQL;
 
     /**
      * Хранилище SQL команд удаления записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_deleteSQL = null;
+    private $_deleteSQL;
 
     /**
      * @inheritDoc

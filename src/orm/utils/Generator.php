@@ -50,7 +50,7 @@ class Generator implements IGenerator {
      * Хранилище разрешенных псевдонимов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_aliases = null;
+    private $_aliases;
 
     /**
      * Хранилище моделей сущностей

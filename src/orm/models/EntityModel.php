@@ -32,25 +32,25 @@ class EntityModel extends DataModel {
      * Имя таблицы БД
      * @var string
      */
-    private $_tableName = '';
+    private $_tableName;
 
     /**
      * Массив наименований свойст первичного ключа
      * @var array
      */
-    private $_primaryKeyNames = [];
+    private $_primaryKeyNames;
 
     /**
      * Набор свойств по имени свойства
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_propertyByNames = null;
+    private $_propertyByNames;
 
     /**
      * Набор свойств по имени поля БД
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_propertyByFieldNames = null;
+    private $_propertyByFieldNames;
 
     /**
      * Конструктор класса
