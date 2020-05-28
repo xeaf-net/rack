@@ -37,12 +37,6 @@ class OrderParser extends Parser {
     private $_property = '';
 
     /**
-     * Направление сортировки
-     * @var int
-     */
-    private $_direction = TokenTypes::KW_ASCENDING;
-
-    /**
      * Матрица состояний
      */
     protected const STATES = [
@@ -81,18 +75,17 @@ class OrderParser extends Parser {
                 $this->_alias = $this->_current->getText();
                 break;
             case '04:05':
-                $this->_direction = TokenTypes::KW_ASCENDING;
                 $this->_property  = $this->_current->getText();
                 break;
             case '05:02':
             case '05:06':
             case '05:ST':
                 if ($this->_current->getType() == TokenTypes::KW_DESCENDING) {
-                    $this->_direction = TokenTypes::KW_DESCENDING;
+                    $direction = TokenTypes::KW_DESCENDING;
                 } else {
-                    $this->_direction = TokenTypes::KW_ASCENDING;
+                    $direction = TokenTypes::KW_ASCENDING;
                 }
-                $orderModel = new OrderModel($this->_alias, $this->_property, $this->_direction);
+                $orderModel = new OrderModel($this->_alias, $this->_property, $direction);
                 $this->_queryModel->addOrderModel($orderModel);
                 if ($this->_current->getType() == TokenTypes::ID_STOP) {
                     $this->_phase = QueryParser::END_PHASE;

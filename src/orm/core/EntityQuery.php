@@ -504,7 +504,7 @@ class EntityQuery extends DataModel {
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processSingleRecords(array &$data): ICollection {
+    protected function processSingleRecords(array $data): ICollection {
         $result = new Collection();
         try {
             $alias = $this->_model->getAliasModels()->first();
@@ -534,7 +534,7 @@ class EntityQuery extends DataModel {
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processMultipleRecords(array &$data): ICollection {
+    protected function processMultipleRecords(array $data): ICollection {
         $result         = new Collection();
         $aliasModel     = new KeyValue();
         $aliasClassName = new KeyValue();
@@ -576,7 +576,7 @@ class EntityQuery extends DataModel {
      *
      * @return array
      */
-    protected function processRecord(IKeyValue $properties, array &$record): array {
+    protected function processRecord(IKeyValue $properties, array $record): array {
         $result = [];
         $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
