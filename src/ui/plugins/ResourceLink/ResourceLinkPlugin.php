@@ -38,19 +38,19 @@ class ResourceLinkPlugin extends Plugin {
      * Объект модуле работы с файловой системой
      * @var \XEAF\Rack\API\Utils\FileSystem
      */
-    private $_fs = null;
+    private $_fs;
 
     /**
      * Объект методов работы с рефлексией
      * @var \XEAF\Rack\API\Utils\Reflection
      */
-    private $_ref = null;
+    private $_ref;
 
     /**
      * Параметры вызова приложения
      * @var \XEAF\Rack\API\Utils\Parameters
      */
-    private $_args = null;
+    private $_args;
 
     /**
      * @inheritDoc

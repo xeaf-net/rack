@@ -38,21 +38,21 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
 
     /**
      * Подключение к серверу Redis
-     * @var \Redis|null
+     * @var \Redis
      */
-    private $_redis = null;
+    private $_redis;
 
     /**
      * Параметры конфигурации сервера Redis
-     * @var \XEAF\Rack\Redis\Models\Config\RedisStorageConfig|null
+     * @var \XEAF\Rack\Redis\Models\Config\RedisStorageConfig
      */
-    private $_config = null;
+    private $_config;
 
     /**
      * Объект методов сериализации
-     * @var \XEAF\Rack\API\Interfaces\ISerializer|null
+     * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer = null;
+    private $_serializer;
 
     /**
      * Конструктор класса

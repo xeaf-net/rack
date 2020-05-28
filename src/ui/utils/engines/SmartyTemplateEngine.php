@@ -120,19 +120,19 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * Объект шаблонизатора Smarty
      * @var \Smarty
      */
-    private $_smarty = null;
+    private $_smarty;
 
     /**
      * Набор зарегистрированных плагинов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_plugins = null;
+    private $_plugins;
 
     /**
      * Набор зарегистрированных шаблонов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_templates = null;
+    private $_templates;
 
     /**
      * Результат исполнения текущего действия
@@ -498,7 +498,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * @inheritDoc
      */
-    public function parseTemplate(Template $template, string &$pageContent): string {
+    public function parseTemplate(Template $template, string $pageContent): string {
         $layoutFile = $template->getLayoutFile();
         try {
             self::$_currentTemplate    = $template;

@@ -126,5 +126,5 @@ interface ITemplateEngineActions {
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    public function parseTemplate(Template $template, string &$pageContent): string;
+    public function parseTemplate(Template $template, string $pageContent): string;
 }
