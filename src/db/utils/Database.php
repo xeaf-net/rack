@@ -37,9 +37,9 @@ class Database implements IDatabase {
 
     /**
      * Объект провайдера подкючения к базе данных
-     * @var \XEAF\Rack\Db\Interfaces\IDatabaseProvider|null
+     * @var \XEAF\Rack\Db\Interfaces\IDatabaseProvider
      */
-    private $_provider = null;
+    private $_provider;
 
     /**
      * Конструктор класса
