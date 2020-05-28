@@ -45,7 +45,7 @@ class CacheStorage implements ICacheStorage {
      * Хранилище значений
      * @var \XEAF\Rack\API\Interfaces\IStorage
      */
-    private $_storage = null;
+    private $_storage;
 
     /**
      * Конструктор класса

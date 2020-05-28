@@ -41,7 +41,7 @@ class Mailer implements IMailer {
      * Объект методов журналирования
      * @var \XEAF\Rack\API\Interfaces\ILogger
      */
-    private $_logger = null;
+    private $_logger;
 
     /**
      * @inheritDoc

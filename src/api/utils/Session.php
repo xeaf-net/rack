@@ -55,9 +55,9 @@ class Session implements ISession {
 
     /**
      * Провайдер сессии
-     * @var \XEAF\Rack\API\Interfaces\ISessionProvider|null
+     * @var \XEAF\Rack\API\Interfaces\ISessionProvider
      */
-    private $_provider = null;
+    private $_provider;
 
     /**
      * Признак изменения переменных сессии

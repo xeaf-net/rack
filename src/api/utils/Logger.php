@@ -64,9 +64,9 @@ class Logger implements ILogger {
 
     /**
      * Провайдер журнала операций
-     * @var ILoggerProvider|null
+     * @var ILoggerProvider
      */
-    private $_provider = null;
+    private $_provider;
 
     /**
      * Уровень записей журнала операций
@@ -78,7 +78,7 @@ class Logger implements ILogger {
      * Признак редима отладки
      * @var bool
      */
-    private $_debugMode = false;
+    private $_debugMode;
 
     /**
      * Конструктор класса

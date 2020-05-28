@@ -57,7 +57,7 @@ class Localization implements ILocalization {
      * Зарегистрированные локали
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_locales = null;
+    private $_locales;
 
     /**
      * Имя локали по умолчанию
@@ -69,7 +69,7 @@ class Localization implements ILocalization {
      * Список языковых переменных
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_languageVars = null;
+    private $_languageVars;
 
     /**
      * Список уже загруженных файлов
