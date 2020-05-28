@@ -47,9 +47,9 @@ class Application extends Extension {
 
     /**
      * Объект методов работы с маршрутами
-     * @var \XEAF\Rack\API\Interfaces\IRouter|null
+     * @var \XEAF\Rack\API\Interfaces\IRouter
      */
-    private $_router = null;
+    private $_router;
 
     /**
      * Инициализирует значения свойств объекта класса
