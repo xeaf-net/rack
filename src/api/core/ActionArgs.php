@@ -135,6 +135,17 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     }
 
     /**
+     * Возвращает признак передачи параметра
+     *
+     * @param string $name Имя параметра
+     *
+     * @return bool
+     */
+    public function exists(string $name): bool {
+        return array_key_exists($name, $this->_parameters);
+    }
+
+    /**
      * @inheritDoc
      */
     public function get(string $name, $defaultValue = null) {

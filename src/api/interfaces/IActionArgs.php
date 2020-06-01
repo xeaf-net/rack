@@ -69,6 +69,15 @@ interface IActionArgs extends IFactoryObject {
     public function getCurrentURL(): ?string;
 
     /**
+     * Возвращает признак передачи параметра
+     *
+     * @param string $name Имя параметра
+     *
+     * @return bool
+     */
+    public function exists(string $name): bool;
+
+    /**
      * Возвращает значение параметра
      *
      * @param string     $name         Имя параметра
