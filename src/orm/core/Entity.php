@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Utils\Formatter;
+use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -167,6 +168,37 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * Задает значения свойст сущности из массива
+     *
+     * @param array $data Массив значений
+     *
+     * @return void
+     */
+    public function assign(array $data): void{
+        foreach ($data as $name => $value) {
+            $property = $this->_model->getPropertyByName($name);
+            if ($property != null) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
+    /**
+     * Задает значения своцств из параметров вызова приложения
+     *
+     * @return void
+     */
+    public function assignParameters(): void {
+        $parameters = Parameters::getInstance();
+        $properties = $this->_model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            if ($parameters->exists($name)) {
+                $this->{$name} = $parameters->get($name);
+            }
+        }
+    }
+
+    /**
      * Возвращает массив отформатированных значений свойств
      *
      * @param array $map Карта возвращаемых свойств
@@ -179,17 +211,20 @@ abstract class Entity extends DataObject {
         $names  = array_keys($result);
         $fmt    = Formatter::getInstance();
         foreach ($names as $name) {
-            $type = $model->getPropertyByName($name)->getDataType();
-            switch ($type) {
-                case DataTypes::DT_DATE:
-                    $result[$name] = $fmt->formatDate($result[$name]);
-                    break;
-                case DataTypes::DT_DATETIME:
-                    $result[$name] = $fmt->formatDateTime($result[$name]);
-                    break;
-                case DataTypes::DT_OBJECT:
-                    $result[$name] = (array)$result[$name];
-                    break;
+            $property = $model->getPropertyByName($name);
+            if ($property != null) {
+                $type = $property->getDataType();
+                switch ($type) {
+                    case DataTypes::DT_DATE:
+                        $result[$name] = $fmt->formatDate($result[$name]);
+                        break;
+                    case DataTypes::DT_DATETIME:
+                        $result[$name] = $fmt->formatDateTime($result[$name]);
+                        break;
+                    case DataTypes::DT_OBJECT:
+                        $result[$name] = (array)$result[$name];
+                        break;
+                }
             }
         }
         return $result;

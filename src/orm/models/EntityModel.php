@@ -97,9 +97,9 @@ class EntityModel extends DataModel {
      *
      * @param string $name Имя свойства
      *
-     * @return \XEAF\Rack\ORM\Models\Properties\PropertyModel
+     * @return \XEAF\Rack\ORM\Models\Properties\PropertyModel|null
      */
-    public function getPropertyByName(string $name): PropertyModel {
+    public function getPropertyByName(string $name): ?PropertyModel {
         $result = $this->_propertyByNames->get($name);
         if ($result != null) {
             assert($result instanceof PropertyModel);

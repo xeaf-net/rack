@@ -458,24 +458,26 @@ abstract class EntityManager {
     private function parameterValue(string $name, Entity $entity): string {
         $result   = $entity->{$name};
         $property = $entity->getModel()->getPropertyByName($name);
-        try {
-            switch ($property->getDataType()) {
-                case DataTypes::DT_BOOL:
-                    $result = $this->_db->formatBool((bool) $result);
-                    break;
-                case DataTypes::DT_DATE:
-                    $result = $this->_db->formatDate((int) $result);
-                    break;
-                case DataTypes::DT_DATETIME:
-                    $result = $this->_db->formatDateTime((int) $result);
-                    break;
-                case DataTypes::DT_ARRAY:
-                case DataTypes::DT_OBJECT:
-                    $result = Serializer::getInstance()->serialize($result);
-                    break;
+        if ($property != null) {
+            try {
+                switch ($property->getDataType()) {
+                    case DataTypes::DT_BOOL:
+                        $result = $this->_db->formatBool((bool)$result);
+                        break;
+                    case DataTypes::DT_DATE:
+                        $result = $this->_db->formatDate((int)$result);
+                        break;
+                    case DataTypes::DT_DATETIME:
+                        $result = $this->_db->formatDateTime((int)$result);
+                        break;
+                    case DataTypes::DT_ARRAY:
+                    case DataTypes::DT_OBJECT:
+                        $result = Serializer::getInstance()->serialize($result);
+                        break;
+                }
+            } catch (SerializerException $exception) {
+                throw EntityException::internalError($exception);
             }
-        } catch (SerializerException $exception) {
-            throw EntityException::internalError($exception);
         }
         return (string) $result;
     }
