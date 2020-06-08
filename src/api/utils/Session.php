@@ -190,7 +190,7 @@ class Session implements ISession {
      * @inheritDoc
      */
     public function saveSessionVars(): void {
-        if ($this->_modified) {
+        if ($this->_modified || $this->isAuthorized()) {
             $this->_provider->saveSessionVars();
         }
     }
