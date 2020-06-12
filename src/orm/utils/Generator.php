@@ -31,6 +31,7 @@ use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\TokenModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\KeyWords;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 
 /**
@@ -486,7 +487,7 @@ class Generator implements IGenerator {
             // $tableName = $this->tableNameByAlias($orderModel->getAlias());
             $tableAlias = $orderModel->getAlias();
             $fieldName  = $this->fieldNameByAlias($orderModel->getAlias(), $orderModel->getProperty());
-            $direction  = $orderModel->getDirection() == TokenTypes::KW_DESCENDING ? 'descending' : '';
+            $direction  = $orderModel->getDirection() == TokenTypes::KW_DESCENDING ? KeyWords::DESC : '';
             $result[]   = "$tableAlias.$fieldName $direction";
         }
         return (!$result) ? '' : 'order by ' . implode(', ', $result);
