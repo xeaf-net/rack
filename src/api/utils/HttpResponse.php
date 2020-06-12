@@ -208,6 +208,7 @@ class HttpResponse implements IHttpResponse {
         } else {
             $header .= 'filename*=UTF-8\'\'' . rawurlencode($fileName);
         }
+        header('Access-Control-Expose-Headers: Content-Disposition');
         header($header);
     }
 
