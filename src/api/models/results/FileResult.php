@@ -24,6 +24,7 @@ use XEAF\Rack\API\Utils\HttpResponse;
  * @property string $fileName   Отображаемое имя файла
  * @property bool   $attachment Признак отправки файла как вложения
  * @property string $mimeType   Тип MIME
+ * @property string $charSet    Кодировка
  * @property bool   $delete     Признак удаления после отправки
  *
  * @package XEAF\Rack\API\Models\Results
@@ -53,6 +54,12 @@ class FileResult extends CachedResult {
      * @var string|null
      */
     protected $_mimeType = null;
+
+    /**
+     * Кодировка
+     * @var string|null
+     */
+    protected $_charSet = null;
 
     /**
      * Признак удаления после отправки
@@ -144,7 +151,27 @@ class FileResult extends CachedResult {
     }
 
     /**
-     * Возвращает призанк отправки файла как вложения
+     * Возвращает кодировку
+     *
+     * @return string|null
+     */
+    public function getCharSet(): ?string {
+        return $this->_charSet;
+    }
+
+    /**
+     * Задает кодировку
+     *
+     * @param string|null $charSet Кодировка
+     *
+     * @return void
+     */
+    public function setCharSet(?string $charSet): void {
+        $this->_charSet = $charSet;
+    }
+
+    /**
+     * Возвращает признак отправки файла как вложения
      *
      * @return bool
      */
@@ -189,7 +216,7 @@ class FileResult extends CachedResult {
         $headers    = HttpResponse::getInstance();
         $fileSystem = FileSystem::getInstance();
         $headers->responseCode($this->getStatusCode());
-        $headers->contentType($this->getMimeType());
+        $headers->contentType($this->getMimeType(), $this->getCharSet());
         if ($this->getAttachment()) {
             $headers->fileAttachmentHeader($this->getFileName());
         } elseif ($this->getUseCache()) {
