@@ -161,9 +161,9 @@ class Parameters extends ActionArgs {
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
     protected function processInputStream(): void {
+        $strings     = Strings::getInstance();
         $contentType = $this->getHeader(HttpResponse::CONTENT_TYPE);
-        if ($contentType == HttpResponse::APPLICATION_JSON) {
-            $strings  = Strings::getInstance();
+        if ($strings->startsWith($contentType, HttpResponse::APPLICATION_JSON)) {
             $jsonData = file_get_contents('php://input');
             if (!$strings->isEmpty($jsonData)) {
                 $serializer = Serializer::getInstance();
