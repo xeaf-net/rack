@@ -456,10 +456,10 @@ class EntityQuery extends DataModel {
         foreach ($this->_model->getParameters() as $name => $parameter) {
             assert($parameter instanceof ParameterModel);
             $value = $values[$name] ?? $parameter->getValue();
-            if ($value != null) {
+            if ($value != null || $parameter->getType() == DataTypes::DT_BOOL) {
                 switch ($parameter->getType()) {
                     case  DataTypes::DT_BOOL:
-                        $value = $db->formatBool($value);
+                        $value = $db->formatBool((bool)$value);
                         break;
                     case  DataTypes::DT_DATE:
                         $value = $db->formatDate($value);
@@ -581,7 +581,7 @@ class EntityQuery extends DataModel {
         $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            $value = (string) $record[$property->getFieldName()];
+            $value = (string)$record[$property->getFieldName()];
             switch ($property->getDataType()) {
                 case DataTypes::DT_BOOL:
                     $result[$name] = $db->sqlBool($value);
