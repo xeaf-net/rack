@@ -223,8 +223,9 @@ class Generator implements IGenerator {
             $aliasModel->setModel($model);
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                $fieldName = $property->getFieldName();
-                $result[]  = "$alias.$fieldName";
+                $fieldName  = $property->getFieldName();
+                $fieldAlias = $alias . '_' . $fieldName; // Для множественнх сущностей
+                $result[]   = "$alias.$fieldName as $fieldAlias";
             }
         }
         return implode(',', $result);

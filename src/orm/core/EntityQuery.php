@@ -515,7 +515,7 @@ class EntityQuery extends DataModel {
             $className  = $this->_em->getEntityClass($entityName);
             $properties = $model->getPropertyByNames();
             foreach ($data as $record) {
-                $item   = $this->processRecord($properties, $record);
+                $item   = $this->processRecord($alias->name, $properties, $record);
                 $entity = new $className($item);
                 $this->_em->watch($entity);
                 $result->push($entity);
@@ -557,7 +557,7 @@ class EntityQuery extends DataModel {
                 assert($model instanceof EntityModel);
                 $className  = $aliasClassName->get($aliasName);
                 $properties = $model->getPropertyByNames();
-                $item       = $this->processRecord($properties, $record);
+                $item       = $this->processRecord($aliasName, $properties, $record);
                 $entity     = new $className($item);
                 $this->_em->watch($entity);
                 $multi[$aliasName] = $entity;
@@ -571,17 +571,19 @@ class EntityQuery extends DataModel {
     /**
      * Обрабатывает данные массива записи
      *
+     * @param string                              $aliasName  Псевдоним
      * @param \XEAF\Rack\API\Interfaces\IKeyValue $properties Набор свойств сущности
      * @param array                               $record     Массив данных записи
      *
      * @return array
      */
-    protected function processRecord(IKeyValue $properties, array $record): array {
+    protected function processRecord(string $aliasName, IKeyValue $properties, array $record): array {
         $result = [];
         $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            $value = (string)$record[$property->getFieldName()];
+            $fieldAlias = $aliasName . '_' . $property->getFieldName();
+            $value      = (string)$record[$fieldAlias];
             switch ($property->getDataType()) {
                 case DataTypes::DT_BOOL:
                     $result[$name] = $db->sqlBool($value);
