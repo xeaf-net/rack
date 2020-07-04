@@ -1,4 +1,5 @@
-<?php /** @noinspection SpellCheckingInspection */ declare(strict_types = 1);
+<?php /** @noinspection SpellCheckingInspection */
+declare(strict_types = 1);
 
 /**
  * FileMIME.php
@@ -23,9 +24,19 @@ use XEAF\Rack\API\Interfaces\IFileMIME;
 class FileMIME implements IFileMIME {
 
     /**
+     * Тип контента JSON
+     */
+    public const APPLICATION_JSON = 'application/json';
+
+    /**
+     * Тип контента бинарного потока
+     */
+    public const OCTET_STREAM = 'application/octet-stream';
+
+    /**
      * Тип MIME по умолчанию
      */
-    public const DEFAULT_MIME_TYPE = 'application/octet-stream';
+    public const DEFAULT_MIME_TYPE = '';
 
     /**
      * Известные форматы файлов изображений
@@ -42,7 +53,7 @@ class FileMIME implements IFileMIME {
     ];
 
     /**
-     * Известные формате аудиофайлов
+     * Известные форматы аудиофайлов
      */
     private $_knownAudio = [
         'mp3' => 'audio/mpeg3',
@@ -64,9 +75,9 @@ class FileMIME implements IFileMIME {
         'css'   => 'text/css',
         'eot'   => 'application/vnd.ms-fontobject',
         'js'    => 'application/x-javascript',
-        'json'  => 'application/json',
-        'lang'  => 'application/json',
-        'map'   => 'application/json',
+        'json'  => self::APPLICATION_JSON,
+        'lang'  => self::APPLICATION_JSON,
+        'map'   => self::APPLICATION_JSON,
         'ttf'   => 'application/x-font-ttf',
         'woff'  => 'application/font-woff',
         'woff2' => 'application/font-woff',
@@ -78,6 +89,7 @@ class FileMIME implements IFileMIME {
     private $_knownOtherFiles = [
         '7z'   => 'application/x-7z-compressed',
         'ai'   => 'application/illustrator',
+        'dat'  => self::OCTET_STREAM,
         'doc'  => 'application/msword',
         'docx' => 'application/vndopenxmlformats-officedocumentwordprocessingmldocument',
         'ppt'  => 'application/vnd.ms-powerpoint',
@@ -153,8 +165,27 @@ class FileMIME implements IFileMIME {
     /**
      * @inheritDoc
      */
+    public function getFileType(string $mime): ?string {
+        $result = array_search($mime, $this->_allKnownTypes);
+        if ($result === false) {
+            $result = null;
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function isSupported(string $fileType): bool {
         return array_key_exists($fileType, $this->_allKnownTypes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSupportedMIME(string $mime): bool {
+        $fileType = $this->getFileType($mime);
+        return $fileType != null;
     }
 
     /**

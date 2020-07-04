@@ -14,6 +14,8 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
+use XEAF\Rack\API\Utils\FileMIME;
+use XEAF\Rack\API\Utils\HttpResponse;
 
 /**
  * Реализует методы контейнера параметров вызова приложения
@@ -157,6 +159,28 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getHeader(string $name, $defaultValue = null) {
         return $this->_headers[$name] ?? $defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentType(): string {
+        return $this->getHeader(HttpResponse::CONTENT_TYPE, FileMIME::DEFAULT_MIME_TYPE);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentMIME(): string {
+        $arr = explode(';', $this->getContentType());
+        return trim($arr[0]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentLength(): int {
+        return $this->getHeader(HttpResponse::CONTENT_LENGTH, 0);
     }
 
     /**

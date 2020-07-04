@@ -63,6 +63,16 @@ class Parameters extends ActionArgs {
     public const ORIGIN_AGE = 24 * 60 * 60;
 
     /**
+     * Идентификатор парамерта заголовка имени файла
+     */
+    private const HEADER_FILE_NAME = 'X-FileName';
+
+    /**
+     * Идентификатор параметра имени файла
+     */
+    public const FILE_PARAMETER_NAME = 'x-file';
+
+    /**
      * Идентификатор параметра пути
      */
     private const PATH_PARAMETER_NAME = 'x-path';
@@ -161,20 +171,58 @@ class Parameters extends ActionArgs {
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
     protected function processInputStream(): void {
-        $strings     = Strings::getInstance();
-        $contentType = $this->getHeader(HttpResponse::CONTENT_TYPE);
-        if ($strings->startsWith($contentType, HttpResponse::APPLICATION_JSON)) {
-            $jsonData = file_get_contents('php://input');
-            if (!$strings->isEmpty($jsonData)) {
-                $serializer = Serializer::getInstance();
-                $params     = $serializer->jsonArrayDecode($jsonData);
-                if (is_array($params)) {
-                    foreach ($params as $name => $value) {
-                        $this->_parameters[$name] = $value;
-                    }
+        $contentMIME = $this->getContentMIME();
+        if ($contentMIME) {
+            $content = file_get_contents('php://input');
+            if ($contentMIME == FileMIME::APPLICATION_JSON) {
+                $this->processInputJSON((string)$content);
+            } else {
+                $this->processInputFile($contentMIME, $content);
+            }
+        }
+    }
+
+    /**
+     * Обрабатывает JSON из входного потока
+     *
+     * @param string $jsonData Данные в формате JSON
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     */
+    protected function processInputJSON(string $jsonData): void {
+        $strings = Strings::getInstance();
+        if (!$strings->isEmpty($jsonData)) {
+            $serializer = Serializer::getInstance();
+            $params     = $serializer->jsonArrayDecode($jsonData);
+            if (is_array($params)) {
+                foreach ($params as $name => $value) {
+                    $this->_parameters[$name] = $value;
                 }
             }
-        } // @todo Добавить разбор бинарного потока
+        }
+    }
+
+    /**
+     * Обрабатывает файлы из входного потока
+     *
+     * @param string $mime    MIME файла
+     * @param mixed  $content Содержимое входного потока
+     *
+     * @return void
+     */
+    protected function processInputFile(string $mime, $content): void {
+        $fileMIME   = FileMIME::getInsance();
+        $fileSystem = FileSystem::getInstance();
+        if ($fileMIME->isSupportedMIME($mime)) {
+            $fileName = $this->get(self::FILE_PARAMETER_NAME, $this->getHeader(self::HEADER_FILE_NAME));
+            if ($fileName) {
+                $tempPath = $fileSystem->tempFileName();
+                file_put_contents($tempPath, $content, FILE_APPEND);
+                $fileSize                                     = $fileSystem->fileSize($tempPath);
+                $this->_parameters[self::FILE_PARAMETER_NAME] = $this->createFileArray($fileName, $mime, $tempPath, $fileSize);
+            }
+        }
     }
 
     /**
@@ -263,6 +311,26 @@ class Parameters extends ActionArgs {
         }
         $this->_actionNode = $node;
         $this->_actionPath = Router::ROOT_NODE . trim($node . '/' . $this->_actionPath, '/');
+    }
+
+    /**
+     * Возвращает массив с информацией о файле
+     *
+     * @param string $fileName Имя файла
+     * @param string $fileMIME MIME файла
+     * @param string $tempPath Путь к файлу
+     * @param int    $fileSize Размер файла
+     *
+     * @return array
+     */
+    private function createFileArray(string $fileName, string $fileMIME, string $tempPath, int $fileSize): array {
+        return [
+            'name'     => $fileName,
+            'type'     => $fileMIME,
+            'tmp_name' => $tempPath,
+            'error'    => 0,
+            'size'     => $fileSize
+        ];
     }
 
     /**

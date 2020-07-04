@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IFileSystem;
+use XEAF\Rack\API\Models\Config\PortalConfig;
 
 /**
  * Реализует методы работы с файловой системой
@@ -36,6 +37,12 @@ class FileSystem implements IFileSystem {
      * Суффикс имени минимизированного файла
      */
     public const MINIMIZED_SUFFIX = 'min';
+
+    /**
+     * Массив имен временных файлов
+     * @var array
+     */
+    private $_tempFileNames = [];
 
     /**
      * Конструктор класса
@@ -160,6 +167,17 @@ class FileSystem implements IFileSystem {
     /**
      * @inheritDoc
      */
+    public function fileSize(string $filePath): int {
+        $result = -1;
+        if ($this->fileExists($filePath)) {
+            $result = filesize($filePath);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function validateFileName(string $fileName): bool {
         return $this->sanitizeFileName($fileName) == $fileName;
     }
@@ -192,6 +210,26 @@ class FileSystem implements IFileSystem {
                 print $chunk;
             }
             fclose($handle);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tempFileName(string $prefix = ''): string {
+        $config = PortalConfig::getInstance();
+        $result = tempnam($config->getTempPath(), $prefix);
+        // Сохранить!!!
+        $this->_tempFileNames[] = $result;
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteTempFiles(): void {
+        foreach ($this->_tempFileNames as $fileName) {
+            $this->deleteFile($fileName);
         }
     }
 

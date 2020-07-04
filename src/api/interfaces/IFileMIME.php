@@ -74,6 +74,15 @@ interface IFileMIME extends IFactoryObject {
     public function getMIME(string $fileType): string;
 
     /**
+     * Возвращает тип файла для заданного MIME
+     *
+     * @param string $mime MIME файла
+     *
+     * @return string|null
+     */
+    public function getFileType(string $mime): ?string;
+
+    /**
      * Возвращает признак поддержки типа файла
      *
      * @param string $fileType Тип файла
@@ -81,6 +90,15 @@ interface IFileMIME extends IFactoryObject {
      * @return bool
      */
     public function isSupported(string $fileType): bool;
+
+    /**
+     * Возвращает признак поддержки MIME файла
+     *
+     * @param string $mime MIME файла
+     *
+     * @return bool
+     */
+    public function isSupportedMIME(string $mime): bool;
 
     /**
      * Возвращает признак типа файла ресурса расширения

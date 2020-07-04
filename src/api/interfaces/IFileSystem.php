@@ -134,6 +134,15 @@ interface IFileSystem extends IFactoryObject {
     public function fileNameExt(string $filePath): string;
 
     /**
+     * Возвращает размер файла
+     *
+     * @param string $filePath Путь к файлу
+     *
+     * @return int
+     */
+    public function fileSize(string $filePath): int;
+
+    /**
      * Проверяет корректность имени файла
      *
      * @param string $fileName Имя файла
@@ -161,4 +170,20 @@ interface IFileSystem extends IFactoryObject {
      * @return void
      */
     public function readFileChunks(string $filePath, int $chunkSize = FileSystem::CHUNK_SIZE): void;
+
+    /**
+     * Возвращает имя временного файла
+     *
+     * @param string $prefix Префикс имени файла
+     *
+     * @return string
+     */
+    public function tempFileName(string $prefix = ''): string;
+
+    /**
+     * Удаляет временные файлы приложения
+     *
+     * @return void
+     */
+    public function deleteTempFiles(): void;
 }

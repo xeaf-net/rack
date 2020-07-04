@@ -98,6 +98,27 @@ interface IActionArgs extends IFactoryObject {
     public function getHeader(string $name, $defaultValue = null);
 
     /**
+     * Возвращает тип контента
+     *
+     * @return string
+     */
+    public function getContentType(): string;
+
+    /**
+     * Возвращает MIME типа контента
+     *
+     * @return string
+     */
+    public function getContentMIME(): string;
+
+    /**
+     * Возвращает размер контента
+     *
+     * @return int
+     */
+    public function getContentLength(): int;
+
+    /**
      * Возвращает список параметров заголовков
      *
      * @return array

@@ -151,8 +151,10 @@ class Application extends Extension {
      * @return void
      */
     protected function afterExecute(): void {
-        $session = Session::getInstance();
+        $session    = Session::getInstance();
+        $fileSystem = FileSystem::getInstance();
         $session->saveSessionVars();
+        $fileSystem->deleteTempFiles();
     }
 
     /**

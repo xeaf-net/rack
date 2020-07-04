@@ -89,9 +89,9 @@ class HttpResponse implements IHttpResponse {
     public const CONTENT_TYPE = 'Content-Type';
 
     /**
-     * Тип контента JSON
+     * Имя параметра размера контента
      */
-    public const APPLICATION_JSON = 'application/json';
+    public const CONTENT_LENGTH = 'Content-Length';
 
     /**
      * Тексты сообщений для кодов ответов HTTP протокола
