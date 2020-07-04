@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\API\Interfaces;
 
+use XEAF\Rack\API\Models\UploadedFile;
+
 /**
  * Описывает методы контейнера параметров вызова приложения
  *
@@ -86,6 +88,15 @@ interface IActionArgs extends IFactoryObject {
      * @return mixed
      */
     public function get(string $name, $defaultValue = null);
+
+    /**
+     * Возвращает информацию о загруженном файле
+     *
+     * @param string $name Имя объекта
+     *
+     * @return \XEAF\Rack\API\Models\UploadedFile|null
+     */
+    public function getFile(string $name): ?UploadedFile;
 
     /**
      * Возвращает значение параметра заголовка

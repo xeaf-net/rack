@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
+use XEAF\Rack\API\Models\UploadedFile;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
 
@@ -80,6 +81,12 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * @var array
      */
     protected $_parameters = [];
+
+    /**
+     * Информация о переданных файлах
+     * @var array
+     */
+    protected $_files = [];
 
     /**
      * Параметры заголовков вызова
@@ -152,6 +159,13 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function get(string $name, $defaultValue = null) {
         return $this->_parameters[$name] ?? $defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFile(string $name): ?UploadedFile {
+        return $this->_files[$name] ?? null;
     }
 
     /**

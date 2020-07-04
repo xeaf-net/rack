@@ -18,6 +18,7 @@ use XEAF\Rack\API\Core\ActionArgs;
 use XEAF\Rack\API\Interfaces\IActionArgs;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\StatusResult;
+use XEAF\Rack\API\Models\UploadedFile;
 
 /**
  * Реализует методы разбора параметров
@@ -219,8 +220,8 @@ class Parameters extends ActionArgs {
             if ($fileName) {
                 $tempPath = $fileSystem->tempFileName();
                 file_put_contents($tempPath, $content, FILE_APPEND);
-                $fileSize                                     = $fileSystem->fileSize($tempPath);
-                $this->_parameters[self::FILE_PARAMETER_NAME] = $this->createFileArray($fileName, $mime, $tempPath, $fileSize);
+                $fileSize                                = $fileSystem->fileSize($tempPath);
+                $this->_files[self::FILE_PARAMETER_NAME] = $this->createUploadedFile($fileName, $mime, $tempPath, $fileSize);
             }
         }
     }
@@ -249,7 +250,7 @@ class Parameters extends ActionArgs {
     protected function processRequestFiles(): void {
         foreach ($_FILES as $name => $file) {
             if ($file['name']) {
-                $this->_parameters[$name] = $file;
+                $this->_files[$name] = $this->createUploadedFile($file['name'], $file['type'], $file['size'], $file['tmp_name']);
             }
         }
     }
@@ -321,16 +322,15 @@ class Parameters extends ActionArgs {
      * @param string $tempPath Путь к файлу
      * @param int    $fileSize Размер файла
      *
-     * @return array
+     * @return \XEAF\Rack\API\Models\UploadedFile
      */
-    private function createFileArray(string $fileName, string $fileMIME, string $tempPath, int $fileSize): array {
-        return [
-            'name'     => $fileName,
-            'type'     => $fileMIME,
-            'tmp_name' => $tempPath,
-            'error'    => 0,
-            'size'     => $fileSize
-        ];
+    private function createUploadedFile(string $fileName, string $fileMIME, string $tempPath, int $fileSize): UploadedFile {
+        $result           = new UploadedFile();
+        $result->name     = $fileName;
+        $result->mime     = $fileMIME;
+        $result->size     = $fileSize;
+        $result->tempPath = $tempPath;
+        return $result;
     }
 
     /**
