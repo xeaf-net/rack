@@ -223,7 +223,7 @@ class HttpResponse implements IHttpResponse {
         $cacheTime = $formatter->formatCacheDateTime(time() + $cacheSecs);
         header("Expires: $cacheTime");
         header("Pragma: cache");
-        header("Cache - Control: max - age = $cacheSecs");
+        header("Cache-Control: max-age=$cacheSecs");
     }
 
     /**
