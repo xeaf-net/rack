@@ -221,7 +221,7 @@ class Parameters extends ActionArgs {
                 $tempPath = $fileSystem->tempFileName();
                 file_put_contents($tempPath, $content, FILE_APPEND);
                 $fileSize                                = $fileSystem->fileSize($tempPath);
-                $this->_files[self::FILE_PARAMETER_NAME] = $this->createUploadedFile($fileName, $mime, $tempPath, $fileSize);
+                $this->_files[self::FILE_PARAMETER_NAME] = $this->createUploadedFile($fileName, $mime, $fileSize, $tempPath);
             }
         }
     }
@@ -319,12 +319,12 @@ class Parameters extends ActionArgs {
      *
      * @param string $fileName Имя файла
      * @param string $fileMIME MIME файла
-     * @param string $tempPath Путь к файлу
      * @param int    $fileSize Размер файла
+     * @param string $tempPath Путь к файлу
      *
      * @return \XEAF\Rack\API\Models\UploadedFile
      */
-    private function createUploadedFile(string $fileName, string $fileMIME, string $tempPath, int $fileSize): UploadedFile {
+    private function createUploadedFile(string $fileName, string $fileMIME, int $fileSize, string $tempPath): UploadedFile {
         $result           = new UploadedFile();
         $result->name     = $fileName;
         $result->mime     = $fileMIME;
