@@ -31,7 +31,7 @@ class FileMIME implements IFileMIME {
     /**
      * Тип контента бинарного потока
      */
-    public const OCTET_STREAM = 'application/octet-stream';
+    public const OCTET_STREAM = 'binary/octet-stream';
 
     /**
      * Тип MIME по умолчанию
