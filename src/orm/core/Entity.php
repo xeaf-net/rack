@@ -158,10 +158,26 @@ abstract class Entity extends DataObject {
         $result     = parent::toArray($map);
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            assert($property instanceof PropertyModel);
-            if ($property->getIsCalculated() && in_array($name, $map)) {
-                /** @noinspection PhpVariableVariableInspection */
-                $result[$name] = $this->$name;
+            if (count($map) == 0 || in_array($name, $map)) {
+                assert($property instanceof PropertyModel);
+                if ($property->getIsCalculated()) {
+                    /** @noinspection PhpVariableVariableInspection */
+                    $result[$name] = $this->$name;
+                } else {
+                    switch ($property->dataType) {
+                        case DataTypes::DT_INTEGER:
+                        case DataTypes::DT_DATE:
+                        case DataTypes::DT_DATETIME:
+                            $result[$name] = (int)$result[$name];
+                            break;
+                        case DataTypes::DT_BOOL:
+                            $result[$name] = (bool)$result[$name];
+                            break;
+                        case DataTypes::DT_NUMERIC:
+                            $result[$name] = (float)$result[$name];
+                            break;
+                    }
+                }
             }
         }
         return $result;
@@ -174,7 +190,7 @@ abstract class Entity extends DataObject {
      *
      * @return void
      */
-    public function assign(array $data): void{
+    public function assign(array $data): void {
         foreach ($data as $name => $value) {
             $property = $this->_model->getPropertyByName($name);
             if ($property != null) {
