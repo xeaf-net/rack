@@ -452,11 +452,14 @@ abstract class EntityManager {
      * @param string                     $name   Имя параметра
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
      *
-     * @return string
+     * @return string|null
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    private function parameterValue(string $name, Entity $entity): string {
+    private function parameterValue(string $name, Entity $entity): ?string {
         $result   = $entity->{$name};
+        if ($result == null) {
+            return null;
+        }
         $property = $entity->getModel()->getPropertyByName($name);
         if ($property != null) {
             try {
