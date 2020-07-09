@@ -14,6 +14,9 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
+use XEAF\Rack\API\Models\UploadedFile;
+use XEAF\Rack\API\Utils\FileMIME;
+use XEAF\Rack\API\Utils\HttpResponse;
 
 /**
  * Реализует методы контейнера параметров вызова приложения
@@ -80,6 +83,12 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     protected $_parameters = [];
 
     /**
+     * Информация о переданных файлах
+     * @var array
+     */
+    protected $_files = [];
+
+    /**
      * Параметры заголовков вызова
      * @var array
      */
@@ -135,6 +144,17 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     }
 
     /**
+     * Возвращает признак передачи параметра
+     *
+     * @param string $name Имя параметра
+     *
+     * @return bool
+     */
+    public function exists(string $name): bool {
+        return array_key_exists($name, $this->_parameters);
+    }
+
+    /**
      * @inheritDoc
      */
     public function get(string $name, $defaultValue = null) {
@@ -144,8 +164,37 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
+    public function getFile(string $name): ?UploadedFile {
+        return $this->_files[$name] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getHeader(string $name, $defaultValue = null) {
         return $this->_headers[$name] ?? $defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentType(): string {
+        return $this->getHeader(HttpResponse::CONTENT_TYPE, FileMIME::DEFAULT_MIME_TYPE);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentMIME(): string {
+        $arr = explode(';', $this->getContentType());
+        return trim($arr[0]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContentLength(): int {
+        return $this->getHeader(HttpResponse::CONTENT_LENGTH, 0);
     }
 
     /**

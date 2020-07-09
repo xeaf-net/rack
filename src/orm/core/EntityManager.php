@@ -452,30 +452,37 @@ abstract class EntityManager {
      * @param string                     $name   Имя параметра
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
      *
-     * @return string
+     * @return string|null
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    private function parameterValue(string $name, Entity $entity): string {
+    private function parameterValue(string $name, Entity $entity): ?string {
         $result   = $entity->{$name};
         $property = $entity->getModel()->getPropertyByName($name);
-        try {
-            switch ($property->getDataType()) {
-                case DataTypes::DT_BOOL:
-                    $result = $this->_db->formatBool((bool) $result);
-                    break;
-                case DataTypes::DT_DATE:
-                    $result = $this->_db->formatDate((int) $result);
-                    break;
-                case DataTypes::DT_DATETIME:
-                    $result = $this->_db->formatDateTime((int) $result);
-                    break;
-                case DataTypes::DT_ARRAY:
-                case DataTypes::DT_OBJECT:
-                    $result = Serializer::getInstance()->serialize($result);
-                    break;
+        if ($property != null) {
+            try {
+                switch ($property->getDataType()) {
+                    case DataTypes::DT_UUID:
+                        if (!$result) {
+                            return null;
+                        }
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $result = $this->_db->formatBool((bool)$result);
+                        break;
+                    case DataTypes::DT_DATE:
+                        $result = $this->_db->formatDate((int)$result);
+                        break;
+                    case DataTypes::DT_DATETIME:
+                        $result = $this->_db->formatDateTime((int)$result);
+                        break;
+                    case DataTypes::DT_ARRAY:
+                    case DataTypes::DT_OBJECT:
+                        $result = Serializer::getInstance()->serialize($result);
+                        break;
+                }
+            } catch (SerializerException $exception) {
+                throw EntityException::internalError($exception);
             }
-        } catch (SerializerException $exception) {
-            throw EntityException::internalError($exception);
         }
         return (string) $result;
     }

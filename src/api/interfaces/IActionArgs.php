@@ -12,6 +12,8 @@
  */
 namespace XEAF\Rack\API\Interfaces;
 
+use XEAF\Rack\API\Models\UploadedFile;
+
 /**
  * Описывает методы контейнера параметров вызова приложения
  *
@@ -69,6 +71,15 @@ interface IActionArgs extends IFactoryObject {
     public function getCurrentURL(): ?string;
 
     /**
+     * Возвращает признак передачи параметра
+     *
+     * @param string $name Имя параметра
+     *
+     * @return bool
+     */
+    public function exists(string $name): bool;
+
+    /**
      * Возвращает значение параметра
      *
      * @param string     $name         Имя параметра
@@ -79,6 +90,15 @@ interface IActionArgs extends IFactoryObject {
     public function get(string $name, $defaultValue = null);
 
     /**
+     * Возвращает информацию о загруженном файле
+     *
+     * @param string $name Имя объекта
+     *
+     * @return \XEAF\Rack\API\Models\UploadedFile|null
+     */
+    public function getFile(string $name): ?UploadedFile;
+
+    /**
      * Возвращает значение параметра заголовка
      *
      * @param string     $name         Имя параметра
@@ -87,6 +107,27 @@ interface IActionArgs extends IFactoryObject {
      * @return mixed
      */
     public function getHeader(string $name, $defaultValue = null);
+
+    /**
+     * Возвращает тип контента
+     *
+     * @return string
+     */
+    public function getContentType(): string;
+
+    /**
+     * Возвращает MIME типа контента
+     *
+     * @return string
+     */
+    public function getContentMIME(): string;
+
+    /**
+     * Возвращает размер контента
+     *
+     * @return int
+     */
+    public function getContentLength(): int;
 
     /**
      * Возвращает список параметров заголовков

@@ -13,6 +13,7 @@
 namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\Interfaces\IRestAPI;
+use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Serializer;
 
@@ -97,7 +98,7 @@ class RestAPI implements IRestAPI {
         $apiURL   = $this->buildURL($url, $args);
         $json     = $this->_serializer->jsonArrayEncode($postArgs);
         $header   = $this->_headers;
-        $header[] = 'Content-Type: ' . HttpResponse::APPLICATION_JSON;
+        $header[] = 'Content-Type: ' . FileMIME::APPLICATION_JSON;
         $header[] = 'Content-Length: ' . strlen($json);
         curl_setopt_array($api, [
             CURLOPT_URL            => $apiURL,
@@ -127,7 +128,7 @@ class RestAPI implements IRestAPI {
         $apiURL   = $this->buildURL($url, $args);
         $header   = $this->_headers;
         $json     = $this->_serializer->jsonArrayEncode($postArgs);
-        $header[] = 'Content-Type: ' . HttpResponse::APPLICATION_JSON;
+        $header[] = 'Content-Type: ' . FileMIME::APPLICATION_JSON;
         $header[] = 'Content-Length: ' . strlen($json);
         curl_setopt_array($api, [
             CURLOPT_URL            => $apiURL,

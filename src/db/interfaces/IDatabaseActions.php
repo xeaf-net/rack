@@ -182,11 +182,11 @@ interface IDatabaseActions {
     /**
      * Преобразует дату формата SQL в timestamp
      *
-     * @param string $date Дата в формате SQL
+     * @param string|null $date Дата в формате SQL
      *
-     * @return int
+     * @return int|null
      */
-    public function sqlDate(string $date): int;
+    public function sqlDate(?string $date): ?int;
 
     /**
      * Возвращает представление даты и времени в пригодном для SQL формате
@@ -200,11 +200,11 @@ interface IDatabaseActions {
     /**
      * Преобразует дату и время формата SQL в timestamp
      *
-     * @param string $dateTime Дата и время в формате SQL
+     * @param string|null $dateTime Дата и время в формате SQL
      *
-     * @return int
+     * @return int|null
      */
-    public function sqlDateTime(string $dateTime): int;
+    public function sqlDateTime(?string $dateTime): ?int;
 
     /**
      * Возвращает представления логического значения в пригодном для SQL формате

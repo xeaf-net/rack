@@ -203,7 +203,7 @@ class Database implements IDatabase {
     /**
      * @inheritDoc
      */
-    public function sqlDate(string $date): int {
+    public function sqlDate(?string $date): ?int {
         return $this->_provider->sqlDate($date);
     }
 
@@ -217,7 +217,7 @@ class Database implements IDatabase {
     /**
      * @inheritDoc
      */
-    public function sqlDateTime(string $dateTime): int {
+    public function sqlDateTime(?string $dateTime): ?int {
         return $this->_provider->sqlDateTime($dateTime);
     }
 

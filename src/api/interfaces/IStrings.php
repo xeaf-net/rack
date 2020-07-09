@@ -70,11 +70,11 @@ interface IStrings extends IFactoryObject {
      * Преобразует строку в дату и время
      *
      * @param string|null $buf     Строка символов
-     * @param int         $onError Результат при ошибке
+     * @param int|null    $onError Результат при ошибке
      *
-     * @return int
+     * @return int|null
      */
-    public function stringToDateTime(?string $buf, int $onError = 0): int;
+    public function stringToDateTime(?string $buf, int $onError = null): ?int;
 
     /**
      * Проверяет содержит ли переданная строка целое число

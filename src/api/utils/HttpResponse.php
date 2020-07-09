@@ -89,9 +89,9 @@ class HttpResponse implements IHttpResponse {
     public const CONTENT_TYPE = 'Content-Type';
 
     /**
-     * Тип контента JSON
+     * Имя параметра размера контента
      */
-    public const APPLICATION_JSON = 'application/json';
+    public const CONTENT_LENGTH = 'Content-Length';
 
     /**
      * Тексты сообщений для кодов ответов HTTP протокола
@@ -175,7 +175,7 @@ class HttpResponse implements IHttpResponse {
     /**
      * @inheritDoc
      */
-    public function contentType(string $mimeType, string $charset = ''): void {
+    public function contentType(string $mimeType, ?string $charset = ''): void {
         $header = "Content-Type: $mimeType";
         if ($charset) {
             $header .= "; charset = $charset";
@@ -208,6 +208,7 @@ class HttpResponse implements IHttpResponse {
         } else {
             $header .= 'filename*=UTF-8\'\'' . rawurlencode($fileName);
         }
+        header('Access-Control-Expose-Headers: Content-Disposition');
         header($header);
     }
 
@@ -222,7 +223,7 @@ class HttpResponse implements IHttpResponse {
         $cacheTime = $formatter->formatCacheDateTime(time() + $cacheSecs);
         header("Expires: $cacheTime");
         header("Pragma: cache");
-        header("Cache - Control: max - age = $cacheSecs");
+        header("Cache-Control: max-age=$cacheSecs");
     }
 
     /**

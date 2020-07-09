@@ -81,7 +81,7 @@ class Strings implements IStrings {
     /**
      * @inheritDoc
      */
-    public function stringToDateTime(?string $buf, int $onError = 0): int {
+    public function stringToDateTime(?string $buf, int $onError = null): ?int {
         return $this->isDateTime($buf) ? strtotime($buf) : $onError;
     }
 

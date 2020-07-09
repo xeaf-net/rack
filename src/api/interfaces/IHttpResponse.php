@@ -45,7 +45,7 @@ interface IHttpResponse extends IFactoryObject {
      *
      * @return void
      */
-    public function contentType(string $mimeType, string $charset = ''): void;
+    public function contentType(string $mimeType, ?string $charset = ''): void;
 
     /**
      * Добавляет заголовок отправки данных в формате JSON

@@ -333,7 +333,7 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     /**
      * @inheritDoc
      */
-    public function sqlDate(string $date): int {
+    public function sqlDate(?string $date): ?int {
         $strings = Strings::getInstance();
         return $strings->stringToDateTime($date);
     }
@@ -348,7 +348,7 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     /**
      * @inheritDoc
      */
-    public function sqlDateTime(string $dateTime): int {
+    public function sqlDateTime(?string $dateTime): ?int {
         $strings = Strings::getInstance();
         return $strings->stringToDateTime($dateTime);
     }

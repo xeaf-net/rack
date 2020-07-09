@@ -18,6 +18,7 @@ use XEAF\Rack\API\Core\ActionArgs;
 use XEAF\Rack\API\Interfaces\IActionArgs;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\StatusResult;
+use XEAF\Rack\API\Models\UploadedFile;
 
 /**
  * Реализует методы разбора параметров
@@ -61,6 +62,16 @@ class Parameters extends ActionArgs {
      * Время действия заголовка origin в секундах
      */
     public const ORIGIN_AGE = 24 * 60 * 60;
+
+    /**
+     * Идентификатор парамерта заголовка имени файла
+     */
+    private const HEADER_FILE_NAME = 'X-FileName';
+
+    /**
+     * Идентификатор параметра имени файла
+     */
+    public const FILE_PARAMETER_NAME = 'x-file';
 
     /**
      * Идентификатор параметра пути
@@ -161,20 +172,58 @@ class Parameters extends ActionArgs {
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
     protected function processInputStream(): void {
-        $contentType = $this->getHeader(HttpResponse::CONTENT_TYPE);
-        if ($contentType == HttpResponse::APPLICATION_JSON) {
-            $strings  = Strings::getInstance();
-            $jsonData = file_get_contents('php://input');
-            if (!$strings->isEmpty($jsonData)) {
-                $serializer = Serializer::getInstance();
-                $params     = $serializer->jsonArrayDecode($jsonData);
-                if (is_array($params)) {
-                    foreach ($params as $name => $value) {
-                        $this->_parameters[$name] = $value;
-                    }
+        $contentMIME = $this->getContentMIME();
+        if ($contentMIME) {
+            $content = file_get_contents('php://input');
+            if ($contentMIME == FileMIME::APPLICATION_JSON) {
+                $this->processInputJSON((string)$content);
+            } else {
+                $this->processInputFile($contentMIME, $content);
+            }
+        }
+    }
+
+    /**
+     * Обрабатывает JSON из входного потока
+     *
+     * @param string $jsonData Данные в формате JSON
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     */
+    protected function processInputJSON(string $jsonData): void {
+        $strings = Strings::getInstance();
+        if (!$strings->isEmpty($jsonData)) {
+            $serializer = Serializer::getInstance();
+            $params     = $serializer->jsonArrayDecode($jsonData);
+            if (is_array($params)) {
+                foreach ($params as $name => $value) {
+                    $this->_parameters[$name] = $value;
                 }
             }
-        } // @todo Добавить разбор бинарного потока
+        }
+    }
+
+    /**
+     * Обрабатывает файлы из входного потока
+     *
+     * @param string $mime    MIME файла
+     * @param mixed  $content Содержимое входного потока
+     *
+     * @return void
+     */
+    protected function processInputFile(string $mime, $content): void {
+        $fileMIME   = FileMIME::getInsance();
+        $fileSystem = FileSystem::getInstance();
+        if ($fileMIME->isSupportedMIME($mime)) {
+            $fileName = $this->get(self::FILE_PARAMETER_NAME, $this->getHeader(self::HEADER_FILE_NAME));
+            if ($fileName) {
+                $tempPath = $fileSystem->tempFileName();
+                file_put_contents($tempPath, $content, FILE_APPEND);
+                $fileSize                                = $fileSystem->fileSize($tempPath);
+                $this->_files[self::FILE_PARAMETER_NAME] = $this->createUploadedFile($fileName, $mime, $fileSize, $tempPath);
+            }
+        }
     }
 
     /**
@@ -201,7 +250,7 @@ class Parameters extends ActionArgs {
     protected function processRequestFiles(): void {
         foreach ($_FILES as $name => $file) {
             if ($file['name']) {
-                $this->_parameters[$name] = $file;
+                $this->_files[$name] = $this->createUploadedFile($file['name'], $file['type'], $file['size'], $file['tmp_name']);
             }
         }
     }
@@ -263,6 +312,25 @@ class Parameters extends ActionArgs {
         }
         $this->_actionNode = $node;
         $this->_actionPath = Router::ROOT_NODE . trim($node . '/' . $this->_actionPath, '/');
+    }
+
+    /**
+     * Возвращает массив с информацией о файле
+     *
+     * @param string $fileName Имя файла
+     * @param string $fileMIME MIME файла
+     * @param int    $fileSize Размер файла
+     * @param string $tempPath Путь к файлу
+     *
+     * @return \XEAF\Rack\API\Models\UploadedFile
+     */
+    private function createUploadedFile(string $fileName, string $fileMIME, int $fileSize, string $tempPath): UploadedFile {
+        $result           = new UploadedFile();
+        $result->name     = $fileName;
+        $result->mime     = $fileMIME;
+        $result->size     = $fileSize;
+        $result->tempPath = $tempPath;
+        return $result;
     }
 
     /**
