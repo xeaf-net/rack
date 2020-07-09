@@ -457,13 +457,15 @@ abstract class EntityManager {
      */
     private function parameterValue(string $name, Entity $entity): ?string {
         $result   = $entity->{$name};
-        if ($result == null) {
-            return null;
-        }
         $property = $entity->getModel()->getPropertyByName($name);
         if ($property != null) {
             try {
                 switch ($property->getDataType()) {
+                    case DataTypes::DT_UUID:
+                        if (!$result) {
+                            return null;
+                        }
+                        break;
                     case DataTypes::DT_BOOL:
                         $result = $this->_db->formatBool((bool)$result);
                         break;
