@@ -559,8 +559,13 @@ class EntityQuery extends DataModel {
                 $properties = $model->getPropertyByNames();
                 $item       = $this->processRecord($aliasName, $properties, $record);
                 $entity     = new $className($item);
-                $this->_em->watch($entity);
-                $multi[$aliasName] = $entity;
+                assert($entity instanceof Entity);
+                if ($entity->getPrimaryKey()) {
+                    $this->_em->watch($entity);
+                    $multi[$aliasName] = $entity;
+                } else {
+                    $multi[$aliasName] = null;
+                }
             }
             $recordObject = new DataObject($multi);
             $result->push($recordObject);

@@ -124,7 +124,7 @@ abstract class Entity extends DataObject {
         if ($this->_primaryKey == null) {
             $result = [];
             foreach ($this->_model->getPrimaryKeyNames() as $name) {
-                $value = $this->{$name};
+                $value = $this->{$name} ?? null;
                 if ($value == null) {
                     return null;
                 } else {
