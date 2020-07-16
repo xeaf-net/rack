@@ -457,6 +457,9 @@ abstract class EntityManager {
      */
     private function parameterValue(string $name, Entity $entity): ?string {
         $result   = $entity->{$name};
+        if ($result === null) {
+            return null;
+        }
         $property = $entity->getModel()->getPropertyByName($name);
         if ($property != null) {
             try {
