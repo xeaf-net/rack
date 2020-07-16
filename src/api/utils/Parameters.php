@@ -213,6 +213,9 @@ class Parameters extends ActionArgs {
      * @return void
      */
     protected function processInputFile(string $mime, $content): void {
+        if (count($_FILES) > 0) {
+            return;
+        }
         $fileMIME   = FileMIME::getInsance();
         $fileSystem = FileSystem::getInstance();
         if ($fileMIME->isSupportedMIME($mime)) {
