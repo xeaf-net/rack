@@ -52,6 +52,12 @@ class Application extends Extension {
     private $_router;
 
     /**
+     * Объект методов работы с рефлексией классов
+     * @var \XEAF\Rack\API\Interfaces\IReflection
+     */
+    private $_reflection;
+
+    /**
      * Инициализирует значения свойств объекта класса
      *
      * @param \XEAF\Rack\API\Interfaces\IConfiguration $configuration Параметры конфигурации
@@ -65,7 +71,8 @@ class Application extends Extension {
         if ($actionArgs != null) {
             Factory::setFactoryObject(ActionArgs::class, $actionArgs);
         }
-        $this->_router = Router::getInstance();
+        $this->_router     = Router::getInstance();
+        $this->_reflection = Reflection::getInstance();
         $this->initialization();
     }
 
@@ -163,11 +170,13 @@ class Application extends Extension {
      * @return \XEAF\Rack\API\Interfaces\IModule|null
      */
     protected function createModule(): ?IModule {
+        $result    = null;
         $className = $this->_router->moduleClassName();
         if ($className) {
-            return $this->createModuleObject($className);
+            $result = $this->_reflection->createInjectable($className);
+            assert($result instanceof IModule);
         }
-        return null;
+        return $result;
     }
 
     /**
@@ -179,27 +188,9 @@ class Application extends Extension {
         $result    = null;
         $className = $this->_router->moduleNodeClassName();
         if ($className) {
-            $result = $this->createModuleObject($className);
+            $result = $this->_reflection->createInjectable($className);
             assert($result instanceof INodeModule);
-        }
-        return $result;
-    }
-
-    /**
-     * Создает объект модуля
-     *
-     * @param string $className Имя класса объекта
-     *
-     * @return \XEAF\Rack\API\Interfaces\IModule
-     */
-    protected function createModuleObject(string $className): IModule {
-        $result = null;
-        if ($className) {
-            $reflection = Reflection::getInstance();
-            $result     = $reflection->createInjectable($className);
-            if ($result != null) {
-                assert($result instanceof IModule);
-            }
+            $result->registerNodeModules();
         }
         return $result;
     }
