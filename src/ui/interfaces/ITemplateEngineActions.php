@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\UI\Interfaces;
 
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\UI\Core\Template;
 use XEAF\Rack\UI\Models\Results\HtmlResult;
 
@@ -106,6 +107,17 @@ interface ITemplateEngineActions {
      * @return void
      */
     public function unregisterTemplate(string $name): void;
+
+    /**
+     * Возвращает HTML код разбора файла шаблона
+     *
+     * @param string                              $layoutFile Имя файла разметки
+     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
+     *
+     * @return string
+     * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
+     */
+    public function parse(string $layoutFile, DataObject $dataObject = null): string;
 
     /**
      * Возвращает HTML код результата действия

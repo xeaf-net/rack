@@ -13,6 +13,7 @@
 namespace XEAF\Rack\UI\Utils;
 
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 use XEAF\Rack\UI\Core\Template;
 use XEAF\Rack\UI\Interfaces\ITemplateEngine;
@@ -135,6 +136,13 @@ class TemplateEngine implements ITemplateEngine {
      */
     public function unregisterTemplate(string $name): void {
         $this->_engine->unregisterPlugin($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parse(string $layoutFile, DataObject $dataObject = null): string {
+        return $this->_engine->parse($layoutFile, $dataObject);
     }
 
     /**
