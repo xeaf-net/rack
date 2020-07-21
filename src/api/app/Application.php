@@ -158,9 +158,17 @@ class Application extends Extension {
      * @return void
      */
     protected function afterExecute(): void {
-        $session    = Session::getInstance();
-        $fileSystem = FileSystem::getInstance();
+        $session = Session::getInstance();
         $session->saveSessionVars();
+    }
+
+    /**
+     * Удаляет ранее созданные временные файлы
+     *
+     * @return void
+     */
+    protected function clearTempFiles(): void {
+        $fileSystem = FileSystem::getInstance();
         $fileSystem->deleteTempFiles();
     }
 
@@ -246,6 +254,7 @@ class Application extends Extension {
             if ($result) {
                 $result->processResult();
             }
+            $this->clearTempFiles();
         } catch (Throwable $reason) {
             $errorMsg = HttpResponse::MESSAGES[HttpResponse::FATAL_ERROR];
             $this->defaultLogger()->error($errorMsg, $reason);
