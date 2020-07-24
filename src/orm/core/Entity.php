@@ -161,8 +161,7 @@ abstract class Entity extends DataObject {
             if (count($map) == 0 || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if ($property->getIsCalculated()) {
-                    /** @noinspection PhpVariableVariableInspection */
-                    $result[$name] = $this->$name;
+                    $result[$name] = $this->{$name};
                 } else {
                     switch ($property->dataType) {
                         case DataTypes::DT_INTEGER:

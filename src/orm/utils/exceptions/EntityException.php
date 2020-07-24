@@ -53,24 +53,29 @@ class EntityException extends Exception {
     public const UNKNOWN_ENTITY_ALIAS = 'EF006';
 
     /**
+     * Неизвестный класс сущности
+     */
+    public const UNKNOWN_ENTITY_CLASS = 'EF007';
+
+    /**
      * Неизвестное свойство сущности
      */
-    public const UNKNOWN_ENTITY_PROPERTY = 'EF007';
+    public const UNKNOWN_ENTITY_PROPERTY = 'EF008';
 
     /**
      * Пустое значение первичного ключа
      */
-    public const PRIMARY_KEY_IS_NULL = 'EF008';
+    public const PRIMARY_KEY_IS_NULL = 'EF009';
 
     /**
      * Нежиданный конец XQL выражения
      */
-    public const UNEXPECTED_EXPRESSION_END = 'F009';
+    public const UNEXPECTED_EXPRESSION_END = 'F010';
 
     /**
      * Некорректное значение перечисления
      */
-    public const INVALID_ENUM_VALUE = 'F010';
+    public const INVALID_ENUM_VALUE = 'F011';
 
     /**
      * Внутренняя ошибка ORM
@@ -100,6 +105,9 @@ class EntityException extends Exception {
                 break;
             case self::UNKNOWN_ENTITY_ALIAS:
                 $result = 'Unknown entity alias [%s].';
+                break;
+            case self::UNKNOWN_ENTITY_CLASS:
+                $result = 'Unknown entity class [%s].';
                 break;
             case self::UNKNOWN_ENTITY_PROPERTY:
                 $result = 'Unknown entity property [%s::%s]';
@@ -184,6 +192,17 @@ class EntityException extends Exception {
      */
     public static function unknownEntityAlias(string $alias): self {
         return new self(self::UNKNOWN_ENTITY_ALIAS, [$alias]);
+    }
+
+    /**
+     * Неизвестный класс сущности
+     *
+     * @param string $className Имя класса
+     *
+     * @return \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public static function unknownEntityClass(string $className): self {
+        return new self(self::UNKNOWN_ENTITY_CLASS, [$className]);
     }
 
     /**

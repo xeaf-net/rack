@@ -116,7 +116,7 @@ abstract class EntityManager {
      * @return string
      */
     public function getEntityClass(string $entity): string {
-        return (string) $this->_entityClasses->get($entity);
+        return (string)$this->_entityClasses->get($entity);
     }
 
     /**
@@ -131,6 +131,22 @@ abstract class EntityManager {
     }
 
     /**
+     * Возвращает имя сущности по имени класса
+     *
+     * @param string $className Имя класса
+     *
+     * @return string|null
+     */
+    public function findByClassName(string $className): ?string {
+        foreach ($this->_entityClasses as $name => $entityClassName) {
+            if ($className == $entityClassName) {
+                return $name;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Возвращает новый объект запроса
      *
      * @param string $xql Текст XQL запроса
@@ -140,6 +156,43 @@ abstract class EntityManager {
      */
     public function query(string $xql): EntityQuery {
         return new EntityQuery($this, $xql);
+    }
+
+    /**
+     * Возвращает объект запроса к сущностям заданного класса
+     *
+     * @param string $className Имя класса
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function queryEntity(string $className): EntityQuery {
+        $name = $this->findByClassName($className);
+        if (!$name) {
+            throw EntityException::unknownEntityClass($className);
+        }
+        $xql = $name . ' from ' . $name;
+        return $this->query($xql);
+    }
+
+    /**
+     * Возвращает объект запроса к сущностям по первичному ключу
+     *
+     * @param string $className
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function queryEntityByPk(string $className): EntityQuery {
+        $name  = $this->findByClassName($className);
+        $query = $this->queryEntity($className);
+        $model = $this->_entities->get($name);
+        assert($model instanceof EntityModel);
+        $primaryKeys = $model->getPrimaryKeyNames();
+        foreach ($primaryKeys as $primaryKey) {
+            $query->andWhere("$name.$primaryKey == $primaryKey");
+        }
+        return $query;
     }
 
     /**
@@ -456,7 +509,7 @@ abstract class EntityManager {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function parameterValue(string $name, Entity $entity): ?string {
-        $result   = $entity->{$name};
+        $result = $entity->{$name};
         if ($result === null) {
             return null;
         }
@@ -487,6 +540,6 @@ abstract class EntityManager {
                 throw EntityException::internalError($exception);
             }
         }
-        return (string) $result;
+        return (string)$result;
     }
 }
