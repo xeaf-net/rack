@@ -162,20 +162,19 @@ abstract class Entity extends DataObject {
                 assert($property instanceof PropertyModel);
                 if ($property->getIsCalculated()) {
                     $result[$name] = $this->{$name};
-                } else {
-                    switch ($property->dataType) {
-                        case DataTypes::DT_INTEGER:
-                        case DataTypes::DT_DATE:
-                        case DataTypes::DT_DATETIME:
-                            $result[$name] = (int)$result[$name];
-                            break;
-                        case DataTypes::DT_BOOL:
-                            $result[$name] = (bool)$result[$name];
-                            break;
-                        case DataTypes::DT_NUMERIC:
-                            $result[$name] = (float)$result[$name];
-                            break;
-                    }
+                }
+                switch ($property->dataType) {
+                    case DataTypes::DT_INTEGER:
+                    case DataTypes::DT_DATE:
+                    case DataTypes::DT_DATETIME:
+                        $result[$name] = (int)$result[$name];
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $result[$name] = (bool)$result[$name];
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $result[$name] = (float)$result[$name];
+                        break;
                 }
             }
         }
