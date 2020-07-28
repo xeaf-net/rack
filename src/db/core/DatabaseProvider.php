@@ -363,7 +363,7 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     /**
      * @inheritDoc
      */
-    public function sqlBool(string $flag): bool {
-        return $flag != '0';
+    public function sqlBool(?string $flag): bool {
+        return $flag != null && $flag != '0';
     }
 }
