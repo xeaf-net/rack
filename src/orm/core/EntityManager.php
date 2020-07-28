@@ -166,7 +166,7 @@ abstract class EntityManager {
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function queryEntity(string $className): EntityQuery {
+    public function queryEntities(string $className): EntityQuery {
         $name = $this->findByClassName($className);
         if (!$name) {
             throw EntityException::unknownEntityClass($className);
@@ -183,14 +183,14 @@ abstract class EntityManager {
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function queryEntityByPk(string $className): EntityQuery {
+    public function queryEntity(string $className): EntityQuery {
         $name  = $this->findByClassName($className);
-        $query = $this->queryEntity($className);
+        $query = $this->queryEntities($className);
         $model = $this->_entities->get($name);
         assert($model instanceof EntityModel);
         $primaryKeys = $model->getPrimaryKeyNames();
         foreach ($primaryKeys as $primaryKey) {
-            $query->andWhere("$name.$primaryKey == $primaryKey");
+            $query->andWhere("$name.$primaryKey == :$primaryKey");
         }
         return $query;
     }
