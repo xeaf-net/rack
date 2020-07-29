@@ -58,18 +58,6 @@ class Extension extends StdObject {
     }
 
     /**
-     * Псевдоним для $this->args()->get($name, $defaultValue)
-     *
-     * @param string     $name         Имя параметра
-     * @param mixed|null $defaultValue Значение по умолчанию
-     *
-     * @return mixed|null
-     */
-    protected function arg(string $name, $defaultValue = null) {
-        return $this->args()->get($name, $defaultValue);
-    }
-
-    /**
      * Возвращает значение языковой переменной
      *
      * @param string      $name   Имя переменной

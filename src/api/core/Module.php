@@ -110,7 +110,7 @@ class Module extends Extension implements IModule {
      */
     protected function sendLocaleData(): IActionResult {
         $l10n   = Localization::getInstance();
-        $locale = $this->args()->get('locale');
+        $locale = $this->args()->getString('locale');
         if (!$locale) {
             $locale = $l10n->getDefaultLocale()->getName();
         }

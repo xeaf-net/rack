@@ -14,7 +14,6 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Utils\Formatter;
-use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -193,21 +192,6 @@ abstract class Entity extends DataObject {
             $property = $this->_model->getPropertyByName($name);
             if ($property != null) {
                 $this->{$name} = $value;
-            }
-        }
-    }
-
-    /**
-     * Задает значения свойств из параметров вызова приложения
-     *
-     * @return void
-     */
-    public function assignParameters(): void {
-        $parameters = Parameters::getInstance();
-        $properties = $this->_model->getPropertyByNames();
-        foreach ($properties as $name => $property) {
-            if ($parameters->exists($name)) {
-                $this->{$name} = $parameters->get($name);
             }
         }
     }
