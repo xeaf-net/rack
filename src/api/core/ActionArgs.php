@@ -184,19 +184,25 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getInteger(string $name, int $defaultValue = 0): int {
-        $value   = $this->_parameters[$name] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        return $strings->stringToInteger((string)$value, $defaultValue);
+    public function getInteger(string $name, int $defaultValue = null): ?int {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if ($value !== null) {
+            $strings = Strings::getInstance();
+            $value   = $strings->stringToInteger((string)$value, $defaultValue);
+        }
+        return $value;
     }
 
     /**
      * @inheritDoc
      */
-    public function getFloat(string $name, float $defaultValue = 0.00): float {
-        $value   = $this->_parameters[$name] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        return $strings->stringToFloat((string)$value, $defaultValue);
+    public function getFloat(string $name, float $defaultValue = null): ?float {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if ($value !== null) {
+            $strings = Strings::getInstance();
+            $value   = $strings->stringToFloat((string)$value, $defaultValue);
+        }
+        return $value;
     }
 
     /**
@@ -223,13 +229,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     }
 
     /**
-     * Возвращает значение целочисленного элемента из массива
-     *
-     * @param string $name         Имя параметра массива
-     * @param string $element      Имя элемента
-     * @param int    $defaultValue Значение по умолчанию
-     *
-     * @return int
+     * @inheritDoc
      */
     public function getArrayInt(string $name, string $element, int $defaultValue = 0): int {
         $data    = $this->getArray($name);
@@ -239,13 +239,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     }
 
     /**
-     * Возвращает значение строкового элемента из массива
-     *
-     * @param string      $name         Имя параметра массива
-     * @param string      $element      Имя элемента
-     * @param string|null $defaultValue Значение по умолчанию
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function getArrayString(string $name, string $element, string $defaultValue = null): ?string {
         $data  = $this->getArray($name);

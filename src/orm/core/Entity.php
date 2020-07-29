@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Utils\Formatter;
+use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -191,6 +192,38 @@ abstract class Entity extends DataObject {
         foreach ($data as $name => $value) {
             $property = $this->_model->getPropertyByName($name);
             if ($property != null) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
+    /**
+     * Задает значения свойств из параметров вызова приложения
+     *
+     * @return void
+     */
+    public function assignParameters(): void {
+        $parameters = Parameters::getInstance();
+        $properties = $this->_model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if (!$property->getIsCalculated() && $parameters->exists($name)) {
+                $value = null;
+                switch ($property->dataType) {
+                    case DataTypes::DT_INTEGER:
+                        $value = $parameters->getInteger($name, 0);
+                        break;
+                    case DataTypes::DT_DATE:
+                    case DataTypes::DT_DATETIME:
+                        $value = $parameters->getInteger($name);
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $value = $parameters->getBool($name);
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $value = $parameters->getFloat($name, 0.00);
+                        break;
+                }
                 $this->{$name} = $value;
             }
         }

@@ -113,22 +113,22 @@ interface IActionArgs extends IFactoryObject {
     /**
      * Возвращает значение целочисленного параметра
      *
-     * @param string $name         Имя параметра
-     * @param int    $defaultValue Значение по умолчанию
+     * @param string   $name         Имя параметра
+     * @param int|null $defaultValue Значение по умолчанию
      *
-     * @return int
+     * @return int|null
      */
-    public function getInteger(string $name, int $defaultValue = 0): int;
+    public function getInteger(string $name, int $defaultValue = null): ?int;
 
     /**
      * Возвращает значение действительного параметра
      *
-     * @param string $name         Имя параметра
-     * @param float  $defaultValue Значение по умолчанию
+     * @param string     $name         Имя параметра
+     * @param float|null $defaultValue Значение по умолчанию
      *
-     * @return float
+     * @return float|null
      */
-    public function getFloat(string $name, float $defaultValue = 0.00): float;
+    public function getFloat(string $name, float $defaultValue = null): ?float;
 
     /**
      * Возвращает значение параметра идентификатора
