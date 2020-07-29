@@ -93,7 +93,8 @@ class Reflection implements IReflection {
         $className = get_class($object);
         $refMethod = new ReflectionMethod($className, $method);
         $args      = $this->injectMethodArgs($refMethod);
-        if ($refMethod->isPrivate() || $refMethod->isProtected()) {
+        // if ($refMethod->isPrivate() || $refMethod->isProtected()) {
+        if ($refMethod->isProtected()) {
             $refMethod->setAccessible(true);
         }
         return $refMethod->invokeArgs($object, $args);
