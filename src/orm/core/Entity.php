@@ -223,6 +223,9 @@ abstract class Entity extends DataObject {
                     case DataTypes::DT_NUMERIC:
                         $value = $parameters->getFloat($name, 0.00);
                         break;
+                    default:
+                        $value = $parameters->getString($name);
+                        break;
                 }
                 $this->{$name} = $value;
             }
