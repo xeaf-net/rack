@@ -590,6 +590,12 @@ class EntityQuery extends DataModel {
             $fieldAlias = $aliasName . '_' . $property->getFieldName();
             $value      = (string)$record[$fieldAlias];
             switch ($property->getDataType()) {
+                case DataTypes::DT_INTEGER:
+                    $result[$name] = $value === null ? null : (int)$value;
+                    break;
+                case DataTypes::DT_NUMERIC:
+                    $result[$name] = $value === null ? null : (float)$value;
+                    break;
                 case DataTypes::DT_BOOL:
                     $result[$name] = $db->sqlBool($value);
                     break;
