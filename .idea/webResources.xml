@@ -15,6 +15,7 @@
             <path value="file://$PROJECT_DIR$/src/ui/www/favicon" />
             <path value="file://$PROJECT_DIR$/src/www/favicon" />
             <path value="file://$PROJECT_DIR$/src/ui/public/dist" />
+            <path value="file://$PROJECT_DIR$/src/api/utils/l10n" />
           </resourceRoots>
         </entryData>
       </entry>
