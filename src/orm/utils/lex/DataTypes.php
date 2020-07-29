@@ -68,4 +68,14 @@ class DataTypes {
      * Тип данных - объект
      */
     public const DT_OBJECT = 10;
+
+    /**
+     * Тип данных - сущность
+     */
+    public const DT_ENTITY = 11;
+
+    /**
+     * Тип данных коллекция сущностей
+     */
+    public const DT_ONE_TO_MANY = 12;
 }
