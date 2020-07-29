@@ -105,6 +105,17 @@ class Validator implements IValidator {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function checkEnum($data, array $values, string $tag = null): void {
+        $test = (string)$data;
+        $this->checkNotEmpty($data);
+        if (!in_array($test, $values)) {
+            throw FormException::badRequest(self::INVALID_VALUE, [], $tag);
+        }
+    }
+
+    /**
      * Возвращает единичный экземпляр объекта класса
      *
      * @return \XEAF\Rack\API\Interfaces\IValidator
