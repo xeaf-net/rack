@@ -587,46 +587,51 @@ class EntityQuery extends DataModel {
         $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            $fieldAlias = $aliasName . '_' . $property->getFieldName();
-            $value      = (string)$record[$fieldAlias];
-            switch ($property->getDataType()) {
-                case DataTypes::DT_INTEGER:
-                    $result[$name] = $value === null ? null : (int)$value;
-                    break;
-                case DataTypes::DT_NUMERIC:
-                    $result[$name] = $value === null ? null : (float)$value;
-                    break;
-                case DataTypes::DT_BOOL:
-                    $result[$name] = $db->sqlBool($value);
-                    break;
-                case DataTypes::DT_DATE:
-                    $result[$name] = $db->sqlDate($value);
-                    break;
-                case DataTypes::DT_DATETIME:
-                    $result[$name] = $db->sqlDateTime($value);
-                    break;
-                case DataTypes::DT_ARRAY:
-                    try {
-                        $result[$name] = Serializer::getInstance()->unserialize($value);
-                        if (!is_array($result[$name])) {
+            if (!$property->isCalculated) {
+                $fieldAlias = $aliasName . '_' . $property->getFieldName();
+                $value      = (string)$record[$fieldAlias];
+                switch ($property->getDataType()) {
+                    case DataTypes::DT_INTEGER:
+                        $result[$name] = $value === null ? null : (int)$value;
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $result[$name] = $value === null ? null : (float)$value;
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $result[$name] = $db->sqlBool($value);
+                        break;
+                    case DataTypes::DT_DATE:
+                        $result[$name] = $db->sqlDate($value);
+                        break;
+                    case DataTypes::DT_DATETIME:
+                        $result[$name] = $db->sqlDateTime($value);
+                        break;
+                    case DataTypes::DT_ARRAY:
+                        try {
+                            $result[$name] = Serializer::getInstance()->unserialize($value);
+                            if (!is_array($result[$name])) {
+                                $result[$name] = [];
+                            }
+                        } catch (SerializerException $exception) {
                             $result[$name] = [];
                         }
-                    } catch (SerializerException $exception) {
-                        $result[$name] = [];
-                    }
-                    break;
-                case DataTypes::DT_OBJECT:
-                    try {
-                        $result[$name] = Serializer::getInstance()->unserialize($value);
-                        if (!is_object($result[$name])) {
+                        break;
+                    case DataTypes::DT_OBJECT:
+                        try {
+                            $result[$name] = Serializer::getInstance()->unserialize($value);
+                            if (!is_object($result[$name])) {
+                                $result[$name] = null;
+                            }
+                        } catch (SerializerException $exception) {
                             $result[$name] = null;
                         }
-                    } catch (SerializerException $exception) {
-                        $result[$name] = null;
-                    }
-                    break;
-                default:
-                    $result[$name] = $value;
+                        break;
+                    case DataTypes::DT_STRING:
+                    case DataTypes::DT_UUID:
+                    case DataTypes::DT_ENUM:
+                        $result[$name] = $value;
+                        break;
+                }
             }
         }
         return $result;
