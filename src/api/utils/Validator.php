@@ -13,7 +13,7 @@
 namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
-use XEAF\Rack\API\Interfaces\IFactoryObject;
+use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Utils\Exceptions\FormException;
 
 /**
@@ -21,7 +21,7 @@ use XEAF\Rack\API\Utils\Exceptions\FormException;
  *
  * @package  XEAF\Rack\API\Utils
  */
-class Validator implements IFactoryObject {
+class Validator implements IValidator {
 
     /**
      * Значение не модет быть пустым
@@ -59,13 +59,7 @@ class Validator implements IFactoryObject {
     }
 
     /**
-     * Проверяет наличие значения
-     *
-     * @param mixed       $data Данные для проверки
-     * @param string|null $tag  Тег
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @inheritDoc
      */
     public function checkNotEmpty($data, string $tag = null): void {
         $test = (string)$data;
@@ -75,15 +69,7 @@ class Validator implements IFactoryObject {
     }
 
     /**
-     * Проверяет длину строки
-     *
-     * @param mixed       $data      Данные для проврки
-     * @param int         $minLength Минимальная длина
-     * @param int         $maxLength Максмиальная длина
-     * @param string|null $tag       Тег
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @inheritDoc
      */
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void {
         $this->checkNotEmpty($data);
@@ -97,13 +83,7 @@ class Validator implements IFactoryObject {
     }
 
     /**
-     * Проверяет уникальный идентификатор
-     *
-     * @param mixed       $data Данные для проверки
-     * @param string|null $tag  Тег
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @inheritDoc
      */
     public function checkUUID($data, string $tag = null): void {
         $test = (string)$data;
@@ -114,13 +94,7 @@ class Validator implements IFactoryObject {
     }
 
     /**
-     * Проверяет адрес электронной почты
-     *
-     * @param mixed       $data Данные для проверки
-     * @param string|null $tag  Тег
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @inheritDoc
      */
     public function checkEmail($data, string $tag = null): void {
         $test = (string)$data;
@@ -133,11 +107,11 @@ class Validator implements IFactoryObject {
     /**
      * Возвращает единичный экземпляр объекта класса
      *
-     * @return \XEAF\Rack\API\Utils\Validator
+     * @return \XEAF\Rack\API\Interfaces\IValidator
      */
-    public static function getInstance(): Validator {
+    public static function getInstance(): IValidator {
         $result = Factory::getFactoryObject(self::class);
-        assert($result instanceof Validator);
+        assert($result instanceof IValidator);
         return $result;
     }
 }
