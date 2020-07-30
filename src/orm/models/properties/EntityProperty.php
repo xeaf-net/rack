@@ -44,7 +44,7 @@ class EntityProperty extends PropertyModel {
      * Конструктор класса
      *
      * @param string $entity Имя сущности
-     * @param array  $links  Сассив свойств ссылок
+     * @param array  $links  Массив свойств ссылок
      * @param bool   $lazy   Признак отложенной загрузки
      */
     public function __construct(string $entity, array $links, bool $lazy = true) {
