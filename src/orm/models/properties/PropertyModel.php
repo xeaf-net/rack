@@ -31,6 +31,7 @@ use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
  * @property-read bool   $isInsertable  Признак вставляемого свойства
  * @property-read bool   $isUpdatable   Признак изменяемого свойства
  * @property-read bool   $isCalculated  Признак вычисляемого свойства
+ * @property-read bool   $isExpandable  Признак расширяемого свойства
  *
  * @package XEAF\Rack\ORM\Models\Properties
  */
@@ -197,6 +198,15 @@ abstract class PropertyModel extends DataModel {
      */
     public function getIsCalculated(): bool {
         return $this->getAccessType() == AccessTypes::AC_CALCULATED;
+    }
+
+    /**
+     * Возвращает признаке расширяемого свойства
+     *
+     * @return bool
+     */
+    public function getIsExpandable(): bool {
+        return $this->getAccessType() == AccessTypes::AC_EXPANDABLE;
     }
 
     /**

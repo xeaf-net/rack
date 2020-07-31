@@ -48,7 +48,7 @@ class EntityProperty extends PropertyModel {
      * @param bool   $lazy   Признак отложенной загрузки
      */
     public function __construct(string $entity, array $links, bool $lazy = true) {
-        parent::__construct(DataTypes::DT_ENTITY, 0, 0, '', false, AccessTypes::AC_CALCULATED);
+        parent::__construct(DataTypes::DT_ENTITY, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
         $this->_entity = $entity;
         $this->_links  = $links;
         $this->_lazy   = $lazy;

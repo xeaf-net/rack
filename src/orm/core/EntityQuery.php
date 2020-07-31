@@ -107,13 +107,14 @@ class EntityQuery extends DataModel {
     /**
      * Добавляет источник выбора сущностей
      *
-     * @param string $entity Имя сущности
-     * @param string $alias  Псевдоним
+     * @param string      $entity Имя сущности
+     * @param string|null $alias  Псевдоним
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      */
-    public function from(string $entity, string $alias): EntityQuery {
-        $fromModel = new FromModel($entity, $alias);
+    public function from(string $entity, string $alias = null): EntityQuery {
+        $realAlias = $alias ? $alias : $entity;
+        $fromModel = new FromModel($entity, $realAlias);
         $this->_model->addFromModel($fromModel);
         return $this;
     }
@@ -584,56 +585,133 @@ class EntityQuery extends DataModel {
      */
     protected function processRecord(string $aliasName, IKeyValue $properties, array $record): array {
         $result = [];
-        $db     = $this->_em->getDb();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->isCalculated) {
-                $fieldAlias = $aliasName . '_' . $property->getFieldName();
-                $value      = (string)$record[$fieldAlias];
-                switch ($property->getDataType()) {
-                    case DataTypes::DT_INTEGER:
-                        $result[$name] = $value === null ? null : (int)$value;
-                        break;
-                    case DataTypes::DT_NUMERIC:
-                        $result[$name] = $value === null ? null : (float)$value;
-                        break;
-                    case DataTypes::DT_BOOL:
-                        $result[$name] = $db->sqlBool($value);
-                        break;
-                    case DataTypes::DT_DATE:
-                        $result[$name] = $db->sqlDate($value);
-                        break;
-                    case DataTypes::DT_DATETIME:
-                        $result[$name] = $db->sqlDateTime($value);
-                        break;
-                    case DataTypes::DT_ARRAY:
-                        try {
-                            $result[$name] = Serializer::getInstance()->unserialize($value);
-                            if (!is_array($result[$name])) {
-                                $result[$name] = [];
-                            }
-                        } catch (SerializerException $exception) {
-                            $result[$name] = [];
-                        }
-                        break;
-                    case DataTypes::DT_OBJECT:
-                        try {
-                            $result[$name] = Serializer::getInstance()->unserialize($value);
-                            if (!is_object($result[$name])) {
-                                $result[$name] = null;
-                            }
-                        } catch (SerializerException $exception) {
-                            $result[$name] = null;
-                        }
-                        break;
-                    case DataTypes::DT_STRING:
-                    case DataTypes::DT_UUID:
-                    case DataTypes::DT_ENUM:
-                        $result[$name] = $value;
-                        break;
-                }
+            if (!$property->isCalculated && !$property->isExpandable) {
+                $fieldAlias    = $aliasName . '_' . $property->getFieldName();
+                $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
+            } elseif ($property->isCalculated) {
+                $result[$name] = $this->processCalculatedProperty($name, $property);
+            } elseif ($property->isExpandable) {
+                $result[$name] = $this->processExpandableProperty($name, $property);
             }
         }
         return $result;
+    }
+
+    /**
+     * Возвращает значения обчного читаемого свойства
+     *
+     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     * @param mixed                                          $value    Значение
+     *
+     * @return mixed
+     */
+    protected function processReadableProperty(PropertyModel $property, $value) {
+        $result = null;
+        $db     = $this->_em->getDb();
+        switch ($property->getDataType()) {
+            case DataTypes::DT_INTEGER:
+                $result = $value === null ? null : (int)$value;
+                break;
+            case DataTypes::DT_NUMERIC:
+                $result = $value === null ? null : (float)$value;
+                break;
+            case DataTypes::DT_BOOL:
+                $result = $db->sqlBool($value);
+                break;
+            case DataTypes::DT_DATE:
+                $result = $db->sqlDate($value);
+                break;
+            case DataTypes::DT_DATETIME:
+                $result = $db->sqlDateTime($value);
+                break;
+            case DataTypes::DT_ARRAY:
+                try {
+                    $result = Serializer::getInstance()->unserialize($value);
+                    if (!is_array($result)) {
+                        $result = [];
+                    }
+                } catch (SerializerException $exception) {
+                    $result = [];
+                }
+                break;
+            case DataTypes::DT_OBJECT:
+                try {
+                    $result = Serializer::getInstance()->unserialize($value);
+                    if (!is_object($result)) {
+                        $result = null;
+                    }
+                } catch (SerializerException $exception) {
+                    $result = null;
+                }
+                break;
+            case DataTypes::DT_STRING:
+            case DataTypes::DT_UUID:
+            case DataTypes::DT_ENUM:
+                $result = $value;
+                break;
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает значения вычисляемого свойства
+     *
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     *
+     * @return mixed
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function processCalculatedProperty(string $name, PropertyModel $property) {
+        return null;
+    }
+
+    /**
+     * Возвращает значения расширяемого свойства свойства
+     *
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     *
+     * @return mixed
+     */
+    protected function processExpandableProperty(string $name, PropertyModel $property) {
+        $result = null;
+        switch ($property->dataType) {
+            case DataTypes::DT_ENTITY:
+                $result = $this->expandEntity($name, $property);
+                break;
+            case DataTypes::DT_ENTITIES:
+                $result = $this->expandEntities($name, $property);
+                break;
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает значения расширяемого свойства свойства сущности
+     *
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     *
+     * @return mixed
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function expandEntity(string $name, PropertyModel $property) {
+        return null;
+    }
+
+    /**
+     * Возвращает значения расширяемого свойства свойства коллекции сущностей
+     *
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     *
+     * @return mixed
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function expandEntities(string $name, PropertyModel $property) {
+        return new Collection();
     }
 }

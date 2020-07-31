@@ -77,5 +77,5 @@ class DataTypes {
     /**
      * Тип данных коллекция сущностей
      */
-    public const DT_ONE_TO_MANY = 12;
+    public const DT_ENTITIES = 12;
 }

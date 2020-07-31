@@ -45,6 +45,11 @@ class AccessTypes {
     public const AC_CALCULATED = 0x08;
 
     /**
+     * Расширяемое поле
+     */
+    public const AC_EXPANDABLE = 0x10;
+
+    /**
      * Свойство с полным доступом
      */
     public const AC_DEFAULT = self::AC_READABLE | self::AC_INSERTABLE | self::AC_UPDATABLE;
