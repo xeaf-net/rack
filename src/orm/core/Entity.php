@@ -279,6 +279,7 @@ abstract class Entity extends DataObject {
             assert($property instanceof PropertyModel);
             switch ($property->getDataType()) {
                 case DataTypes::DT_ENUM:
+                    assert($property instanceof EnumProperty);
                     $this->checkEnumValue($name, $property);
                     break;
                 default:
@@ -297,8 +298,7 @@ abstract class Entity extends DataObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function checkEnumValue(string $name, EnumProperty $property): void {
-        /** @noinspection PhpVariableVariableInspection */
-        $value = $this->$name;
+        $value = $this->{$name};
         $enums = $property->enumValues();
         if (!in_array($value, $enums)) {
             throw EntityException::invalidEnumValue($value);

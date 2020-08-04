@@ -87,54 +87,28 @@ class Notificator extends RestAPI implements INotificator {
     }
 
     /**
-     * Отправляет нотификационное сообщение
-     *
-     * @param string                              $userId     Идентификатор пользователя
-     * @param string                              $type       Тип сообщения
-     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function notify(string $userId, string $type, DataObject $dataObject = null): void {
         self::notifyGroup([$userId], $type, $dataObject);
     }
 
     /**
-     * Отправляет сообщение пользователю сессии
-     *
-     * @param string                              $type       Тип сообщеия
-     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function notifyMe(string $type, DataObject $dataObject = null): void {
         $this->notify($this->_session->getUserId(), $type, $dataObject);
     }
 
     /**
-     * Отправляет сообщение всем пользователям
-     *
-     * @param string                              $type       Тип сообщения
-     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function notifyAll(string $type, DataObject $dataObject = null): void {
         $this->notify($this->_config->getKey(), $type, $dataObject);
     }
 
     /**
-     * Отправляет нотификационное сообщение группе пользователей
-     *
-     * @param array                          $users      Список идентификаторов пользователей
-     * @param string                         $type       Тип сообщения
-     * @param \XEAF\Rack\API\Core\DataObject $dataObject Объект данных сообщения
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function notifyGroup(array $users, string $type, DataObject $dataObject = null): void {
         if ($this->canUseService()) {
@@ -151,10 +125,7 @@ class Notificator extends RestAPI implements INotificator {
     }
 
     /**
-     * Регистрирует сессию пользователя
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function registerUserSession(): void {
         if ($this->canUseService()) {
@@ -169,10 +140,7 @@ class Notificator extends RestAPI implements INotificator {
     }
 
     /**
-     * Отменяет регистрацию сессии пользователя
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
+     * @inheritDoc
      */
     public function unregisterUserSession(): void {
         if ($this->canUseService()) {

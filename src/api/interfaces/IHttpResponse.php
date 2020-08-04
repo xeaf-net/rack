@@ -40,8 +40,8 @@ interface IHttpResponse extends IFactoryObject {
     /**
      * Добавляет заголовок для типа отправляемого контента
      *
-     * @param string $mimeType Тип MIME
-     * @param string $charset  Нобор символов
+     * @param string      $mimeType Тип MIME
+     * @param string|null $charset  Нобор символов
      *
      * @return void
      */
