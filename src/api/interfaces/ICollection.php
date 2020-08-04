@@ -80,6 +80,42 @@ interface ICollection extends Iterator {
     public function reorder(callable $compare): void;
 
     /**
+     * Применяет действие к каждому элементу коллекции
+     *
+     * @param callable $action Функция применяемого действия
+     *
+     * @return void
+     */
+    public function forEach(callable $action): void;
+
+    /**
+     * Создает новую коллекцию с иным порядком объектов
+     *
+     * @param callable $compare Функция сравнения объектов
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     */
+    public function sort(callable $compare): ICollection;
+
+    /**
+     * Создает новую коллекцию с отфильтрованным элементами
+     *
+     * @param callable $accept Функция принятия решения о переносе
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     */
+    public function filter(callable $accept): ICollection;
+
+    /**
+     * Создает новую коллекцию с преобразванными элементами
+     *
+     * @param callable $transform Функция транформации
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     */
+    public function transform(callable $transform): ICollection;
+
+    /**
      * Возвращает массив элементов
      *
      * @param array $map Карта возвращаемых свойств
