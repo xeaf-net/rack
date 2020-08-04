@@ -60,8 +60,8 @@ class Application extends Extension {
     /**
      * Инициализирует значения свойств объекта класса
      *
-     * @param \XEAF\Rack\API\Interfaces\IConfiguration $configuration Параметры конфигурации
-     * @param \XEAF\Rack\API\Interfaces\IActionArgs    $actionArgs    Параметры вызова
+     * @param \XEAF\Rack\API\Interfaces\IConfiguration|null $configuration Параметры конфигурации
+     * @param \XEAF\Rack\API\Interfaces\IActionArgs|null    $actionArgs    Параметры вызова
      */
     public function __construct(IConfiguration $configuration = null, IActionArgs $actionArgs = null) {
         parent::__construct();

@@ -103,11 +103,13 @@ class Parameters extends ActionArgs {
             case self::OPTIONS_METHOD_NAME:
                 $this->processOptionsHeaders();
                 die(); // Только заголовки
+                /** @noinspection PhpUnreachableStatementInspection */
                 break;
             default:
                 $result = StatusResult::notImplemented();
                 $result->processResult();
                 die();
+                /** @noinspection PhpUnreachableStatementInspection */
                 break;
         }
         $this->postProcessParameters();
