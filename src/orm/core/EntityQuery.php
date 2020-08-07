@@ -590,11 +590,14 @@ class EntityQuery extends DataModel {
             if (!$property->isCalculated && !$property->isExpandable) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
-            } elseif ($property->isCalculated) {
+            }
+            /*
+            elseif ($property->isCalculated) {
                 $result[$name] = $this->processCalculatedProperty($name, $property);
             } elseif ($property->isExpandable) {
                 $result[$name] = $this->processExpandableProperty($name, $property);
             }
+            */
         }
         return $result;
     }
