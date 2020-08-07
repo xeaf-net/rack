@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * EntityProperty.php
+ * ForeignKeyProperty.php
  *
  * Файл является неотъемлемой частью проекта RACK
  *
@@ -16,11 +16,11 @@ use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
- * Реализует методы свойства типа Сущность
+ * Реализует методы свойства типа Внешний ключ
  *
  * @package  XEAF\Rack\ORM\Models\Properties
  */
-class EntityProperty extends PropertyModel {
+class ForeignKeyProperty extends PropertyModel {
 
     /**
      * Имя сущности
@@ -32,18 +32,18 @@ class EntityProperty extends PropertyModel {
      * Массив свойств внешнего ключа
      * @var array
      */
-    private $_foreignKeys;
+    private $_keys;
 
     /**
      * Конструктор класса
      *
-     * @param string $entity      Имя сущности
-     * @param array  $foreignKeys Массив свойств внешнего ключа
+     * @param string $entityName Имя сущности
+     * @param array  $keys       Массив свойств внешнего ключа
      */
-    public function __construct(string $entity, array $foreignKeys) {
-        parent::__construct(DataTypes::DT_ENTITY, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
-        $this->_entity      = $entity;
-        $this->_foreignKeys = $foreignKeys;
+    public function __construct(string $entityName, array $keys) {
+        parent::__construct(DataTypes::DT_FOREIGN_KEY, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
+        $this->_entity = $entityName;
+        $this->_keys   = $keys;
     }
 
     /**

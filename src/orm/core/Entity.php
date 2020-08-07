@@ -21,6 +21,7 @@ use XEAF\Rack\ORM\Models\Properties\BoolProperty;
 use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
+use XEAF\Rack\ORM\Models\Properties\ForeignKeyProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
@@ -511,5 +512,17 @@ abstract class Entity extends DataObject {
     public static function modifiedTime(string $fieldName): DateTimeProperty {
         $accessType = AccessTypes::AC_READABLE | AccessTypes::AC_UPDATABLE;
         return new DateTimeProperty($fieldName, false, $accessType);
+    }
+
+    /**
+     * Создает описание свойства внешнего ключа
+     *
+     * @param string $entityName Имя сущности
+     * @param array  $keys       Массив свойств ключей
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ForeignKeyProperty
+     */
+    public static function foreignKey(string $entityName, array $keys): ForeignKeyProperty {
+        return new ForeignKeyProperty($entityName, $keys);
     }
 }

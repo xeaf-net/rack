@@ -39,12 +39,12 @@ class FromModel extends DataModel {
     /**
      * Конструктор класса
      *
-     * @param string $entity Имя сущности
-     * @param string $alias  Псевдоним
+     * @param string $entityName Имя сущности
+     * @param string $alias      Псевдоним
      */
-    public function __construct(string $entity, string $alias) {
+    public function __construct(string $entityName, string $alias) {
         parent::__construct();
-        $this->_entity = $entity;
+        $this->_entity = $entityName;
         $this->_alias  = $alias;
     }
 

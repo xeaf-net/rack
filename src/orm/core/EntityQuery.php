@@ -679,18 +679,18 @@ class EntityQuery extends DataModel {
     protected function processExpandableProperty(string $name, PropertyModel $property) {
         $result = null;
         switch ($property->dataType) {
-            case DataTypes::DT_ENTITY:
-                $result = $this->expandEntity($name, $property);
+            case DataTypes::DT_FOREIGN_KEY:
+                $result = $this->resolveForeignKey($name, $property);
                 break;
-            case DataTypes::DT_ENTITIES:
-                $result = $this->expandEntities($name, $property);
+            case DataTypes::DT_COLLECTION:
+                $result = $this->resolveCollection($name, $property);
                 break;
         }
         return $result;
     }
 
     /**
-     * Возвращает значения расширяемого свойства свойства сущности
+     * Возвращает значения расширяемого свойства внешнего ключа
      *
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
@@ -698,12 +698,12 @@ class EntityQuery extends DataModel {
      * @return mixed
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function expandEntity(string $name, PropertyModel $property) {
+    protected function resolveForeignKey(string $name, PropertyModel $property) {
         return null;
     }
 
     /**
-     * Возвращает значения расширяемого свойства свойства коллекции сущностей
+     * Возвращает значения расширяемого свойства коллекции сущностей
      *
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
@@ -711,7 +711,7 @@ class EntityQuery extends DataModel {
      * @return \XEAF\Rack\API\Interfaces\ICollection|null
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function expandEntities(string $name, PropertyModel $property): ?ICollection {
+    protected function resolveCollection(string $name, PropertyModel $property): ?ICollection {
         return null;
     }
 }

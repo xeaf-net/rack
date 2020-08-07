@@ -70,12 +70,12 @@ class DataTypes {
     public const DT_OBJECT = 10;
 
     /**
-     * Тип данных - сущность
+     * Тип данных - внешний ключ
      */
-    public const DT_ENTITY = 11;
+    public const DT_FOREIGN_KEY = 11;
 
     /**
      * Тип данных коллекция сущностей
      */
-    public const DT_ENTITIES = 12;
+    public const DT_COLLECTION = 12;
 }
