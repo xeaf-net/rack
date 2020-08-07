@@ -29,29 +29,21 @@ class EntityProperty extends PropertyModel {
     private $_entity;
 
     /**
-     * Массив свойств ссылок
+     * Массив свойств внешнего ключа
      * @var array
      */
-    private $_links;
-
-    /**
-     * Признак отложенной загрузки
-     * @var bool
-     */
-    private $_lazy;
+    private $_foreignKeys;
 
     /**
      * Конструктор класса
      *
-     * @param string $entity Имя сущности
-     * @param array  $links  Массив свойств ссылок
-     * @param bool   $lazy   Признак отложенной загрузки
+     * @param string $entity      Имя сущности
+     * @param array  $foreignKeys Массив свойств внешнего ключа
      */
-    public function __construct(string $entity, array $links, bool $lazy = true) {
+    public function __construct(string $entity, array $foreignKeys) {
         parent::__construct(DataTypes::DT_ENTITY, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
-        $this->_entity = $entity;
-        $this->_links  = $links;
-        $this->_lazy   = $lazy;
+        $this->_entity      = $entity;
+        $this->_foreignKeys = $foreignKeys;
     }
 
     /**

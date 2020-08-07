@@ -600,7 +600,7 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Возвращает значения обчного читаемого свойства
+     * Возвращает значения обычного читаемого свойства
      *
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
      * @param mixed                                          $value    Значение
@@ -708,10 +708,10 @@ class EntityQuery extends DataModel {
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
      *
-     * @return mixed
+     * @return \XEAF\Rack\API\Interfaces\ICollection|null
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function expandEntities(string $name, PropertyModel $property) {
-        return new Collection();
+    protected function expandEntities(string $name, PropertyModel $property): ?ICollection {
+        return null;
     }
 }
