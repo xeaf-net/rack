@@ -236,7 +236,7 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
         $strings           = Strings::getInstance();
         $this->_smtp       = (bool)$data->{'smtp'} ?? self::DEFAULT_SMTP;
         $this->_host       = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port       = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_port       = $strings->stringToInteger((string)$data->{'port'} ?? null, self::DEFAULT_PORT);
         $this->_auth       = (bool)$data->{'auth'} ?? self::DEFAULT_AUTH;
         $this->_secure     = $data->{'secure'} ?? self::DEFAULT_SECURE;
         $this->_userName   = $data->{'userName'} ?? self::DEFAULT_USERNAME;
