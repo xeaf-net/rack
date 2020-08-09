@@ -72,7 +72,7 @@ class Validator implements IValidator {
      * @inheritDoc
      */
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void {
-        $this->checkNotEmpty($data);
+        $this->checkNotEmpty($data, $tag);
         $value = (string)$data;
         if ($minLength > 0 && mb_strlen($value) < $minLength) {
             throw FormException::badRequest(self::INVALID_FORMAT, [], $tag);
@@ -87,7 +87,7 @@ class Validator implements IValidator {
      */
     public function checkUUID($data, string $tag = null): void {
         $test = (string)$data;
-        $this->checkNotEmpty($data);
+        $this->checkNotEmpty($data, $tag);
         if (!$this->_strings->isUUID($test)) {
             throw FormException::badRequest(self::INVALID_VALUE, [], $tag);
         }
@@ -98,7 +98,7 @@ class Validator implements IValidator {
      */
     public function checkEmail($data, string $tag = null): void {
         $test = (string)$data;
-        $this->checkNotEmpty($data);
+        $this->checkNotEmpty($data, $tag);
         if (!$this->_strings->isEmail($test)) {
             throw FormException::badRequest(self::INVALID_EMAIL, [], $tag);
         }
@@ -109,7 +109,7 @@ class Validator implements IValidator {
      */
     public function checkEnum($data, array $values, string $tag = null): void {
         $test = (string)$data;
-        $this->checkNotEmpty($data);
+        $this->checkNotEmpty($data, $tag);
         if (!in_array($test, $values)) {
             throw FormException::badRequest(self::INVALID_VALUE, [], $tag);
         }
