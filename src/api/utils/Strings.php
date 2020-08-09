@@ -67,14 +67,14 @@ class Strings implements IStrings {
     /**
      * @inheritDoc
      */
-    public function stringToInteger(?string $buf, int $onError = 0): int {
+    public function stringToInteger(?string $buf, int $onError = null): ?int {
         return $this->isInteger($buf) ? intval($buf) : $onError;
     }
 
     /**
      * @inheritDoc
      */
-    public function stringToFloat(?string $buf, float $onError = 0): float {
+    public function stringToFloat(?string $buf, float $onError = null): ?float {
         return $this->isFloat($buf) ? floatval($buf) : $onError;
     }
 

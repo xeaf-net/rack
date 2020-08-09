@@ -50,21 +50,21 @@ interface IStrings extends IFactoryObject {
      * Преобразует строку в целое число
      *
      * @param string|null $buf     Строка символов
-     * @param int         $onError Результат при ошибке
+     * @param int|null    $onError Результат при ошибке
      *
-     * @return int
+     * @return int|null
      */
-    public function stringToInteger(?string $buf, int $onError = 0): int;
+    public function stringToInteger(?string $buf, int $onError = null): ?int;
 
     /**
      * Преобразует строку в действительное число
      *
      * @param string|null $buf     Строка символов
-     * @param float       $onError Результат при ошибке
+     * @param float|null  $onError Результат при ошибке
      *
-     * @return float
+     * @return float|null
      */
-    public function stringToFloat(?string $buf, float $onError = 0): float;
+    public function stringToFloat(?string $buf, float $onError = null): ?float;
 
     /**
      * Преобразует строку в дату и время
