@@ -25,7 +25,8 @@
         "userName"  : "",
         "password"  : "",
         "sendFrom"  : "me@example.com",
-        "senderName": "rackAPI"
+        "senderName": "rackAPI",
+        "charSet"   : "utf-8"
     },
     "logger"     : {
         "default": "file:level=DEBUG;path=/tmp;prefix=rack"

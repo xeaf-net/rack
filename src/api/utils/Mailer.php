@@ -170,6 +170,7 @@ class Mailer implements IMailer {
                 $result->Password   = $config->getPassword();
                 $result->SMTPSecure = $config->getSecure();
                 $result->Port       = $config->getPort();
+                $result->CharSet    = $config->getCharSet();
             } else {
                 $result->isMail();
             }
