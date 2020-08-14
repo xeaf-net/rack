@@ -18,10 +18,11 @@ use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
+use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
-use XEAF\Rack\ORM\Models\Properties\ForeignKeyProperty;
+use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
@@ -520,9 +521,21 @@ abstract class Entity extends DataObject {
      * @param string $entityName Имя сущности
      * @param array  $keys       Массив свойств ключей
      *
-     * @return \XEAF\Rack\ORM\Models\Properties\ForeignKeyProperty
+     * @return \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty
      */
-    public static function foreignKey(string $entityName, array $keys): ForeignKeyProperty {
-        return new ForeignKeyProperty($entityName, $keys);
+    public static function foreignKey(string $entityName, array $keys): ManyToOneProperty {
+        return new ManyToOneProperty($entityName, $keys);
+    }
+
+    /**
+     * Создает описание свойства коллекции
+     *
+     * @param string $entityName Имя сущности
+     * @param array  $keys       Массив свойств ключей
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
+     */
+    public static function collection(string $entityName, array $keys): OneToManyProperty {
+        return new OneToManyProperty($entityName, $keys);
     }
 }

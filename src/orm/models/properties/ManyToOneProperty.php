@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /**
- * ForeignKeyProperty.php
+ * ManyToOneProperty.php
  *
  * Файл является неотъемлемой частью проекта RACK
  *
@@ -12,27 +12,14 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
-use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
- * Реализует методы свойства типа Внешний ключ
+ * Реализует методы свойства типа Многие к одному
  *
  * @package  XEAF\Rack\ORM\Models\Properties
  */
-class ForeignKeyProperty extends PropertyModel {
-
-    /**
-     * Имя сущности
-     * @var string
-     */
-    private $_entity;
-
-    /**
-     * Массив свойств внешнего ключа
-     * @var array
-     */
-    private $_keys;
+class ManyToOneProperty extends ResolvedModel {
 
     /**
      * Конструктор класса
@@ -41,15 +28,6 @@ class ForeignKeyProperty extends PropertyModel {
      * @param array  $keys       Массив свойств внешнего ключа
      */
     public function __construct(string $entityName, array $keys) {
-        parent::__construct(DataTypes::DT_FOREIGN_KEY, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
-        $this->_entity = $entityName;
-        $this->_keys   = $keys;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultValue() {
-        return null;
+        parent::__construct(DataTypes::MANY_TO_ONE, $entityName, $keys);
     }
 }

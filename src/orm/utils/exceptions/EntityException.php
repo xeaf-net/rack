@@ -78,6 +78,11 @@ class EntityException extends Exception {
     public const INVALID_ENUM_VALUE = 'F011';
 
     /**
+     * Некорректное количество ключей связи
+     */
+    public const INCORRECT_NUMBER_OF_LINK_KEYS = 'F012';
+
+    /**
      * Внутренняя ошибка ORM
      */
     public const INTERNAL_ERROR = 'EF999';
@@ -120,6 +125,9 @@ class EntityException extends Exception {
                 break;
             case self::INVALID_ENUM_VALUE:
                 $result = 'Invalid enum value [%s].';
+                break;
+            case self::INCORRECT_NUMBER_OF_LINK_KEYS:
+                $result = 'Incorrect number of link keys [%s::%s].';
                 break;
             case self::INTERNAL_ERROR:
                 $result = 'Internal ORM error.';
@@ -240,10 +248,22 @@ class EntityException extends Exception {
      *
      * @param string $value Значение поля
      *
-     * @return static
+     * @return \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public static function invalidEnumValue(string $value): self {
         return new self(self::INVALID_ENUM_VALUE, [$value]);
+    }
+
+    /**
+     * Некорректное количество ключей связи
+     *
+     * @param string $entity Имя сущности
+     * @param string $link   Имя связи
+     *
+     * @return \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public static function incorrectNumberOfLinkKeys(string $entity, string $link): self {
+        return new self(self::INCORRECT_NUMBER_OF_LINK_KEYS, [$entity, $link]);
     }
 
     /**

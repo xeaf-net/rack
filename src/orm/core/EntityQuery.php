@@ -682,10 +682,10 @@ class EntityQuery extends DataModel {
     protected function processExpandableProperty(string $name, PropertyModel $property) {
         $result = null;
         switch ($property->dataType) {
-            case DataTypes::DT_FOREIGN_KEY:
+            case DataTypes::MANY_TO_ONE:
                 $result = $this->resolveForeignKey($name, $property);
                 break;
-            case DataTypes::DT_COLLECTION:
+            case DataTypes::DT_ONE_TO_MANY:
                 $result = $this->resolveCollection($name, $property);
                 break;
         }

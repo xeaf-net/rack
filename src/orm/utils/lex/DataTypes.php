@@ -70,12 +70,12 @@ class DataTypes {
     public const DT_OBJECT = 10;
 
     /**
-     * Тип данных - внешний ключ
+     * Тип данных - многие к одному
      */
-    public const DT_FOREIGN_KEY = 11;
+    public const MANY_TO_ONE = 11;
 
     /**
-     * Тип данных коллекция сущностей
+     * Тип данных - один ко многим
      */
-    public const DT_COLLECTION = 12;
+    public const DT_ONE_TO_MANY = 12;
 }
