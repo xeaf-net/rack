@@ -12,6 +12,7 @@
       <w>postgre</w>
       <w>pubout</w>
       <w>smtp</w>
+      <w>subquery</w>
       <w>tsify</w>
       <w>unpop</w>
       <w>unpush</w>

@@ -29,11 +29,13 @@ use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
+use XEAF\Rack\ORM\Models\Parsers\ResolveModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\ResolveType;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
 use XEAF\Rack\ORM\Utils\QueryParser;
@@ -280,6 +282,51 @@ class EntityQuery extends DataModel {
         $orderModel = new OrderModel($alias, $property, $direction);
         $this->_model->addOrderModel($orderModel);
         return $this;
+    }
+
+    /**
+     * Задает требование разрешения связи
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     * @param int    $resolveType Тип разрешения
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function resolve(string $alias, string $property, int $resolveType = ResolveType::LAZY): EntityQuery {
+        $this->_model->getResolveModels()->clear();
+        return $this->andResolve($alias, $property, $resolveType);
+    }
+
+    /**
+     * Добавляет требование разрешения связи
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     * @param int    $resolveType Тип разрешения
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function andResolve(string $alias, string $property, int $resolveType = ResolveType::LAZY): EntityQuery {
+        $subquery     = new EntityQuery($this->_em, '');
+        $resolveModel = new ResolveModel($alias, $property, $resolveType, $subquery);
+        $this->_model->addResolveModel($resolveModel);
+        return $this;
+    }
+
+    /**
+     * Возвращает подзапрос для разрешения связи
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function subquery(string $alias, string $property): EntityQuery {
+        $resolveModel = $this->_model->findResolveModel($alias, $property);
+        return $resolveModel->getQuery();
     }
 
     /**

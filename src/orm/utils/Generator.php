@@ -30,6 +30,7 @@ use XEAF\Rack\ORM\Models\Parsers\WhereModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\TokenModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
+use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 use XEAF\Rack\ORM\Utils\Lex\KeyWords;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
@@ -223,9 +224,12 @@ class Generator implements IGenerator {
             $aliasModel->setModel($model);
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
-                $fieldName  = $property->getFieldName();
-                $fieldAlias = $alias . '_' . $fieldName; // Для множественнх сущностей
-                $result[]   = "$alias.$fieldName as $fieldAlias";
+                $accessType = $property->getAccessType();
+                if ($accessType & AccessTypes::AC_READABLE > 0) {
+                    $fieldName  = $property->getFieldName();
+                    $fieldAlias = $alias . '_' . $fieldName; // Для множественных сущностей
+                    $result[]   = "$alias.$fieldName as $fieldAlias";
+                }
             }
         }
         return implode(',', $result);

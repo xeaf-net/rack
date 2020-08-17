@@ -108,6 +108,18 @@ class Collection implements ICollection {
     /**
      * @inheritDoc
      */
+    public function find(callable $compare): ?DataObject {
+        foreach ($this->_data as $item) {
+            if ($compare($item)) {
+                return $item;
+            };
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function forEach(callable $action): void {
         foreach ($this->_data as $item) {
             $action($item);

@@ -516,26 +516,26 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описание свойства внешнего ключа
+     * Создает описание свойства Многие ко одному
      *
      * @param string $entityName Имя сущности
      * @param array  $keys       Массив свойств ключей
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty
      */
-    public static function foreignKey(string $entityName, array $keys): ManyToOneProperty {
+    public static function manyToOne(string $entityName, array $keys): ManyToOneProperty {
         return new ManyToOneProperty($entityName, $keys);
     }
 
     /**
-     * Создает описание свойства коллекции
+     * Создает описание свойства Один ко многим
      *
      * @param string $entityName Имя сущности
      * @param array  $keys       Массив свойств ключей
      *
      * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
      */
-    public static function collection(string $entityName, array $keys): OneToManyProperty {
+    public static function oneToMany(string $entityName, array $keys): OneToManyProperty {
         return new OneToManyProperty($entityName, $keys);
     }
 }

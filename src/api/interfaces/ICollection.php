@@ -80,6 +80,15 @@ interface ICollection extends Iterator {
     public function reorder(callable $compare): void;
 
     /**
+     * Ищет элемент в коллекции
+     *
+     * @param callable $compare Функция сравнения
+     *
+     * @return \XEAF\Rack\API\Core\DataObject|null
+     */
+    public function find(callable $compare): ?DataObject;
+
+    /**
      * Применяет действие к каждому элементу коллекции
      *
      * @param callable $action Функция применяемого действия
