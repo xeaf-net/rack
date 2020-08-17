@@ -28,6 +28,6 @@ class ManyToOneProperty extends ResolvedModel {
      * @param array  $keys       Массив свойств внешнего ключа
      */
     public function __construct(string $entityName, array $keys) {
-        parent::__construct(DataTypes::MANY_TO_ONE, $entityName, $keys);
+        parent::__construct(DataTypes::DT_MANY_TO_ONE, $entityName, $keys);
     }
 }

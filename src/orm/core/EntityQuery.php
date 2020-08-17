@@ -39,6 +39,7 @@ use XEAF\Rack\ORM\Utils\Lex\ResolveType;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
 use XEAF\Rack\ORM\Utils\QueryParser;
+use XEAF\Rack\ORM\Utils\Resolver;
 use XEAF\Rack\ORM\Utils\Tokenizer;
 
 /**
@@ -473,8 +474,8 @@ class EntityQuery extends DataModel {
      * @return string
      */
     protected function generateSQL(bool $useFilter): string {
-        $gen = Generator::getInstance();
-        return $gen->selectSQL($this, $useFilter);
+        Resolver::getInstance()->resolveRelations($this);
+        return Generator::getInstance()->selectSQL($this, $useFilter);
     }
 
     /**
@@ -485,8 +486,8 @@ class EntityQuery extends DataModel {
      * @return string
      */
     public function generateCountSQL(bool $useFilter): string {
-        $gen = Generator::getInstance();
-        return $gen->selectCountSQL($this, $useFilter);
+        Resolver::getInstance()->resolveRelations($this);
+        return Generator::getInstance()->selectCountSQL($this, $useFilter);
     }
 
     /**
@@ -729,7 +730,7 @@ class EntityQuery extends DataModel {
     protected function processExpandableProperty(string $name, PropertyModel $property) {
         $result = null;
         switch ($property->dataType) {
-            case DataTypes::MANY_TO_ONE:
+            case DataTypes::DT_MANY_TO_ONE:
                 $result = $this->resolveForeignKey($name, $property);
                 break;
             case DataTypes::DT_ONE_TO_MANY:

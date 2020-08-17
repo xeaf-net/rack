@@ -72,7 +72,7 @@ class DataTypes {
     /**
      * Тип данных - многие к одному
      */
-    public const MANY_TO_ONE = 11;
+    public const DT_MANY_TO_ONE = 11;
 
     /**
      * Тип данных - один ко многим

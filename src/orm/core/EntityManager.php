@@ -108,6 +108,21 @@ abstract class EntityManager {
     }
 
     /**
+     * Возвращает модель сущности
+     *
+     * @param string $name Имя сущности
+     *
+     * @return \XEAF\Rack\ORM\Models\EntityModel
+     */
+    public function getEntityModel(string $name): ?EntityModel {
+        $result = $this->_entities->get($name);
+        if ($result) {
+            assert($result instanceof EntityModel);
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает имя класса сущности по имени сущности
      *
      * @param string $entity Имя сущности
@@ -529,7 +544,7 @@ abstract class EntityManager {
                 foreach ($properties as $property => $propertyModel) {
                     assert($propertyModel instanceof PropertyModel);
                     switch ($propertyModel->getDataType()) {
-                        case DataTypes::MANY_TO_ONE:
+                        case DataTypes::DT_MANY_TO_ONE:
                             assert($propertyModel instanceof ManyToOneProperty);
                             $this->resolveForeignKey($name, $property, $propertyModel);
                             break;

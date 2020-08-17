@@ -52,7 +52,8 @@ abstract class ResolvedModel extends PropertyModel {
      * @param array  $keys       Массив свойств внешнего ключа
      */
     public function __construct(int $dataType, string $entityName, array $keys) {
-        parent::__construct($dataType, 0, 0, '', false, AccessTypes::AC_EXPANDABLE);
+        $fieldName = $entityName;
+        parent::__construct($dataType, 0, 0, $fieldName, false, AccessTypes::AC_EXPANDABLE);
         $this->_entity = $entityName;
         $this->_keys   = $keys;
     }
