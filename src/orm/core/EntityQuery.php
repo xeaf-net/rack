@@ -635,9 +635,11 @@ class EntityQuery extends DataModel {
         $result = [];
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->isCalculated && !$property->isExpandable) {
+            if (!$property->isCalculated && !$property->getIsExpandable()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
+            } elseif ($property->getIsExpandable()) {
+                $result[$name] = $this->processExpandableProperty($aliasName, $name, $property);
             }
             /*
             elseif ($property->isCalculated) {
@@ -722,19 +724,20 @@ class EntityQuery extends DataModel {
     /**
      * Возвращает значения расширяемого свойства свойства
      *
+     * @param string                                         $alias    Псевдоним
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
      *
      * @return mixed
      */
-    protected function processExpandableProperty(string $name, PropertyModel $property) {
+    protected function processExpandableProperty(string $alias, string $name, PropertyModel $property) {
         $result = null;
         switch ($property->dataType) {
             case DataTypes::DT_MANY_TO_ONE:
                 $result = $this->resolveForeignKey($name, $property);
                 break;
             case DataTypes::DT_ONE_TO_MANY:
-                $result = $this->resolveCollection($name, $property);
+                $result = $this->resolveOneToMany($alias, $name, $property);
                 break;
         }
         return $result;
@@ -756,13 +759,21 @@ class EntityQuery extends DataModel {
     /**
      * Возвращает значения расширяемого свойства коллекции сущностей
      *
+     * @param string                                         $alias    Псевдоним
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection|null
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function resolveCollection(string $name, PropertyModel $property): ?ICollection {
+    protected function resolveOneToMany(string $alias, string $name, PropertyModel $property): ?ICollection {
+        $model = $this->_model->findResolveModel($alias, $name);
+        if ($model) {
+            if ($model->getResolveType() == ResolveType::EAGER) {
+                $query = $model->getQuery();
+                return null; // new Collection();
+            }
+        }
         return null;
     }
 }
