@@ -32,6 +32,7 @@ use XEAF\Rack\ORM\Models\Parsers\OrderModel;
 use XEAF\Rack\ORM\Models\Parsers\ResolveModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
+use XEAF\Rack\ORM\Models\ResolvedValue;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
@@ -472,6 +473,7 @@ class EntityQuery extends DataModel {
      * @param bool $useFilter Признак использования условий фильтрации
      *
      * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function generateSQL(bool $useFilter): string {
         Resolver::getInstance()->resolveRelations($this);
@@ -484,6 +486,7 @@ class EntityQuery extends DataModel {
      * @param bool $useFilter Признак использования условий фильтрации
      *
      * @return string
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function generateCountSQL(bool $useFilter): string {
         Resolver::getInstance()->resolveRelations($this);
@@ -566,6 +569,7 @@ class EntityQuery extends DataModel {
             foreach ($data as $record) {
                 $item   = $this->processRecord($alias->name, $properties, $record);
                 $entity = new $className($item);
+                $this->expandEntity($alias->name, $properties, $record, $entity);
                 $this->_em->watch($entity);
                 $result->push($entity);
             }
@@ -615,6 +619,7 @@ class EntityQuery extends DataModel {
                 } else {
                     $multi[$aliasName] = null;
                 }
+                $this->expandEntity($aliasName, $properties, $record, $entity);
             }
             $recordObject = new DataObject($multi);
             $result->push($recordObject);
@@ -638,18 +643,30 @@ class EntityQuery extends DataModel {
             if (!$property->isCalculated && !$property->getIsExpandable()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
-            } elseif ($property->getIsExpandable()) {
-                $result[$name] = $this->processExpandableProperty($aliasName, $name, $property);
             }
-            /*
-            elseif ($property->isCalculated) {
-                $result[$name] = $this->processCalculatedProperty($name, $property);
-            } elseif ($property->isExpandable) {
-                $result[$name] = $this->processExpandableProperty($name, $property);
-            }
-            */
         }
         return $result;
+    }
+
+    /**
+     * Обрабатывает данные массива записи для разрешаемых свойств
+     *
+     * @param string                              $aliasName  Псевдоним
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue $properties Набор свойств сущности
+     * @param array                               $record     Массив данных записи
+     * @param \XEAF\Rack\ORM\Core\Entity          $entity     Объект сущности
+     *
+     * @return void
+     */
+    protected function expandEntity(string $aliasName, IKeyValue $properties, array $record, Entity $entity): void {
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if ($property->getIsExpandable()) {
+                $model = $this->_model->findResolveModel($aliasName, $name);
+                $value = new ResolvedValue(ResolveType::LAZY, $model);
+                $entity->setResolvedValue($name, $value);
+            }
+        }
     }
 
     /**
@@ -763,16 +780,13 @@ class EntityQuery extends DataModel {
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
      *
-     * @return \XEAF\Rack\API\Interfaces\ICollection|null
+     * @return \XEAF\Rack\ORM\Models\ResolvedValue|null
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function resolveOneToMany(string $alias, string $name, PropertyModel $property): ?ICollection {
+    protected function resolveOneToMany(string $alias, string $name, PropertyModel $property): ?ResolvedValue {
         $model = $this->_model->findResolveModel($alias, $name);
         if ($model) {
-            if ($model->getResolveType() == ResolveType::EAGER) {
-                $query = $model->getQuery();
-                return null; // new Collection();
-            }
+            return new ResolvedValue(ResolveType::LAZY, $model);
         }
         return null;
     }

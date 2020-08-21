@@ -16,7 +16,7 @@ use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 
 /**
- * Реализует методы рразрешаемого свойства
+ * Реализует методы разрешаемого свойства
  *
  * @property-read string                          $entity Имя сущности
  * @property-read array                           $keys   Массив ключей связи
