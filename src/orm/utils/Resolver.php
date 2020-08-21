@@ -112,7 +112,8 @@ class Resolver implements IFactoryObject {
         for ($key = 0; $key < count($primaryKeys); $key++) {
             $prop  = $foreignKeys[$key];
             $param = $primaryKeys[$key];
-            $query->andWhere("$prop == :$param");
+            $query->andWhere("$foreignEntity.$prop == :$param");
+            $query->parameter("$param", null);
         }
         $model->setRelationType(RelationType::ONE_TO_MANY);
     }

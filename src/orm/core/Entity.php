@@ -14,10 +14,12 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Utils\Exceptions\CoreException;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
+use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
 use XEAF\Rack\ORM\Models\Properties\DateProperty;
@@ -166,6 +168,8 @@ abstract class Entity extends DataObject {
 
     /**
      * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function __get(string $name) {
         $property = $this->_model->getPropertyByName($name);
@@ -174,11 +178,16 @@ abstract class Entity extends DataObject {
             if ($value) {
                 assert($value instanceof ResolvedValue);
                 if ($value->getResolveType() == ResolveType::LAZY) {
-                    print "<pre>";
-                    print_r($value);
-                    print "</pre>";
-                    print "GET $name ";
-                    $value->setValue([]);
+                    if ($property instanceof OneToManyProperty) {
+                        $query = $value->getModel()->getQuery();
+                        foreach ($query->getModel()->getParameters() as $name => $parameter) {
+                            assert($parameter instanceof ParameterModel);
+                            $query->parameter($name, $this->{$name});
+                        }
+                        $list = $query->get();
+                        $value->setValue($list);
+                        $value->setResolveType(ResolveType::EAGER);
+                    }
                 }
                 return $value->getValue();
             }
@@ -224,7 +233,13 @@ abstract class Entity extends DataObject {
             if (count($map) == 0 || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if ($property->getIsExpandable()) {
-                    $result[$name] = $this->{$name};
+
+                    $value = $this->{$name};
+                    if ($value instanceof ICollection || $value instanceof DataObject) {
+                        $result[$name] = $value->toArray();
+                    } else {
+                        $result[$name] = $value;
+                    }
                 } else {
                     if ($property->getIsCalculated()) {
                         $result[$name] = $this->{$name};
