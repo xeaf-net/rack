@@ -21,8 +21,6 @@ use XEAF\Rack\Db\Interfaces\IDatabase;
 use XEAF\Rack\Db\Utils\Database;
 use XEAF\Rack\Db\Utils\Exceptions\DatabaseException;
 use XEAF\Rack\ORM\Models\EntityModel;
-use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
-use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
@@ -75,8 +73,6 @@ abstract class EntityManager {
      *
      * @param string $connection Имя подключения к базе данных
      * @param array  $entities   Определения сущностей
-     *
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function __construct(string $connection, array $entities) {
         $this->_db               = Database::getInstance($connection);
@@ -86,7 +82,6 @@ abstract class EntityManager {
         $this->_watchedEntities  = new KeyValue();
         $this->_watchedOriginals = new KeyValue();
         $this->initEntities($entities);
-        $this->resolveEntityModels();
     }
 
     /**
@@ -528,96 +523,6 @@ abstract class EntityManager {
             $this->_entityTables->put($item->getModel()->getTableName(), $name);
             $this->_entityClasses->put($name, $className);
         }
-    }
-
-    /**
-     * Разрешает определения внешних ключей и коллекций
-     *
-     * @return void
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    private function resolveEntityModels(): void {
-        foreach ($this->_entities as $name => $entityModel) {
-            assert($entityModel instanceof EntityModel);
-            if ($entityModel->getUnresolved()) {
-                $properties = $entityModel->getProperties();
-                foreach ($properties as $property => $propertyModel) {
-                    assert($propertyModel instanceof PropertyModel);
-                    switch ($propertyModel->getDataType()) {
-                        case DataTypes::DT_MANY_TO_ONE:
-                            assert($propertyModel instanceof ManyToOneProperty);
-                            $this->resolveForeignKey($name, $property, $propertyModel);
-                            break;
-                        case DataTypes::DT_ONE_TO_MANY:
-                            assert($propertyModel instanceof OneToManyProperty);
-                            $this->resolveOneToMany($name, $entityModel, $property, $propertyModel);
-                            break;
-                    }
-                }
-                $entityModel->setUnresolved(false);
-            }
-        }
-    }
-
-    /**
-     * Разрешает ссылки свойства внешнего ключа
-     *
-     * @param string                                             $entity        Имя сущности
-     * @param string                                             $propertyName  Имя свойства
-     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $propertyModel Модель свойства
-     *
-     * @return void
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     * @noinspection DuplicatedCode
-     */
-    private function resolveForeignKey(string $entity, string $propertyName, ManyToOneProperty $propertyModel): void {
-        // 'role' => self::manyToOne('roles', ['roleId']);
-        // roles from roles where roles.id == :roleId
-        $linkName     = $propertyModel->getEntity(); // roles
-        $linkKeys     = $propertyModel->getKeys();   // ['roleId']
-        $foreignModel = $this->_entities[$linkName];
-        assert($foreignModel instanceof EntityModel);
-        $foreignKeys = $foreignModel->getPrimaryKeyNames(); // ['id']
-        if (count($linkKeys) != count($foreignKeys)) {
-            throw EntityException::incorrectNumberOfLinkKeys($entity, $propertyName);
-        }
-        $query = $this->query("$linkName from $linkName");
-        for ($key = 0; $key < count($linkKeys); $key++) {
-            $lk = $linkKeys[$key];
-            $fk = $foreignKeys[$key];
-            $query->andWhere("$linkName.$fk == :$lk");
-        }
-        $propertyModel->setQuery($query);
-    }
-
-    /**
-     * Разрешает ссылки свойства типа Один ко многим
-     *
-     * @param string                                             $entity        Имя сущности
-     * @param \XEAF\Rack\ORM\Models\EntityModel                  $entityModel   Модуль сущности
-     * @param string                                             $propertyName  Имя свойства
-     * @param \XEAF\Rack\ORM\Models\Properties\OneToManyProperty $propertyModel Модель свойства
-     *
-     * @return void
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     * @noinspection DuplicatedCode
-     */
-    private function resolveOneToMany(string $entity, EntityModel $entityModel, string $propertyName, OneToManyProperty $propertyModel): void {
-        // 'users' => self::oneToMany('users', ['roleId']);
-        // users from users where users.roleId == :id
-        $linkName    = $propertyModel->getEntity();        // users
-        $linkKeys    = $propertyModel->getKeys();          // ['roleId']
-        $primaryKeys = $entityModel->getPrimaryKeyNames(); // ['id']
-        if (count($linkKeys) != count($primaryKeys)) {
-            throw EntityException::incorrectNumberOfLinkKeys($entity, $propertyName);
-        }
-        $query = $this->query("$linkName from $linkName");
-        for ($key = 0; $key < count($linkKeys); $key++) {
-            $lk = $linkKeys[$key];
-            $pk = $primaryKeys[$key];
-            $query->andWhere("$linkName.$lk == :$pk");
-        }
-        $propertyModel->setQuery($query);
     }
 
     /**

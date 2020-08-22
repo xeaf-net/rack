@@ -16,7 +16,6 @@ use XEAF\Rack\API\Core\DataModel;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
-use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 
 /**
  * Реализует свойства модели сущности
@@ -24,7 +23,6 @@ use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
  * @property-read string                              $tableName            Имя таблицы БД
  * @property-read \XEAF\Rack\API\Interfaces\IKeyValue $propertyByNames      Набор свойств по имени свойства
  * @property-read \XEAF\Rack\API\Interfaces\IKeyValue $propertyByFieldNames Набор свойств по имени поля БД
- * @property bool                                     $unresolved           Признак наличия неразрешенных ссылок
  *
  * @package XEAF\Rack\ORM\Models
  */
@@ -55,12 +53,6 @@ class EntityModel extends DataModel {
     private $_propertyByFieldNames;
 
     /**
-     * Признак наличия неразрешенных ссылок
-     * @var bool
-     */
-    private $_unresolved = false;
-
-    /**
      * Конструктор класса
      *
      * @param string $tableName  Имя таблицы БД
@@ -78,9 +70,6 @@ class EntityModel extends DataModel {
             $this->_propertyByFieldNames->put($property->getFieldName(), $property);
             if ($property->getPrimaryKey()) {
                 $this->_primaryKeyNames[] = $name;
-            }
-            if ($property->getAccessType() == AccessTypes::AC_EXPANDABLE) {
-                $this->_unresolved = true;
             }
         }
     }
@@ -149,25 +138,5 @@ class EntityModel extends DataModel {
      */
     public function getPropertyByFieldNames(): IKeyValue {
         return $this->_propertyByFieldNames;
-    }
-
-    /**
-     * Возвращает значение признака неразрешенных ссылок
-     *
-     * @return bool
-     */
-    public function getUnresolved(): bool {
-        return $this->_unresolved;
-    }
-
-    /**
-     * Задает значение признака неразрешенных ссыолк
-     *
-     * @param bool $unresolved Значение признака неразрешенных ссылок
-     *
-     * @return void
-     */
-    public function setUnresolved(bool $unresolved): void {
-        $this->_unresolved = $unresolved;
     }
 }

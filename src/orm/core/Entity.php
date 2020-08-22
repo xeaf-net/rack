@@ -14,32 +14,25 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
-use XEAF\Rack\API\Interfaces\ICollection;
-use XEAF\Rack\API\Utils\Exceptions\CoreException;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
-use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
 use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
-use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
-use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
-use XEAF\Rack\ORM\Models\ResolvedValue;
 use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
-use XEAF\Rack\ORM\Utils\Lex\ResolveType;
 
 /**
  * Реализует методы объекта сущности
@@ -110,7 +103,7 @@ abstract class Entity extends DataObject {
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated() && !$property->getIsExpandable()) {
+            if (!$property->getIsCalculated()) {
                 if (array_key_exists($name, $data)) {
                     $result[$name] = $data[$name];
                 } else {
@@ -168,63 +161,6 @@ abstract class Entity extends DataObject {
 
     /**
      * @inheritDoc
-     *
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    public function __get(string $name) {
-        $property = $this->_model->getPropertyByName($name);
-        if ($property->getIsExpandable()) {
-            $value = $this->_resolvedValues->get($name);
-            if ($value) {
-                assert($value instanceof ResolvedValue);
-                if ($value->getResolveType() == ResolveType::LAZY) {
-                    if ($property instanceof OneToManyProperty) {
-                        $query = $value->getModel()->getQuery();
-                        foreach ($query->getModel()->getParameters() as $name => $parameter) {
-                            assert($parameter instanceof ParameterModel);
-                            $query->parameter($name, $this->{$name});
-                        }
-                        $list = $query->get();
-                        $value->setValue($list);
-                        $value->setResolveType(ResolveType::EAGER);
-                    }
-                }
-                return $value->getValue();
-            }
-        }
-        return parent::__get($name);
-    }
-
-    /**
-     * Возвращает значение разрешенного свойства
-     *
-     * @param string $name Имя свойства
-     *
-     * @return \XEAF\Rack\ORM\Models\ResolvedValue
-     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
-     */
-    public function getResolvedValue(string $name): ResolvedValue {
-        $result = $this->_resolvedValues->get($name);
-        if (!$result) {
-            throw CoreException::propertyIsNotReadable($this->getClassName(), $name);
-        }
-        return $result;
-    }
-
-    /**
-     * Задает значение разрешенного свойства
-     *
-     * @param string                              $name  Имя свойства
-     * @param \XEAF\Rack\ORM\Models\ResolvedValue $value Значение
-     *
-     * @return void
-     */
-    public function setResolvedValue(string $name, ResolvedValue $value): void {
-        $this->_resolvedValues->put($name, $value);
-    }
-
-    /**
-     * @inheritDoc
      */
     public function toArray(array $map = []): array {
         $result     = parent::toArray($map);
@@ -232,31 +168,21 @@ abstract class Entity extends DataObject {
         foreach ($properties as $name => $property) {
             if (count($map) == 0 || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
-                if ($property->getIsExpandable()) {
-
-                    $value = $this->{$name};
-                    if ($value instanceof ICollection || $value instanceof DataObject) {
-                        $result[$name] = $value->toArray();
-                    } else {
-                        $result[$name] = $value;
-                    }
-                } else {
-                    if ($property->getIsCalculated()) {
-                        $result[$name] = $this->{$name};
-                    }
-                    switch ($property->dataType) {
-                        case DataTypes::DT_INTEGER:
-                        case DataTypes::DT_DATE:
-                        case DataTypes::DT_DATETIME:
-                            $result[$name] = (int)$result[$name];
-                            break;
-                        case DataTypes::DT_BOOL:
-                            $result[$name] = (bool)$result[$name];
-                            break;
-                        case DataTypes::DT_NUMERIC:
-                            $result[$name] = (float)$result[$name];
-                            break;
-                    }
+                if ($property->getIsCalculated()) {
+                    $result[$name] = $this->{$name};
+                }
+                switch ($property->dataType) {
+                    case DataTypes::DT_INTEGER:
+                    case DataTypes::DT_DATE:
+                    case DataTypes::DT_DATETIME:
+                        $result[$name] = (int)$result[$name];
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $result[$name] = (bool)$result[$name];
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $result[$name] = (float)$result[$name];
+                        break;
                 }
             }
         }
@@ -593,29 +519,5 @@ abstract class Entity extends DataObject {
     public static function modifiedTime(string $fieldName): DateTimeProperty {
         $accessType = AccessTypes::AC_READABLE | AccessTypes::AC_UPDATABLE;
         return new DateTimeProperty($fieldName, false, $accessType);
-    }
-
-    /**
-     * Создает описание свойства Многие ко одному
-     *
-     * @param string $entityName Имя сущности
-     * @param array  $keys       Массив свойств ключей
-     *
-     * @return \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty
-     */
-    public static function manyToOne(string $entityName, array $keys): ManyToOneProperty {
-        return new ManyToOneProperty($entityName, $keys);
-    }
-
-    /**
-     * Создает описание свойства Один ко многим
-     *
-     * @param string $entityName Имя сущности
-     * @param array  $keys       Массив свойств ключей
-     *
-     * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
-     */
-    public static function oneToMany(string $entityName, array $keys): OneToManyProperty {
-        return new OneToManyProperty($entityName, $keys);
     }
 }

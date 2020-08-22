@@ -29,18 +29,14 @@ use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
-use XEAF\Rack\ORM\Models\Parsers\ResolveModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
-use XEAF\Rack\ORM\Models\ResolvedValue;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
-use XEAF\Rack\ORM\Utils\Lex\ResolveType;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
 use XEAF\Rack\ORM\Utils\QueryParser;
-use XEAF\Rack\ORM\Utils\Resolver;
 use XEAF\Rack\ORM\Utils\Tokenizer;
 
 /**
@@ -287,51 +283,6 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Задает требование разрешения связи
-     *
-     * @param string $alias       Псевдоним
-     * @param string $property    Свойство
-     * @param int    $resolveType Тип разрешения
-     *
-     * @return \XEAF\Rack\ORM\Core\EntityQuery
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    public function resolve(string $alias, string $property, int $resolveType = ResolveType::LAZY): EntityQuery {
-        $this->_model->getResolveModels()->clear();
-        return $this->andResolve($alias, $property, $resolveType);
-    }
-
-    /**
-     * Добавляет требование разрешения связи
-     *
-     * @param string $alias       Псевдоним
-     * @param string $property    Свойство
-     * @param int    $resolveType Тип разрешения
-     *
-     * @return \XEAF\Rack\ORM\Core\EntityQuery
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    public function andResolve(string $alias, string $property, int $resolveType = ResolveType::LAZY): EntityQuery {
-        $subquery     = new EntityQuery($this->_em, '');
-        $resolveModel = new ResolveModel($alias, $property, $resolveType, $subquery);
-        $this->_model->addResolveModel($resolveModel);
-        return $this;
-    }
-
-    /**
-     * Возвращает подзапрос для разрешения связи
-     *
-     * @param string $alias    Псевдоним
-     * @param string $property Свойство
-     *
-     * @return \XEAF\Rack\ORM\Core\EntityQuery
-     */
-    public function subquery(string $alias, string $property): EntityQuery {
-        $resolveModel = $this->_model->findResolveModel($alias, $property);
-        return $resolveModel->getQuery();
-    }
-
-    /**
      * Добавляет определение параметра
      *
      * @param string     $name     Имя параметра
@@ -473,10 +424,8 @@ class EntityQuery extends DataModel {
      * @param bool $useFilter Признак использования условий фильтрации
      *
      * @return string
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function generateSQL(bool $useFilter): string {
-        Resolver::getInstance()->resolveRelations($this);
         return Generator::getInstance()->selectSQL($this, $useFilter);
     }
 
@@ -486,10 +435,8 @@ class EntityQuery extends DataModel {
      * @param bool $useFilter Признак использования условий фильтрации
      *
      * @return string
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function generateCountSQL(bool $useFilter): string {
-        Resolver::getInstance()->resolveRelations($this);
         return Generator::getInstance()->selectCountSQL($this, $useFilter);
     }
 
@@ -569,7 +516,6 @@ class EntityQuery extends DataModel {
             foreach ($data as $record) {
                 $item   = $this->processRecord($alias->name, $properties, $record);
                 $entity = new $className($item);
-                $this->expandEntity($alias->name, $properties, $record, $entity);
                 $this->_em->watch($entity);
                 $result->push($entity);
             }
@@ -619,7 +565,6 @@ class EntityQuery extends DataModel {
                 } else {
                     $multi[$aliasName] = null;
                 }
-                $this->expandEntity($aliasName, $properties, $record, $entity);
             }
             $recordObject = new DataObject($multi);
             $result->push($recordObject);
@@ -640,33 +585,12 @@ class EntityQuery extends DataModel {
         $result = [];
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->isCalculated && !$property->getIsExpandable()) {
+            if (!$property->getIsCalculated()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
             }
         }
         return $result;
-    }
-
-    /**
-     * Обрабатывает данные массива записи для разрешаемых свойств
-     *
-     * @param string                              $aliasName  Псевдоним
-     * @param \XEAF\Rack\API\Interfaces\IKeyValue $properties Набор свойств сущности
-     * @param array                               $record     Массив данных записи
-     * @param \XEAF\Rack\ORM\Core\Entity          $entity     Объект сущности
-     *
-     * @return void
-     */
-    protected function expandEntity(string $aliasName, IKeyValue $properties, array $record, Entity $entity): void {
-        foreach ($properties as $name => $property) {
-            assert($property instanceof PropertyModel);
-            if ($property->getIsExpandable()) {
-                $model = $this->_model->findResolveModel($aliasName, $name);
-                $value = new ResolvedValue(ResolveType::LAZY, $model);
-                $entity->setResolvedValue($name, $value);
-            }
-        }
     }
 
     /**

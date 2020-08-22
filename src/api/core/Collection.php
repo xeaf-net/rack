@@ -112,7 +112,7 @@ class Collection implements ICollection {
         foreach ($this->_data as $item) {
             if ($compare($item)) {
                 return $item;
-            };
+            }
         }
         return null;
     }

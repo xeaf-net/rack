@@ -68,14 +68,4 @@ class DataTypes {
      * Тип данных - объект
      */
     public const DT_OBJECT = 10;
-
-    /**
-     * Тип данных - многие к одному
-     */
-    public const DT_MANY_TO_ONE = 11;
-
-    /**
-     * Тип данных - один ко многим
-     */
-    public const DT_ONE_TO_MANY = 12;
 }

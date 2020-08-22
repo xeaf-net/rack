@@ -22,7 +22,6 @@ use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
-use XEAF\Rack\ORM\Models\Parsers\ResolveModel;
 use XEAF\Rack\ORM\Models\Parsers\WhereModel;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
@@ -234,35 +233,6 @@ class QueryModel extends DataModel {
      */
     public function getResolveModels(): ICollection {
         return $this->_resolveModels;
-    }
-
-    /**
-     * Возвращает модель разрешения ссылок
-     *
-     * @param string $alias    Псевдоним
-     * @param string $property Свойство
-     *
-     * @return \XEAF\Rack\ORM\Models\Parsers\ResolveModel|null
-     */
-    public function findResolveModel(string $alias, string $property): ?ResolveModel {
-        foreach ($this->_resolveModels as $resolveModel) {
-            assert($resolveModel instanceof ResolveModel);
-            if ($resolveModel->getAlias() == $alias && $resolveModel->getProperty() == $property) {
-                return $resolveModel;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Добавляет в коллекцию модель разрешения ссылок
-     *
-     * @param \XEAF\Rack\ORM\Models\Parsers\ResolveModel $resolveModel Модель разрешенияссылок
-     *
-     * @return void
-     */
-    public function addResolveModel(ResolveModel $resolveModel): void {
-        $this->_resolveModels->push($resolveModel);
     }
 
     /**
