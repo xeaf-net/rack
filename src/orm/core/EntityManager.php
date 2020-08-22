@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Core;
 
+use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
@@ -73,7 +74,7 @@ abstract class EntityManager {
      *
      * @param string $connection Имя подключения к базе данных
      */
-    public function __construct(string $connection) {
+    public function __construct(string $connection = Factory::DEFAULT_NAME) {
         $this->_db               = Database::getInstance($connection);
         $this->_entities         = new KeyValue();
         $this->_entityTables     = new KeyValue();
