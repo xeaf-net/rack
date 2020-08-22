@@ -1,5 +1,6 @@
 ~*
 .idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
 .idea/**/deployment.xml
 .idea/**/webServers.xml
 .idea/**/workspace.xml

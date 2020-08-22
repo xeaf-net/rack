@@ -1,6 +1,6 @@
 {
     "portal"     : {
-        "url"      : "http://localhost",
+        "url"      : "https://rack.xeaf.space",
         "origin"   : "*",
         "bearer"   : "rackAPI",
         "locale"   : "en_GB",
@@ -9,12 +9,11 @@
         "debugMode": "true"
     },
     "storage"    : {
-        "default": "file:path=/tmp",
+        "default": "file:path=/var/www/hosting.space/rack/tmp",
         "redis"  : "redis:host=localhost;port=6379;dbindex=0;ttl=3600"
     },
     "database"   : {
-        "default": "pgsql:host=localhost;port=5432;dbname=rack;user=rack;password=manager",
-        "reserve": "mysql:host=localhost;port=3306;dbname=rack;user=rack;password=manager;charset=utf8"
+        "default": "pgsql:host=rack.xeaf.space;port=5432;dbname=rack;user=rack;password=manager"
     },
     "mailer"     : {
         "smtp"      : true,
@@ -24,17 +23,17 @@
         "secure"    : "ssl",
         "userName"  : "",
         "password"  : "",
-        "sendFrom"  : "me@example.com",
+        "sendFrom"  : "noreplay@example.com",
         "senderName": "rackAPI",
         "charSet"   : "utf-8"
     },
     "logger"     : {
-        "default": "file:level=DEBUG;path=/tmp;prefix=rack"
+        "default": "file:level=DEBUG;path=/var/www/hosting.space/rack/logs;prefix=rack"
     },
     "templates"  : {
         "engine"       : "smarty",
-        "cacheDir"     : "/tmp",
-        "compileDir"   : "/tmp",
+        "cacheDir"     : "/var/www/hosting.space/rack/tmp/smarty",
+        "compileDir"   : "/var/www/hosting.space/rack/tmp/smarty",
         "enableCaching": "false",
         "forceCompile" : "false"
     },

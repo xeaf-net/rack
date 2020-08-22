@@ -83,6 +83,16 @@
             "src/ui/autoload.php"
         ]
     },
+    "autoload-dev"     : {
+        "psr-4": {
+            "XEAF\\Rack\\Demo\\"          : "src.demo/",
+            "XEAF\\Rack\\Demo\\App\\"     : "src.demo/app",
+            "XEAF\\Rack\\Demo\\Entities\\": "src.demo/entities",
+            "XEAF\\Rack\\Demo\\Modules\\" : "src.demo/modules",
+            "XEAF\\Rack\\Demo\\Utils\\"   : "src.demo/utils",
+            "XEAF\\Rack\\Demo\\WWW\\"     : "src.demo/www"
+        }
+    },
     "require"          : {
         "php"                : ">=7.3",
         "ext-curl"           : "*",
