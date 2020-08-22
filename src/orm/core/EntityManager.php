@@ -72,17 +72,23 @@ abstract class EntityManager {
      * Конструктор класса
      *
      * @param string $connection Имя подключения к базе данных
-     * @param array  $entities   Определения сущностей
      */
-    public function __construct(string $connection, array $entities) {
+    public function __construct(string $connection) {
         $this->_db               = Database::getInstance($connection);
         $this->_entities         = new KeyValue();
         $this->_entityTables     = new KeyValue();
         $this->_entityClasses    = new KeyValue();
         $this->_watchedEntities  = new KeyValue();
         $this->_watchedOriginals = new KeyValue();
-        $this->initEntities($entities);
+        $this->initEntities($this->declareEntities());
     }
+
+    /**
+     * Возвращает массив определений сущностей
+     *
+     * @return array
+     */
+    abstract public function declareEntities(): array;
 
     /**
      * Возващает подключение к базе данных
