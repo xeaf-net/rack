@@ -15,6 +15,7 @@ namespace XEAF\Rack\UI\Utils\Engines;
 use Smarty;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
@@ -85,6 +86,11 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * Имя переменной признака режима отладки
      */
     protected const VAR_DEBUG_MODE = 'debugMode';
+
+    /**
+     * Имя переменной модели данных
+     */
+    protected const VAR_DATA_MODEL = 'dataModel';
 
     /**
      * Имя переменной модели данных действия
@@ -361,7 +367,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      */
     public static function printPluginContent($params, $smarty) {
         $result     = '';
-        $pluginName = (string) $params['name'] ?? null;
+        $pluginName = (string)$params['name'] ?? null;
         if (!empty($pluginName)) {
             $tplEngine = TemplateEngine::getInstance();
             $className = $tplEngine->getRegisteredPlugin($pluginName);
@@ -417,7 +423,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredPlugin(string $name): string {
-        $result = (string) $this->_plugins->get($name);
+        $result = (string)$this->_plugins->get($name);
         if (empty($result)) {
             throw TemplateException::unregisteredPlugin($name);
         }
@@ -451,7 +457,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @inheritDoc
      */
     public function getRegisteredTemplate(string $name): string {
-        $result = (string) $this->_templates->get($name);
+        $result = (string)$this->_templates->get($name);
         if (empty($result)) {
             throw TemplateException::unregisteredTemplate($name);
         }
@@ -479,6 +485,18 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      */
     public function unregisterTemplate(string $name): void {
         $this->_templates->delete($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parse(string $layoutFile, DataObject $dataObject = null): string {
+        try {
+            $this->_smarty->assign(self::VAR_DATA_MODEL, $dataObject);
+            return $this->_smarty->fetch($layoutFile);
+        } catch (Throwable $exception) {
+            throw TemplateException::templateProcessingError($layoutFile, $exception);
+        }
     }
 
     /**

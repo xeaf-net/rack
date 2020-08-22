@@ -108,6 +108,64 @@ class Collection implements ICollection {
     /**
      * @inheritDoc
      */
+    public function find(callable $compare): ?DataObject {
+        foreach ($this->_data as $item) {
+            if ($compare($item)) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function forEach(callable $action): void {
+        foreach ($this->_data as $item) {
+            $action($item);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function sort(callable $compare): ICollection {
+        $result = new Collection();
+        $this->forEach(function ($item) use ($result) {
+            $result->push($item);
+        });
+        $result->reorder($compare);
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function filter(callable $accept): ICollection {
+        $result = new Collection();
+        $this->forEach(function ($item) use ($result, $accept) {
+            if ($accept($item)) {
+                $result->push($item);
+            }
+        });
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function transform(callable $transform): ICollection {
+        $result = new Collection();
+        $this->forEach(function ($item) use ($result, $transform) {
+            $data = $transform($item);
+            $result->push($data);
+        });
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function toArray(array $map = []): array {
         $result = [];
         foreach ($this->_data as $key => $value) {

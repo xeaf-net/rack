@@ -17,6 +17,7 @@ use XEAF\Rack\API\Interfaces\IActionArgs;
 use XEAF\Rack\API\Models\UploadedFile;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Реализует методы контейнера параметров вызова приложения
@@ -159,6 +160,108 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function get(string $name, $defaultValue = null) {
         return $this->_parameters[$name] ?? $defaultValue;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getString(string $name, string $defaultValue = null): ?string {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if ($value !== null) {
+            $value = (string)$value;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBool(string $name, bool $defaultValue = false): bool {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        return (bool)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getInteger(string $name, int $defaultValue = null): ?int {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if ($value !== null) {
+            $strings = Strings::getInstance();
+            $value   = $strings->stringToInteger((string)$value, $defaultValue);
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFloat(string $name, float $defaultValue = null): ?float {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if ($value !== null) {
+            $strings = Strings::getInstance();
+            $value   = $strings->stringToFloat((string)$value, $defaultValue);
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUUID(string $name, string $defaultValue = null): ?string {
+        $value   = $this->_parameters[$name] ?? $defaultValue;
+        $strings = Strings::getInstance();
+        if (!$strings->isUUID((string)$value)) {
+            $value = $defaultValue;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArray(string $name, array $defaultValue = []): array {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if (!is_array($value)) {
+            $value = $defaultValue;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayInt(string $name, string $element, int $defaultValue = 0): int {
+        $data    = $this->getArray($name);
+        $value   = $data[$element] ?? $defaultValue;
+        $strings = Strings::getInstance();
+        return $strings->stringToInteger((string)$value, $defaultValue);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayString(string $name, string $element, string $defaultValue = null): ?string {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        if ($value !== null) {
+            $value = (string)$value;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayUUID(string $name, string $element, string $defaultValue = null): ?string {
+        $value = $this->getArrayString($name, $element, $defaultValue);
+        if ($value !== null) {
+            $strings = Strings::getInstance();
+            if (!$strings->isUUID($value)) {
+                $value = $defaultValue;
+            }
+        }
+        return $value;
     }
 
     /**

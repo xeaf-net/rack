@@ -19,6 +19,7 @@ use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Utils\Assets;
+use XEAF\Rack\API\Utils\Exceptions\FormException;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\Localization;
@@ -57,7 +58,11 @@ class Module extends Extension implements IModule {
             if ($method) {
                 $this->beforeExecute();
                 $reflection = Reflection::getInstance();
-                $result     = $reflection->returnInjectable($this, $method);
+                try {
+                    $result = $reflection->returnInjectable($this, $method);
+                } catch (FormException $fe) {
+                    $result = $fe->getResult();
+                }
                 if ($result != null) {
                     assert($result instanceof IActionResult);
                 }
@@ -110,7 +115,7 @@ class Module extends Extension implements IModule {
      */
     protected function sendLocaleData(): IActionResult {
         $l10n   = Localization::getInstance();
-        $locale = $this->args()->get('locale');
+        $locale = $this->args()->getString('locale');
         if (!$locale) {
             $locale = $l10n->getDefaultLocale()->getName();
         }

@@ -58,9 +58,9 @@ interface INotificator extends IFactoryObject {
     /**
      * Отправляет нотификационное сообщение группе пользователей
      *
-     * @param array                          $users      Список идентификаторов пользователей
-     * @param string                         $type       Тип сообщения
-     * @param \XEAF\Rack\API\Core\DataObject $dataObject Объект данных сообщения
+     * @param array                               $users      Список идентификаторов пользователей
+     * @param string                              $type       Тип сообщения
+     * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных сообщения
      *
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException

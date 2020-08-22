@@ -144,8 +144,8 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
     public function parseConfigurationSection(object $data): void {
         $portalConfig         = PortalConfig::getInstance();
         $this->_engine        = $data->{'engine'} ?? self::DEFAULT_ENGINE;
-        $this->_forceCompile  = $data->{'forceCompile'} ?? self::DEFAULT_FORCE_COMPILE;
-        $this->_enableCaching = $data->{'enableCaching'} ?? self::DEFAULT_ENABLE_CACHING;
+        $this->_forceCompile  = (bool)($data->{'forceCompile'} ?? self::DEFAULT_FORCE_COMPILE);
+        $this->_enableCaching = (bool)($data->{'enableCaching'} ?? self::DEFAULT_ENABLE_CACHING);
         $this->_cacheDir      = $data->{'cacheDir'} ?? null;
         $this->_compileDir    = $data->{'compileDir'} ?? null;
         if (!$this->_cacheDir) {

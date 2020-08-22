@@ -77,6 +77,16 @@ interface IMailer extends IFactoryObject {
     public function addAttachment(string $filePath, string $fileName = ''): void;
 
     /**
+     * Прикрепляет встраиваемое изображение
+     *
+     * @param string $filePath Путь к изображению
+     * @param string $cid      Уникальный идентификатор
+     *
+     * @return void
+     */
+    public function addEmbeddedImage(string $filePath, string $cid): void;
+
+        /**
      * Задает пирзнак отправки почты в формате HTML
      *
      * @param bool $isHTML Признак отправки в виде HTML

@@ -30,6 +30,7 @@ use XEAF\Rack\API\Utils\Strings;
  * @property-read string $password   Пароль
  * @property-read string $sendFrom   Адрес отправителя
  * @property-read string $senderName Имя отправителя
+ * @property-read string $charSet    Набор символов
  *
  * @package  XEAF\Rack\API\Models\Config
  */
@@ -86,6 +87,11 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
     private const DEFAULT_SENDER_NAME = '';
 
     /**
+     * Набор символов по умолчанию
+     */
+    private const DEFAULT_CHARSET = 'utf-8';
+
+    /**
      * Признак использования SMTP
      * @var bool
      */
@@ -138,6 +144,12 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
      * @var string
      */
     private $_senderName = self::DEFAULT_SENDER_NAME;
+
+    /**
+     * Набор символов
+     * @var string
+     */
+    private $_charSet = self::DEFAULT_CHARSET;
 
     /**
      * Конструктор класса
@@ -230,19 +242,29 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
     }
 
     /**
+     * Возвращает набор символов
+     *
+     * @return string
+     */
+    public function getCharSet(): string {
+        return $this->_charSet;
+    }
+
+    /**
      * @inheritDoc
      */
     public function parseConfigurationSection(object $data): void {
         $strings           = Strings::getInstance();
         $this->_smtp       = (bool)$data->{'smtp'} ?? self::DEFAULT_SMTP;
         $this->_host       = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port       = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_port       = $strings->stringToInteger((string)$data->{'port'} ?? null, self::DEFAULT_PORT);
         $this->_auth       = (bool)$data->{'auth'} ?? self::DEFAULT_AUTH;
         $this->_secure     = $data->{'secure'} ?? self::DEFAULT_SECURE;
         $this->_userName   = $data->{'userName'} ?? self::DEFAULT_USERNAME;
         $this->_password   = $data->{'password'} ?? self::DEFAULT_PASSWORD;
         $this->_sendFrom   = $data->{'sendFrom'} ?? self::DEFAULT_SEND_FROM;
         $this->_senderName = $data->{'senderName'} ?? self::DEFAULT_SENDER_NAME;
+        $this->_charSet    = $data->{'charSet'} ?? self::DEFAULT_CHARSET;
     }
 
     /**

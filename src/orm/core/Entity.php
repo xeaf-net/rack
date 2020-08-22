@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
+use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
@@ -59,6 +60,12 @@ abstract class Entity extends DataObject {
     private $_entityWatchingId = null;
 
     /**
+     * Коллекция разрешенных значение
+     * @var \XEAF\Rack\API\Interfaces\IKeyValue
+     */
+    private $_resolvedValues;
+
+    /**
      * Конструктор класса
      *
      * @param array $data Данные инициализаии
@@ -66,6 +73,7 @@ abstract class Entity extends DataObject {
     public function __construct(array $data = []) {
         $this->initializeModel();
         parent::__construct($this->createInitData($data));
+        $this->_resolvedValues = new KeyValue();
     }
 
     /**
@@ -161,22 +169,20 @@ abstract class Entity extends DataObject {
             if (count($map) == 0 || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if ($property->getIsCalculated()) {
-                    /** @noinspection PhpVariableVariableInspection */
-                    $result[$name] = $this->$name;
-                } else {
-                    switch ($property->dataType) {
-                        case DataTypes::DT_INTEGER:
-                        case DataTypes::DT_DATE:
-                        case DataTypes::DT_DATETIME:
-                            $result[$name] = (int)$result[$name];
-                            break;
-                        case DataTypes::DT_BOOL:
-                            $result[$name] = (bool)$result[$name];
-                            break;
-                        case DataTypes::DT_NUMERIC:
-                            $result[$name] = (float)$result[$name];
-                            break;
-                    }
+                    $result[$name] = $this->{$name};
+                }
+                switch ($property->dataType) {
+                    case DataTypes::DT_INTEGER:
+                    case DataTypes::DT_DATE:
+                    case DataTypes::DT_DATETIME:
+                        $result[$name] = (int)$result[$name];
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $result[$name] = (bool)$result[$name];
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $result[$name] = (float)$result[$name];
+                        break;
                 }
             }
         }
@@ -184,7 +190,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Задает значения свойст сущности из массива
+     * Задает значения свойств сущности из массива
      *
      * @param array $data Массив значений
      *
@@ -208,8 +214,28 @@ abstract class Entity extends DataObject {
         $parameters = Parameters::getInstance();
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            if ($parameters->exists($name)) {
-                $this->{$name} = $parameters->get($name);
+            assert($property instanceof PropertyModel);
+            if (!$property->getIsCalculated() && $parameters->exists($name)) {
+                $value = null;
+                switch ($property->dataType) {
+                    case DataTypes::DT_INTEGER:
+                        $value = $parameters->getInteger($name, 0);
+                        break;
+                    case DataTypes::DT_DATE:
+                    case DataTypes::DT_DATETIME:
+                        $value = $parameters->getInteger($name);
+                        break;
+                    case DataTypes::DT_BOOL:
+                        $value = $parameters->getBool($name);
+                        break;
+                    case DataTypes::DT_NUMERIC:
+                        $value = $parameters->getFloat($name, 0.00);
+                        break;
+                    default:
+                        $value = $parameters->getString($name);
+                        break;
+                }
+                $this->{$name} = $value;
             }
         }
     }
@@ -261,6 +287,7 @@ abstract class Entity extends DataObject {
             assert($property instanceof PropertyModel);
             switch ($property->getDataType()) {
                 case DataTypes::DT_ENUM:
+                    assert($property instanceof EnumProperty);
                     $this->checkEnumValue($name, $property);
                     break;
                 default:
@@ -279,8 +306,7 @@ abstract class Entity extends DataObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function checkEnumValue(string $name, EnumProperty $property): void {
-        /** @noinspection PhpVariableVariableInspection */
-        $value = $this->$name;
+        $value = $this->{$name};
         $enums = $property->enumValues();
         if (!in_array($value, $enums)) {
             throw EntityException::invalidEnumValue($value);

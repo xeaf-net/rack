@@ -86,8 +86,102 @@ interface IActionArgs extends IFactoryObject {
      * @param mixed|null $defaultValue Значение по умолчанию
      *
      * @return mixed
+     * @deprecated
      */
     public function get(string $name, $defaultValue = null);
+
+    /**
+     * Возвращает значение строкового параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param string|null $defaultValue Значение по умолчанию
+     *
+     * @return string|null
+     */
+    public function getString(string $name, string $defaultValue = null): ?string;
+
+    /**
+     * Возвращает значение логического параметра
+     *
+     * @param string $name         Имя параметра
+     * @param bool   $defaultValue Значение по умолчанию
+     *
+     * @return bool
+     */
+    public function getBool(string $name, bool $defaultValue = false): bool;
+
+    /**
+     * Возвращает значение целочисленного параметра
+     *
+     * @param string   $name         Имя параметра
+     * @param int|null $defaultValue Значение по умолчанию
+     *
+     * @return int|null
+     */
+    public function getInteger(string $name, int $defaultValue = null): ?int;
+
+    /**
+     * Возвращает значение действительного параметра
+     *
+     * @param string     $name         Имя параметра
+     * @param float|null $defaultValue Значение по умолчанию
+     *
+     * @return float|null
+     */
+    public function getFloat(string $name, float $defaultValue = null): ?float;
+
+    /**
+     * Возвращает значение параметра идентификатора
+     *
+     * @param string      $name         Имя параметра
+     * @param string|null $defaultValue Значение по умолчанию
+     *
+     * @return string|null
+     */
+    public function getUUID(string $name, string $defaultValue = null): ?string;
+
+    /**
+     * Возвращает значение параметра типа массив
+     *
+     * @param string $name         Имя параметра
+     * @param array  $defaultValue Значение по умолчанию
+     *
+     * @return array
+     */
+    public function getArray(string $name, array $defaultValue = []): array;
+
+    /**
+     * Возвращает значение целочисленного элемента из массива
+     *
+     * @param string $name         Имя параметра массива
+     * @param string $element      Имя элемента
+     * @param int    $defaultValue Значение по умолчанию
+     *
+     * @return int
+     */
+    public function getArrayInt(string $name, string $element, int $defaultValue = 0): int;
+
+    /**
+     * Возвращает значение строкового элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param string|null $defaultValue Значение по умолчанию
+     *
+     * @return string|null
+     */
+    public function getArrayString(string $name, string $element, string $defaultValue = null): ?string;
+
+    /**
+     * Возвращает значение идентификатора из массива
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $element      Имя элемента
+     * @param string|null $defaultValue Значение по умолчанию
+     *
+     * @return string|null
+     */
+    public function getArrayUUID(string $name, string $element, string $defaultValue = null): ?string;
 
     /**
      * Возвращает информацию о загруженном файле

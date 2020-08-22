@@ -218,9 +218,9 @@ interface IDatabaseActions {
     /**
      * Преобразует логическое значение формата SQL в тип bool
      *
-     * @param string $flag Логические значение в формате SQL
+     * @param string|null $flag Логические значение в формате SQL
      *
      * @return bool
      */
-    public function sqlBool(string $flag): bool;
+    public function sqlBool(?string $flag): bool;
 }

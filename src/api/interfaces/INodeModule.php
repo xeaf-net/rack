@@ -17,7 +17,14 @@ namespace XEAF\Rack\API\Interfaces;
  *
  * @package XEAF\Rack\API\Interfaces
  */
-interface INodeModule extends IModule {
+interface INodeModule {
+
+    /**
+     * Регистрирует модули узла
+     *
+     * @return void
+     */
+    public function registerNodeModules(): void;
 
     /**
      * Проверяет текущий маршрут

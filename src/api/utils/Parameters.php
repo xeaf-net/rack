@@ -103,11 +103,13 @@ class Parameters extends ActionArgs {
             case self::OPTIONS_METHOD_NAME:
                 $this->processOptionsHeaders();
                 die(); // Только заголовки
+                /** @noinspection PhpUnreachableStatementInspection */
                 break;
             default:
                 $result = StatusResult::notImplemented();
                 $result->processResult();
                 die();
+                /** @noinspection PhpUnreachableStatementInspection */
                 break;
         }
         $this->postProcessParameters();
@@ -213,6 +215,9 @@ class Parameters extends ActionArgs {
      * @return void
      */
     protected function processInputFile(string $mime, $content): void {
+        if (count($_FILES) > 0) {
+            return;
+        }
         $fileMIME   = FileMIME::getInsance();
         $fileSystem = FileSystem::getInstance();
         if ($fileMIME->isSupportedMIME($mime)) {

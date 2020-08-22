@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Core;
 
+use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
@@ -72,23 +73,23 @@ abstract class EntityManager {
      * Конструктор класса
      *
      * @param string $connection Имя подключения к базе данных
-     * @param array  $entities   Определения сущностей
      */
-    public function __construct(string $connection, array $entities) {
+    public function __construct(string $connection = Factory::DEFAULT_NAME) {
         $this->_db               = Database::getInstance($connection);
         $this->_entities         = new KeyValue();
         $this->_entityTables     = new KeyValue();
         $this->_entityClasses    = new KeyValue();
         $this->_watchedEntities  = new KeyValue();
         $this->_watchedOriginals = new KeyValue();
-        foreach ($entities as $name => $className) {
-            $item = new $className();
-            assert($item instanceof Entity);
-            $this->_entities->put($name, $item->getModel());
-            $this->_entityTables->put($item->getModel()->getTableName(), $name);
-            $this->_entityClasses->put($name, $className);
-        }
+        $this->initEntities($this->declareEntities());
     }
+
+    /**
+     * Возвращает массив определений сущностей
+     *
+     * @return array
+     */
+    abstract public function declareEntities(): array;
 
     /**
      * Возващает подключение к базе данных
@@ -109,6 +110,21 @@ abstract class EntityManager {
     }
 
     /**
+     * Возвращает модель сущности
+     *
+     * @param string $name Имя сущности
+     *
+     * @return \XEAF\Rack\ORM\Models\EntityModel
+     */
+    public function getEntityModel(string $name): ?EntityModel {
+        $result = $this->_entities->get($name);
+        if ($result) {
+            assert($result instanceof EntityModel);
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает имя класса сущности по имени сущности
      *
      * @param string $entity Имя сущности
@@ -116,7 +132,7 @@ abstract class EntityManager {
      * @return string
      */
     public function getEntityClass(string $entity): string {
-        return (string) $this->_entityClasses->get($entity);
+        return (string)$this->_entityClasses->get($entity);
     }
 
     /**
@@ -131,6 +147,22 @@ abstract class EntityManager {
     }
 
     /**
+     * Возвращает имя сущности по имени класса
+     *
+     * @param string $className Имя класса
+     *
+     * @return string|null
+     */
+    public function findByClassName(string $className): ?string {
+        foreach ($this->_entityClasses as $name => $entityClassName) {
+            if ($className == $entityClassName) {
+                return $name;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Возвращает новый объект запроса
      *
      * @param string $xql Текст XQL запроса
@@ -140,6 +172,43 @@ abstract class EntityManager {
      */
     public function query(string $xql): EntityQuery {
         return new EntityQuery($this, $xql);
+    }
+
+    /**
+     * Возвращает объект запроса к сущностям заданного класса
+     *
+     * @param string $className Имя класса
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function queryEntities(string $className): EntityQuery {
+        $name = $this->findByClassName($className);
+        if (!$name) {
+            throw EntityException::unknownEntityClass($className);
+        }
+        $xql = $name . ' from ' . $name;
+        return $this->query($xql);
+    }
+
+    /**
+     * Возвращает объект запроса к сущностям по первичному ключу
+     *
+     * @param string $className
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function queryEntity(string $className): EntityQuery {
+        $name  = $this->findByClassName($className);
+        $query = $this->queryEntities($className);
+        $model = $this->_entities->get($name);
+        assert($model instanceof EntityModel);
+        $primaryKeys = $model->getPrimaryKeyNames();
+        foreach ($primaryKeys as $primaryKey) {
+            $query->andWhere("$name.$primaryKey == :$primaryKey");
+        }
+        return $query;
     }
 
     /**
@@ -447,6 +516,23 @@ abstract class EntityManager {
     }
 
     /**
+     * Инициализирует сущности
+     *
+     * @param array $entities Определения сущностей
+     *
+     * @return void
+     */
+    private function initEntities(array $entities): void {
+        foreach ($entities as $name => $className) {
+            $item = new $className();
+            assert($item instanceof Entity);
+            $this->_entities->put($name, $item->getModel());
+            $this->_entityTables->put($item->getModel()->getTableName(), $name);
+            $this->_entityClasses->put($name, $className);
+        }
+    }
+
+    /**
      * Возвращает строковое представление значения параметра
      *
      * @param string                     $name   Имя параметра
@@ -456,7 +542,10 @@ abstract class EntityManager {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     private function parameterValue(string $name, Entity $entity): ?string {
-        $result   = $entity->{$name};
+        $result = $entity->{$name};
+        if ($result === null) {
+            return null;
+        }
         $property = $entity->getModel()->getPropertyByName($name);
         if ($property != null) {
             try {
@@ -484,6 +573,7 @@ abstract class EntityManager {
                 throw EntityException::internalError($exception);
             }
         }
-        return (string) $result;
+        return (string)$result;
     }
+
 }

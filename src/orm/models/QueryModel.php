@@ -76,6 +76,12 @@ class QueryModel extends DataModel {
     protected $_orderModels = null;
 
     /**
+     * Модели разрешения ссылок
+     * @var \XEAF\Rack\API\Interfaces\ICollection
+     */
+    protected $_resolveModels = null;
+
+    /**
      * Определения параметров
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
@@ -86,13 +92,14 @@ class QueryModel extends DataModel {
      */
     public function __construct() {
         parent::__construct();
-        $this->_aliasModels  = new Collection();
-        $this->_fromModels   = new Collection();
-        $this->_joinModels   = new Collection();
-        $this->_whereModels  = new Collection();
-        $this->_filterModels = new Collection();
-        $this->_orderModels  = new Collection();
-        $this->_parameters   = new KeyValue();
+        $this->_aliasModels   = new Collection();
+        $this->_fromModels    = new Collection();
+        $this->_joinModels    = new Collection();
+        $this->_whereModels   = new Collection();
+        $this->_filterModels  = new Collection();
+        $this->_orderModels   = new Collection();
+        $this->_resolveModels = new Collection();
+        $this->_parameters    = new KeyValue();
     }
 
     /**
@@ -220,6 +227,15 @@ class QueryModel extends DataModel {
     }
 
     /**
+     * Возвращает модели разрешения ссылок
+     *
+     * @return \XEAF\Rack\API\Interfaces\ICollection
+     */
+    public function getResolveModels(): ICollection {
+        return $this->_resolveModels;
+    }
+
+    /**
      * Возвращает определенный набор параметров
      *
      * @return \XEAF\Rack\API\Interfaces\IKeyValue
@@ -241,5 +257,62 @@ class QueryModel extends DataModel {
     public function addParameter(string $name, int $dataType = DataTypes::DT_STRING, $value = null, bool $filter = false): void {
         $parameter = new ParameterModel($dataType, $value, $filter);
         $this->_parameters->put($name, $parameter);
+    }
+
+    /**
+     * Ищет модель FROM по псевдониму
+     *
+     * @param string $alias Псевдоним
+     *
+     * @return \XEAF\Rack\ORM\Models\Parsers\FromModel|null
+     */
+    public function findFromModelByAlias(string $alias): ?FromModel {
+        $result = $this->_fromModels->find(function ($item) use ($alias) {
+            assert($item instanceof FromModel);
+            return $item->getAlias() == $alias;
+        });
+        if ($result) {
+            assert($result instanceof FromModel);
+        }
+        return $result;
+    }
+
+    /**
+     * Ищет модель JOIN по псевдониму
+     *
+     * @param string $alias Псевдоним
+     *
+     * @return \XEAF\Rack\ORM\Models\Parsers\JoinModel|null
+     */
+    public function findJoinModelByAlias(string $alias): ?JoinModel {
+        $result = $this->_joinModels->find(function ($item) use ($alias) {
+            assert($item instanceof JoinModel);
+            return $item->getJoinAlias() == $alias;
+        });
+        if ($result) {
+            assert($result instanceof JoinModel);
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает имя сущности по псевдониму
+     *
+     * @param string $alias Псевдоним
+     *
+     * @return string|null
+     */
+    public function findEntityByAlias(string $alias): ?string {
+        $result = null;
+        $model  = $this->findFromModelByAlias($alias);
+        if ($model) {
+            $result = $model->getEntity();
+        } else {
+            $model = $this->findJoinModelByAlias($alias);
+            if ($model) {
+                $result = $model->getJoinAlias();
+            }
+        }
+        return $result;
     }
 }

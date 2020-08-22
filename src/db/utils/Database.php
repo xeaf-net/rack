@@ -231,7 +231,7 @@ class Database implements IDatabase {
     /**
      * @inheritDoc
      */
-    public function sqlBool(string $flag): bool {
+    public function sqlBool(?string $flag): bool {
         return $this->_provider->sqlBool($flag);
     }
 

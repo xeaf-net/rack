@@ -126,6 +126,19 @@ class Mailer implements IMailer {
     /**
      * @inheritDoc
      */
+    public function addEmbeddedImage(string $filePath, string $cid): void {
+        try {
+            $this->_phpMailer->addEmbeddedImage($filePath, $cid);
+            $this->_lastError = null;
+        } catch (Throwable $me) {
+            $this->_lastError = $me->getMessage();
+            $this->_logger->exception($me);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setHtml(bool $isHTML): void {
         $this->_phpMailer->isHTML($isHTML);
     }
@@ -174,6 +187,7 @@ class Mailer implements IMailer {
                 $result->isMail();
             }
             $result->isHTML(true);
+            $result->CharSet = $config->getCharSet();
             $result->setFrom($config->getSendFrom(), $config->getSenderName());
         } catch (Throwable $me) {
             Logger::getInstance()->exception($me);
