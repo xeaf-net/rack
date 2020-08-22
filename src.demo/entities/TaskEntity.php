@@ -55,7 +55,8 @@ class TaskEntity extends Entity {
             'projectId' => self::uuid('project_id'),
             'status'    => self::enum('task_status', self::STATUSES),
             'title'     => self::string('task_title', 64),
-            'comment'   => self::text('task_comment')
+            'comment'   => self::text('task_comment'),
+            'project'   => self::oneToMany('projects', ['projectId'])
         ]);
     }
 }
