@@ -23,8 +23,10 @@ use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
+use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
+use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
@@ -103,7 +105,7 @@ abstract class Entity extends DataObject {
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated()) {
+            if (!$property->getIsRelation()) {
                 if (array_key_exists($name, $data)) {
                     $result[$name] = $data[$name];
                 } else {
@@ -168,7 +170,7 @@ abstract class Entity extends DataObject {
         foreach ($properties as $name => $property) {
             if (count($map) == 0 || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
-                if ($property->getIsCalculated()) {
+                if ($property->getIsRelation()) {
                     $result[$name] = $this->{$name};
                 }
                 switch ($property->dataType) {
@@ -215,7 +217,7 @@ abstract class Entity extends DataObject {
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated() && $parameters->exists($name)) {
+            if (!$property->getIsRelation() && $parameters->exists($name)) {
                 $value = null;
                 switch ($property->dataType) {
                     case DataTypes::DT_INTEGER:
@@ -495,6 +497,30 @@ abstract class Entity extends DataObject {
      */
     public static function object(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ObjectProperty {
         return new ObjectProperty($fieldName, $accessType);
+    }
+
+    /**
+     * Создает описание свойства отношения Один ко многим
+     *
+     * @param string $entity Имя сущности
+     * @param array  $links  Свойства связи
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
+     */
+    public static function oneToMany(string $entity, array $links): OneToManyProperty {
+        return new OneToManyProperty($entity, $links);
+    }
+
+    /**
+     * Создает описание свойства отношения Многин к одному
+     *
+     * @param string $entity Имя сущности
+     * @param array  $links  Свойства связи
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty
+     */
+    public static function manyToOne(string $entity, array $links): ManyToOneProperty {
+        return new ManyToOneProperty($entity, $links);
     }
 
     /**

@@ -585,7 +585,7 @@ class EntityQuery extends DataModel {
         $result = [];
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated()) {
+            if (!$property->getIsRelation()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
             }
