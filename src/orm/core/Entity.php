@@ -62,10 +62,10 @@ abstract class Entity extends DataObject {
     private $_entityWatchingId = null;
 
     /**
-     * Коллекция разрешенных значение
+     * Значения свойств отношений
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_resolvedValues;
+    private $_relationValues;
 
     /**
      * Конструктор класса
@@ -75,7 +75,7 @@ abstract class Entity extends DataObject {
     public function __construct(array $data = []) {
         $this->initializeModel();
         parent::__construct($this->createInitData($data));
-        $this->_resolvedValues = new KeyValue();
+        $this->_relationValues = new KeyValue();
     }
 
     /**

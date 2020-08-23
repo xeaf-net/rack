@@ -54,33 +54,43 @@ insert into users (
 create table projects (
 
     project_id      uuid                                not null    ,
+    user_id         uuid                                not null    ,
     project_title   varchar(64)                         not null    ,
 
     -- Первичный ключ -----------------------------------------------
     constraint pk_projects
-        primary key (project_id)
+        primary key (project_id)                                    ,
+
+    -- Ссылка на пользователя ---------------------------------------
+    constraint fk_projects_user_id
+        foreign key (user_id) references users (user_id)
 
 );
 
 -- Комментарии ------------------------------------------------------
 comment on table  projects               is 'Проеекты';
 comment on column projects.project_id    is 'Уникальный идентификатор';
+comment on column projects.user_id       is 'Идентификатор владельца';
 comment on column projects.project_title is 'Наименование';
 
 -- Инициализация ----------------------------------------------------
 insert into projects (
     project_id      ,
+    user_id         ,
     project_title
 ) values (
     'd2ebe471-9308-4879-a4d2-f6143a6bf7e6'  ,
+    '18f0682f-7167-49b8-acd9-e6967c15c528'  ,
     'Замена масла'
 );
 
 insert into projects (
     project_id      ,
+    user_id         ,
     project_title
 ) values (
     'be01a180-2951-4c64-a971-445fcf8bd469'  ,
+    '9c625038-be93-42cc-a80f-231cd77ea2ea'  ,
     'Зимняя резина'
 );
 

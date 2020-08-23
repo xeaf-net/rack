@@ -16,6 +16,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\Demo\Entities\ProjectEntity;
 use XEAF\Rack\Demo\Entities\TaskEntity;
+use XEAF\Rack\Demo\Entities\UserEntity;
 use XEAF\Rack\ORM\Core\EntityManager;
 
 /**
@@ -31,7 +32,8 @@ class DemoEM extends EntityManager implements IFactoryObject {
     public function declareEntities(): array {
         return [
             'projects' => ProjectEntity::class,
-            'tasks'    => TaskEntity::class
+            'tasks'    => TaskEntity::class,
+            'users'    => UserEntity::class
         ];
     }
 

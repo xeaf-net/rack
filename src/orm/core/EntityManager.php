@@ -318,6 +318,21 @@ abstract class EntityManager {
     }
 
     /**
+     * Сораняет изменения самма сущностей
+     *
+     * @param array $entities Массив сущностей
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function persistArray(array $entities): void {
+        foreach ($entities as $entity) {
+            assert($entity instanceof Entity);
+            $this->persist($entity);
+        }
+    }
+
+    /**
      * Сохраняет изменения сущности посредством создания новой записи
      *
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
@@ -410,6 +425,21 @@ abstract class EntityManager {
      */
     public function deleteList(ICollection $collection): void {
         foreach ($collection as $entity) {
+            assert($entity instanceof Entity);
+            $this->delete($entity);
+        }
+    }
+
+    /**
+     * Удаляет собъеты сущностей массива из базы данных
+     *
+     * @param array $entities Массив сущностей
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function deleteArray(array $entities): void {
+        foreach ($entities as $entity) {
             assert($entity instanceof Entity);
             $this->delete($entity);
         }

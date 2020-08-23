@@ -18,10 +18,12 @@ use XEAF\Rack\ORM\Models\EntityModel;
 /**
  * Описывает поля сущности Проект
  *
- * @property string                                          $id    Уникальный идентификатор
- * @property string                                          $title Наименование
+ * @property string                                          $id     Уникальный идентификатор
+ * @property string                                          $userId Идентификатор пользователя
+ * @property string                                          $title  Наименование
  *
- * @property-read \XEAF\Rack\API\Interfaces\ICollection|null $tasks Задачи
+ * @property-read \XEAF\Rack\Demo\Entities\UserEntity|null   $user   Пользователь
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection|null $tasks  Задачи
  *
  * @package XEAF\Rack\Demo\Entities
  */
@@ -32,9 +34,11 @@ class ProjectEntity extends Entity {
      */
     protected function createEntityModel(): EntityModel {
         return new EntityModel('projects', [
-            'id'    => self::uuid('project_id', true),
-            'title' => self::string('project_title', 64),
-            'tasks' => self::manyToOne('tasks', ['projectId'])
+            'id'     => self::uuid('project_id', true),
+            'userId' => self::uuid('user_id'),
+            'title'  => self::string('project_title', 64),
+            'user'   => self::oneToMany('users', ['userId']),
+            'tasks'  => self::manyToOne('tasks', ['projectId'])
         ]);
     }
 }
