@@ -76,10 +76,10 @@ class QueryModel extends DataModel {
     protected $_orderModels = null;
 
     /**
-     * Модели разрешения ссылок
+     * Модели разрешения связей
      * @var \XEAF\Rack\API\Interfaces\ICollection
      */
-    protected $_resolveModels = null;
+    protected $_withModels = null;
 
     /**
      * Определения параметров
@@ -92,14 +92,14 @@ class QueryModel extends DataModel {
      */
     public function __construct() {
         parent::__construct();
-        $this->_aliasModels   = new Collection();
-        $this->_fromModels    = new Collection();
-        $this->_joinModels    = new Collection();
-        $this->_whereModels   = new Collection();
-        $this->_filterModels  = new Collection();
-        $this->_orderModels   = new Collection();
-        $this->_resolveModels = new Collection();
-        $this->_parameters    = new KeyValue();
+        $this->_aliasModels  = new Collection();
+        $this->_fromModels   = new Collection();
+        $this->_joinModels   = new Collection();
+        $this->_whereModels  = new Collection();
+        $this->_filterModels = new Collection();
+        $this->_orderModels  = new Collection();
+        $this->_withModels   = new Collection();
+        $this->_parameters   = new KeyValue();
     }
 
     /**
@@ -227,12 +227,12 @@ class QueryModel extends DataModel {
     }
 
     /**
-     * Возвращает модели разрешения ссылок
+     * Возвращает модели разрешения связей
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      */
-    public function getResolveModels(): ICollection {
-        return $this->_resolveModels;
+    public function getWithModels(): ICollection {
+        return $this->_withModels;
     }
 
     /**

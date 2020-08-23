@@ -29,14 +29,17 @@ use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
+use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
 use XEAF\Rack\ORM\Utils\QueryParser;
+use XEAF\Rack\ORM\Utils\Resolver;
 use XEAF\Rack\ORM\Utils\Tokenizer;
 
 /**
@@ -316,6 +319,21 @@ class EntityQuery extends DataModel {
     }
 
     /**
+     * Добавляет тебование разрешения связей
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     * @param int    $resolveType Тип разрешения
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function with(string $alias, string $property, int $resolveType = ResolveTypes::LAZY): EntityQuery {
+        $with = new WithModel($alias, $property, $resolveType);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
      * Возвращает набор сущностей удовляетворяющих условию отбора
      *
      * @param array $params Параметры запроса
@@ -357,6 +375,7 @@ class EntityQuery extends DataModel {
      */
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
+            $this->resolveWithModels();
             $sql   = $this->generateSQL(count($filters) > 0);
             $prm   = $this->processParameters($filters, $params);
             $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
@@ -438,6 +457,22 @@ class EntityQuery extends DataModel {
      */
     public function generateCountSQL(bool $useFilter): string {
         return Generator::getInstance()->selectCountSQL($this, $useFilter);
+    }
+
+    /**
+     * Разрешает связи модели WITH
+     *
+     * @return void
+     */
+    protected function resolveWithModels(): void {
+        $resolver   = Resolver::getInstance();
+        $withModels = $this->_model->getWithModels();
+        foreach ($withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            if ($withModel->getRelation() == null) {
+                $resolver->resolveWith($this, $withModel);
+            }
+        }
     }
 
     /**

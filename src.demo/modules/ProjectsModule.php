@@ -16,6 +16,7 @@ use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\ListResult;
 use XEAF\Rack\Demo\App\DemoEM;
+use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 
 /**
  * Реализует методы работы с проектами
@@ -39,7 +40,11 @@ class ProjectsModule extends Module {
         $em    = DemoEM::getInstance();
         $xql   = "p from projects p";
         $query = $em->query($xql);
-        $list  = $query->get();
+        // $query->leftJoin('users', 'u', 'id', 'p', 'userId');
+
+        $query->with('p', 'user', ResolveTypes::LAZY);
+        $query->with('p', 'tasks', ResolveTypes::LAZY);
+        $list = $query->get();
         return new ListResult($list);
     }
 }

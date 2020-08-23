@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Models\Parsers;
 
 use XEAF\Rack\API\Core\DataModel;
+use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Models\Properties\RelationModel;
 use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 
@@ -22,8 +23,10 @@ use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
  * @property-read string                                    $alias       Псевдоним
  * @property-read string                                    $property    Свойство
  * @property-read int                                       $resolveType Тип разрешения
+ * @property-read string                                    $fullAlias   Полное значение псевдонима
  *
  * @property \XEAF\Rack\ORM\Models\Properties\RelationModel $relation    Модель отношения
+ * @property \XEAF\Rack\ORM\Core\EntityQuery                $query       Запрос для выбора данных
  *
  * @package XEAF\Rack\ORM\Models\Parsers
  */
@@ -52,6 +55,12 @@ class WithModel extends DataModel {
      * @var \XEAF\Rack\ORM\Models\Properties\RelationModel|null
      */
     private $_relation = null;
+
+    /**
+     * Запрос для выбора данных
+     * @var \XEAF\Rack\ORM\Core\EntityQuery|null
+     */
+    private $_query = null;
 
     /**
      * Конструктор класса
@@ -112,5 +121,25 @@ class WithModel extends DataModel {
      */
     public function setRelation(?RelationModel $relation): void {
         $this->_relation = $relation;
+    }
+
+    /**
+     * Возвращает запрос для выбора данных
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery|null
+     */
+    public function getQuery(): ?EntityQuery {
+        return $this->_query;
+    }
+
+    /**
+     * Задает запрос для выбора данных
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityQuery|null $query Запрос для выбора данных
+     *
+     * @return void
+     */
+    public function setQuery(?EntityQuery $query): void {
+        $this->_query = $query;
     }
 }
