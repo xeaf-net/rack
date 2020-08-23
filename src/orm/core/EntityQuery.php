@@ -376,11 +376,10 @@ class EntityQuery extends DataModel {
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
             $this->resolveWithModels();
-            $sql   = $this->generateSQL(count($filters) > 0);
-            $prm   = $this->processParameters($filters, $params);
-            $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
-            $multi = $this->_model->getAliasModels()->count() > 1;
-            if (!$multi) {
+            $sql  = $this->generateSQL(count($filters) > 0);
+            $prm  = $this->processParameters($filters, $params);
+            $data = $this->_em->getDb()->select($sql, $prm, $count, $offset);
+            if (!$this->_model->getIsMultiEntity()) {
                 $result = $this->processSingleRecords($data);
             } else {
                 $result = $this->processMultipleRecords($data);
@@ -417,7 +416,7 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Внутренняя реализация методв получения количества записей
+     * Внутренняя реализация методов получения количества записей
      *
      * @param array $filters Параметры фильтрации
      * @param array $params  Параметры запроса
@@ -463,6 +462,7 @@ class EntityQuery extends DataModel {
      * Разрешает связи модели WITH
      *
      * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveWithModels(): void {
         $resolver   = Resolver::getInstance();

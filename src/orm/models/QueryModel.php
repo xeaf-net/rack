@@ -23,17 +23,21 @@ use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
 use XEAF\Rack\ORM\Models\Parsers\WhereModel;
+use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
+use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 
 /**
  * Модель данных разобранного запроса
  *
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $aliasModels Модели данных конструкции ALIAS
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $fromModels  Модели данных конструкции FROM
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $joinModels  Модели данных конструкции JOIN
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $whereModels Модели данных конструкции WHERE
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $orderModels Модели данных конструкции ORDER
- * @property-read \XEAF\Rack\API\Interfaces\IKeyValue   $parameters  Набор паарметров запроса
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $aliasModels  Модели данных конструкции ALIAS
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $fromModels   Модели данных конструкции FROM
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $joinModels   Модели данных конструкции JOIN
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $whereModels  Модели данных конструкции WHERE
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $orderModels  Модели данных конструкции ORDER
+ * @property-read \XEAF\Rack\API\Interfaces\IKeyValue   $parameters   Набор параметров запроса
+ * @property-read bool                                  isMultiEntity Признак выбора множества сущностей
  *
  * @package XEAF\Rack\ORM\Models
  */
@@ -314,5 +318,25 @@ class QueryModel extends DataModel {
             }
         }
         return $result;
+    }
+
+    /**
+     * Возвращает признак выбора множества сущностей
+     *
+     * @return bool
+     */
+    public function getIsMultiEntity(): bool {
+        $aliasCount  = $this->_aliasModels->count();
+        $entityCount = 0;
+        foreach ($this->_withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            if ($withModel->getResolveType() == ResolveTypes::EAGER) {
+                $relation = $withModel->getRelation();
+                if ($relation != null && $relation->getType() == RelationTypes::MANY_TO_ONE) {
+                    $entityCount = $entityCount + 1;
+                }
+            }
+        }
+        return ($aliasCount - $entityCount) > 1;
     }
 }
