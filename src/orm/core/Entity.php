@@ -166,12 +166,13 @@ abstract class Entity extends DataObject {
      */
     public function toArray(array $map = []): array {
         $result     = parent::toArray($map);
+        $empty      = count($map) == 0;
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            if (count($map) == 0 || in_array($name, $map)) {
+            if ($empty || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if (!$property->getIsRelation()) {
-                    switch ($property->dataType) {
+                    switch ($property->getDataType()) {
                         case DataTypes::DT_INTEGER:
                         case DataTypes::DT_DATE:
                         case DataTypes::DT_DATETIME:

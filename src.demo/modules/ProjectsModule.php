@@ -42,7 +42,7 @@ class ProjectsModule extends Module {
         $query = $em->query($xql);
         // $query->leftJoin('users', 'u', 'id', 'p', 'userId');
 
-        $query->with('p', 'user', ResolveTypes::LAZY);
+        $query->with('p', 'user', ResolveTypes::EAGER);
         $query->with('p', 'tasks', ResolveTypes::LAZY);
         $list = $query->get();
         return new ListResult($list);

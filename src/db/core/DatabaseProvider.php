@@ -296,7 +296,7 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
         $result                               = [];
         $result[PDO::ATTR_CASE]               = PDO::CASE_NATURAL;
         $result[PDO::ATTR_ERRMODE]            = PDO::ERRMODE_EXCEPTION;
-        $result[PDO::ATTR_ORACLE_NULLS]       = PDO::NULL_TO_STRING;
+        // $result[PDO::ATTR_ORACLE_NULLS]       = PDO::NULL_TO_STRING;
         $result[PDO::ATTR_DEFAULT_FETCH_MODE] = PDO::FETCH_ASSOC;
         $result[PDO::MYSQL_ATTR_FOUND_ROWS]   = true;
         return $result;

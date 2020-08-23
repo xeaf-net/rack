@@ -54,7 +54,7 @@ insert into users (
 create table projects (
 
     project_id      uuid                                not null    ,
-    user_id         uuid                                not null    ,
+    user_id         uuid                                            ,
     project_title   varchar(64)                         not null    ,
 
     -- Первичный ключ -----------------------------------------------
@@ -90,7 +90,7 @@ insert into projects (
     project_title
 ) values (
     'be01a180-2951-4c64-a971-445fcf8bd469'  ,
-    '9c625038-be93-42cc-a80f-231cd77ea2ea'  ,
+    null                                    , -- '9c625038-be93-42cc-a80f-231cd77ea2ea'  ,
     'Зимняя резина'
 );
 

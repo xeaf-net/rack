@@ -164,17 +164,20 @@ class Resolver implements IFactoryObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveEagerManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
-        $alias       = $withModel->getAlias();
-        $fullAlias   = $alias . '_' . $withModel->getProperty();
-        $entity      = $property->getEntity();
-        $primaryKeys = $entityModel->getPrimaryKeyNames();
-        $foreignKeys = $property->getLinks();
+        $alias      = $withModel->getAlias();
+        $fullAlias  = $alias . '_' . $withModel->getProperty();
+        $entity     = $property->getEntity();
+        $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
+        $foreignKey = implode('_', $property->getLinks());
+        print "$alias $fullAlias $entity $primaryKey $foreignKey ";
+        /*
         $query->select($fullAlias)->from($entity, $fullAlias);
         $key = 0;
         foreach ($primaryKeys as $primaryKey) {
             $foreignKey = $foreignKeys[$key++];
             $query->andWhere("$fullAlias.$primaryKey == $alias.$foreignKey");
         }
+        */
     }
 
     /**

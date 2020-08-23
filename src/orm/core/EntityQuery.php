@@ -622,7 +622,7 @@ class EntityQuery extends DataModel {
             assert($property instanceof PropertyModel);
             if (!$property->getIsRelation()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
-                $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
+                $result[$name] = $this->processReadableProperty($property, $record[$fieldAlias]);
             }
         }
         return $result;
@@ -638,48 +638,50 @@ class EntityQuery extends DataModel {
      */
     protected function processReadableProperty(PropertyModel $property, $value) {
         $result = null;
-        $db     = $this->_em->getDb();
-        switch ($property->getDataType()) {
-            case DataTypes::DT_INTEGER:
-                $result = $value === null ? null : (int)$value;
-                break;
-            case DataTypes::DT_NUMERIC:
-                $result = $value === null ? null : (float)$value;
-                break;
-            case DataTypes::DT_BOOL:
-                $result = $db->sqlBool($value);
-                break;
-            case DataTypes::DT_DATE:
-                $result = $db->sqlDate($value);
-                break;
-            case DataTypes::DT_DATETIME:
-                $result = $db->sqlDateTime($value);
-                break;
-            case DataTypes::DT_ARRAY:
-                try {
-                    $result = Serializer::getInstance()->unserialize($value);
-                    if (!is_array($result)) {
+        if ($value !== null) {
+            $db = $this->_em->getDb();
+            switch ($property->getDataType()) {
+                case DataTypes::DT_INTEGER:
+                    $result = $value === null ? null : (int)$value;
+                    break;
+                case DataTypes::DT_NUMERIC:
+                    $result = $value === null ? null : (float)$value;
+                    break;
+                case DataTypes::DT_BOOL:
+                    $result = $db->sqlBool($value);
+                    break;
+                case DataTypes::DT_DATE:
+                    $result = $db->sqlDate($value);
+                    break;
+                case DataTypes::DT_DATETIME:
+                    $result = $db->sqlDateTime($value);
+                    break;
+                case DataTypes::DT_ARRAY:
+                    try {
+                        $result = Serializer::getInstance()->unserialize($value);
+                        if (!is_array($result)) {
+                            $result = [];
+                        }
+                    } catch (SerializerException $exception) {
                         $result = [];
                     }
-                } catch (SerializerException $exception) {
-                    $result = [];
-                }
-                break;
-            case DataTypes::DT_OBJECT:
-                try {
-                    $result = Serializer::getInstance()->unserialize($value);
-                    if (!is_object($result)) {
+                    break;
+                case DataTypes::DT_OBJECT:
+                    try {
+                        $result = Serializer::getInstance()->unserialize($value);
+                        if (!is_object($result)) {
+                            $result = null;
+                        }
+                    } catch (SerializerException $exception) {
                         $result = null;
                     }
-                } catch (SerializerException $exception) {
-                    $result = null;
-                }
-                break;
-            case DataTypes::DT_STRING:
-            case DataTypes::DT_UUID:
-            case DataTypes::DT_ENUM:
-                $result = $value;
-                break;
+                    break;
+                case DataTypes::DT_STRING:
+                case DataTypes::DT_UUID:
+                case DataTypes::DT_ENUM:
+                    $result = $value;
+                    break;
+            }
         }
         return $result;
     }

@@ -93,9 +93,10 @@ class DataObject extends StdObject {
      */
     public function toArray(array $map = []): array {
         $result     = [];
+        $empty      = count($map) == 0;
         $properties = $this->getProperties();
         foreach ($properties as $property) {
-            if (count($map) == 0 || in_array($property, $map)) {
+            if ($empty || in_array($property, $map)) {
                 $data = $this->{$property};
                 if ($data instanceof ICollection) {
                     $subMap            = $map['property'] ?? [];
