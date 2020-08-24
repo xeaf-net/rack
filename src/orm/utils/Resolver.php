@@ -80,17 +80,26 @@ class Resolver implements IResolver {
     /**
      * @inheritDoc
      */
-    public function resolveEagerOneToManyValue(Entity $entity, WithModel $withModel): void {
+    public function resolveEagerValue(Entity $entity, WithModel $withModel): RelationValue {
+        $data     = null;
         $query    = $withModel->getQuery();
         $property = $withModel->getProperty();
-        $params   = $entity->getModel()->getPrimaryKeyNames();
+        $params   = $query->getModel()->getParameters()->keys();
         foreach ($params as $param) {
             $query->parameter($param, $entity->{$param});
         }
-        $data  = $query->get();
+        switch ($withModel->getRelation()->getType()) {
+            case RelationTypes::ONE_TO_MANY:
+                $data = $query->get();
+                break;
+            case RelationTypes::MANY_TO_ONE:
+                $data = $query->getFirst();
+                break;
+        }
         $value = new RelationValue($withModel);
         $value->setValue($data);
         $entity->setRelationValue($property, $value);
+        return $value;
     }
 
     /**

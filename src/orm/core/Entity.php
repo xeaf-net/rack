@@ -37,6 +37,7 @@ use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
  * Реализует методы объекта сущности
@@ -192,15 +193,17 @@ abstract class Entity extends DataObject {
 
     /**
      * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function __get(string $name) {
         $value = $this->getRelationValue($name);
         if ($value) {
-            if ($value->getIsResolved()) {
-                return $value->getValue();
-            } else {
-                return "Unresolved: $name";
+            if (!$value->getIsResolved()) {
+                $resolver = Resolver::getInstance();
+                $value    = $resolver->resolveEagerValue($this, $value->getWithModel());
             }
+            return $value->getValue();
         }
         return parent::__get($name);
     }

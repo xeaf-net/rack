@@ -63,6 +63,18 @@ class EntityQuery extends DataModel {
     private $_em;
 
     /**
+     * Объект методов генерации SQL команд
+     * @var \XEAF\Rack\ORM\Interfaces\IGenerator
+     */
+    private $_generator;
+
+    /**
+     * Объект методов разрешения связей
+     * @var \XEAF\Rack\ORM\Interfaces\IResolver
+     */
+    private $_resolver;
+
+    /**
      * Конструктор класса
      *
      * @param EntityManager $em  Менеджер сущностей
@@ -72,9 +84,11 @@ class EntityQuery extends DataModel {
      */
     public function __construct(EntityManager $em, string $xql) {
         parent::__construct();
-        $this->_em    = $em;
-        $parser       = QueryParser::getInstance();
-        $this->_model = $parser->buildQueryModel($xql);
+        $this->_em        = $em;
+        $parser           = QueryParser::getInstance();
+        $this->_model     = $parser->buildQueryModel($xql);
+        $this->_generator = Generator::getInstance();
+        $this->_resolver  = Resolver::getInstance();
     }
 
     /**
@@ -328,8 +342,36 @@ class EntityQuery extends DataModel {
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      */
-    public function with(string $alias, string $property, int $resolveType = ResolveTypes::LAZY): EntityQuery {
+    public function with(string $alias, string $property, int $resolveType): EntityQuery {
         $with = new WithModel($alias, $property, $resolveType);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
+     * Добавляет "ленивое" тебование разрешения связей
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function withLazy(string $alias, string $property): EntityQuery {
+        $with = new WithModel($alias, $property, ResolveTypes::LAZY);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
+     * Добавляет "нетерпеливое" тебование разрешения связей
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function withEager(string $alias, string $property): EntityQuery {
+        $with = new WithModel($alias, $property, ResolveTypes::EAGER);
         $this->_model->getWithModels()->push($with);
         return $this;
     }
@@ -441,7 +483,7 @@ class EntityQuery extends DataModel {
      * @return string
      */
     protected function generateSQL(bool $useFilter): string {
-        return Generator::getInstance()->selectSQL($this, $useFilter);
+        return $this->_generator->selectSQL($this, $useFilter);
     }
 
     /**
@@ -452,7 +494,7 @@ class EntityQuery extends DataModel {
      * @return string
      */
     public function generateCountSQL(bool $useFilter): string {
-        return Generator::getInstance()->selectCountSQL($this, $useFilter);
+        return $this->_generator->selectCountSQL($this, $useFilter);
     }
 
     /**
@@ -462,12 +504,11 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveWithModels(): void {
-        $resolver   = Resolver::getInstance();
         $withModels = $this->_model->getWithModels();
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             if ($withModel->getRelation() == null) {
-                $resolver->resolveWithModel($this, $withModel);
+                $this->_resolver->resolveWithModel($this, $withModel);
             }
         }
     }
@@ -576,8 +617,7 @@ class EntityQuery extends DataModel {
                     $multi[$aliasName] = null;
                 }
             }
-            $this->processRelationProperties($multi);
-            $recordObject = new DataObject($multi);
+            $recordObject = $this->processRelationProperties($multi);
             $result->push($recordObject);
         }
         return $result;
@@ -673,32 +713,22 @@ class EntityQuery extends DataModel {
     protected function processRelationProperties(array $multi): DataObject {
         $result     = $multi;
         $withModels = $this->_model->getWithModels();
-        $resolver   = Resolver::getInstance();
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             $alias    = $withModel->getAlias();
             $property = $withModel->getProperty();
             $entity   = $result[$alias];
             assert($entity instanceof Entity);
-            $resolveType  = $withModel->getResolveType();
-            $relationType = $withModel->getRelation()->getType();
-            switch ($relationType) {
-                case RelationTypes::ONE_TO_MANY:
-                    switch ($resolveType) {
-                        case ResolveTypes::LAZY:
-                            $resolver->resolveLazyValue($entity, $withModel);
-                            break;
-                        case ResolveTypes::EAGER:
-                            $resolver->resolveEagerOneToManyValue($entity, $withModel);
-                            break;
-                    }
+            switch ($withModel->getResolveType()) {
+                case ResolveTypes::LAZY:
+                    $this->_resolver->resolveLazyValue($entity, $withModel);
                     break;
-                case RelationTypes::MANY_TO_ONE:
-                    switch ($resolveType) {
-                        case ResolveTypes::LAZY:
-                            $resolver->resolveLazyValue($entity, $withModel);
+                case ResolveTypes::EAGER:
+                    switch ($withModel->getRelation()->getType()) {
+                        case RelationTypes::ONE_TO_MANY:
+                            $this->_resolver->resolveEagerValue($entity, $withModel);
                             break;
-                        case ResolveTypes::EAGER:
+                        case RelationTypes::MANY_TO_ONE:
                             $fullAlias = $withModel->getFullAlias();
                             $value     = new RelationValue($withModel);
                             $value->setValue($multi[$fullAlias]);
@@ -709,8 +739,8 @@ class EntityQuery extends DataModel {
                     break;
             }
         }
-
-        return new DataObject();
+        $keys = array_keys($result);
+        return count($result) > 1 ? new DataObject($result) : $result[$keys[0]];
     }
 
 }

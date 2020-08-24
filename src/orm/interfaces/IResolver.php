@@ -16,6 +16,7 @@ use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
+use XEAF\Rack\ORM\Models\RelationValue;
 
 /**
  * Описывает методы разрешения ссылок в запросах
@@ -36,7 +37,7 @@ interface IResolver extends IFactoryObject {
     public function resolveWithModel(EntityQuery $query, WithModel $withModel): void;
 
     /**
-     * Разрешает "ленивое" знаечение
+     * Разрешает "ленивое" значение
      *
      * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
      * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
@@ -47,14 +48,14 @@ interface IResolver extends IFactoryObject {
     public function resolveLazyValue(Entity $entity, WithModel $withModel): void;
 
     /**
-     * Разрешает "нетерпеливое" знаечение связи Один ко многим
+     * Разрешает "нетерпеливое" значение
      *
      * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
      * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
      *
-     * @return void
+     * @return \XEAF\Rack\ORM\Models\RelationValue
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function resolveEagerOneToManyValue(Entity $entity, WithModel $withModel): void;
+    public function resolveEagerValue(Entity $entity, WithModel $withModel): RelationValue;
 
 }
