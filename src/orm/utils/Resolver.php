@@ -78,14 +78,10 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveOneToMany(EntityManager $em, EntityModel $entityModel, WithModel $withModel, OneToManyProperty $property): void {
-        $query       = $withModel->getQuery();
+        $query       = $this->withModelQuery($em, $withModel);
         $entity      = $property->getEntity();
         $primaryKeys = $entityModel->getPrimaryKeyNames();
         $parameters  = $withModel->getRelation()->getLinks();
-        if (!$query) {
-            $query = $em->query('');
-            $withModel->setQuery($query);
-        }
         $query->select($entity)->from($entity);
         $key = 0;
         foreach ($primaryKeys as $primaryKey) {
@@ -129,11 +125,7 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveLazyManyToOne(EntityManager $em, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
-        $query = $withModel->getQuery();
-        if (!$query) {
-            $query = $em->query('');
-            $withModel->setQuery($query);
-        }
+        $query       = $this->withModelQuery($em, $withModel);
         $entity      = $property->getEntity();
         $primaryKeys = $entityModel->getPrimaryKeyNames();
         $foreignKeys = $property->getLinks();
@@ -163,6 +155,24 @@ class Resolver implements IResolver {
         $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
         $foreignKey = implode('_', $property->getLinks());
         $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
+    }
+
+    /**
+     * Возвращает запрос конструкции WITH
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager       $entityManager Менеджер сущностей
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel     Модель конструкции WITH
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function withModelQuery(EntityManager $entityManager, WithModel $withModel): EntityQuery {
+        $query = $withModel->getQuery();
+        if (!$query) {
+            $query = $entityManager->query('');
+            $withModel->setQuery($query);
+        }
+        return $query;
     }
 
     /**
