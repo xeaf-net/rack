@@ -150,7 +150,7 @@ class Resolver implements IResolver {
      */
     protected function resolveEagerManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
         $alias      = $withModel->getAlias();
-        $fullAlias  = $alias . '_' . $withModel->getProperty();
+        $fullAlias  = $withModel->getFullAlias();
         $entity     = $property->getEntity();
         $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
         $foreignKey = implode('_', $property->getLinks());

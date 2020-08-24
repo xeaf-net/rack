@@ -195,7 +195,11 @@ abstract class Entity extends DataObject {
     public function __get(string $name) {
         $value = $this->getRelationValue($name);
         if ($value) {
-            return $name;
+            if ($value->getIsResolved()) {
+                return $value->getValue();
+            } else {
+                return "Unresolved: $name";
+            }
         }
         return parent::__get($name);
     }
@@ -224,6 +228,8 @@ abstract class Entity extends DataObject {
                             $result[$name] = (float)$result[$name];
                             break;
                     }
+                } elseif ($this->_relationValues->exists($name)) {
+                    $result[$name] = $this->{$name};
                 }
             }
         }

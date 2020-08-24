@@ -178,7 +178,7 @@ insert into tasks (
     task_comment
 ) values (
     '73256393-8bff-4593-a4fe-59d672b4d000'  ,
-    'd2ebe471-9308-4879-a4d2-f6143a6bf7e6'  ,
+    'be01a180-2951-4c64-a971-445fcf8bd469'  ,
     'ACTIVE'                                ,
     'Снять летнюю резину'                   ,
     ''
@@ -192,7 +192,7 @@ insert into tasks (
     task_comment
 ) values (
     '6c2c6235-5796-434f-8575-b2dc85221a8f'  ,
-    'd2ebe471-9308-4879-a4d2-f6143a6bf7e6'  ,
+    'be01a180-2951-4c64-a971-445fcf8bd469'  ,
     'ACTIVE'                                ,
     'Установить зимнюю резину'              ,
     ''

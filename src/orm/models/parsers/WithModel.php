@@ -36,31 +36,31 @@ class WithModel extends DataModel {
      * Псевдоним
      * @var string
      */
-    private $_alias;
+    protected $_alias;
 
     /**
      * Свойство
      * @var string
      */
-    private $_property;
+    protected $_property;
 
     /**
      * Тип разрешения
      * @var int
      */
-    private $_resolveType;
+    protected $_resolveType;
 
     /**
      * Модель отношения
      * @var \XEAF\Rack\ORM\Models\Properties\RelationModel|null
      */
-    private $_relation = null;
+    protected $_relation = null;
 
     /**
      * Запрос для выбора данных
      * @var \XEAF\Rack\ORM\Core\EntityQuery|null
      */
-    private $_query = null;
+    protected $_query = null;
 
     /**
      * Конструктор класса
@@ -141,5 +141,14 @@ class WithModel extends DataModel {
      */
     public function setQuery(?EntityQuery $query): void {
         $this->_query = $query;
+    }
+
+    /**
+     * Возвращает полное значение псевдонима
+     *
+     * @return string
+     */
+    public function getFullAlias(): string {
+        return $this->getAlias() . '_' . $this->getProperty();
     }
 }

@@ -41,8 +41,8 @@ class ProjectsModule extends Module {
         $xql   = "p from projects p";
         $query = $em->query($xql);
         // $query->select('u')->leftJoin('users', 'u', 'id', 'p', 'userId');
-        // $query->with('p', 'user', ResolveTypes::EAGER);
-        // $query->with('p', 'tasks', ResolveTypes::LAZY);
+        $query->with('p', 'user', ResolveTypes::EAGER);
+        $query->with('p', 'tasks', ResolveTypes::EAGER);
         $list = $query->get();
         return new ListResult($list);
     }

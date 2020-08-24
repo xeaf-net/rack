@@ -31,9 +31,11 @@ use XEAF\Rack\ORM\Models\Parsers\OrderModel;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
+use XEAF\Rack\ORM\Models\RelationValue;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
@@ -570,15 +572,18 @@ class EntityQuery extends DataModel {
                 assert($entity instanceof Entity);
                 if ($entity->getPrimaryKey()) {
                     $this->_em->watch($entity);
+                    if (!$isMultiple) {
+                        $result->push($entity);
+                        continue;
+                    }
                     $multi[$aliasName] = $entity;
                 } else {
                     $multi[$aliasName] = null;
                 }
-                if (!$isMultiple) {
-                    $result->push($multi[$aliasName]);
-                }
             }
             if ($isMultiple) {
+                // @todo Упаковка
+                $this->processRelationProperties($multi);
                 $recordObject = new DataObject($multi);
                 $result->push($recordObject);
             }
@@ -668,9 +673,60 @@ class EntityQuery extends DataModel {
     /**
      * Обрабатывает свойсва связей
      *
-     * @return void
+     * @param array $multi Массив объектов данных
+     *
+     * @return \XEAF\Rack\API\Core\DataObject
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processRelationProperties(): void {
+    protected function processRelationProperties(array $multi): DataObject {
+        $result     = $multi;
+        $withModels = $this->_model->getWithModels();
+        // print_r($withModels->toArray());
+        foreach ($withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            $alias    = $withModel->getAlias();
+            $property = $withModel->getProperty();
+            $entity   = $result[$alias];
+            assert($entity instanceof Entity);
+            $resolveType  = $withModel->getResolveType();
+            $relationType = $withModel->getRelation()->getType();
+            switch ($relationType) {
+                case RelationTypes::ONE_TO_MANY:
+                    switch ($resolveType) {
+                        case ResolveTypes::LAZY:
+                            print "L1";
+                            break;
+                        case ResolveTypes::EAGER:
+                            $query  = $withModel->getQuery();
+                            $params = $entity->getModel()->getPrimaryKeyNames();
+                            foreach ($params as $param) {
+                                $query->parameter($param, $entity->{$param});
+                            }
+                            $data  = $query->get();
+                            $value = new RelationValue($withModel);
+                            $value->setValue($data);
+                            $entity->setRelationValue($property, $value);
+                            break;
+                    }
+                    break;
+                case RelationTypes::MANY_TO_ONE:
+                    switch ($resolveType) {
+                        case ResolveTypes::LAZY:
+                            print "L2";
+                            break;
+                        case ResolveTypes::EAGER:
+                            $fullAlias = $withModel->getFullAlias();
+                            $value     = new RelationValue($withModel);
+                            $value->setValue($multi[$fullAlias]);
+                            $entity->setRelationValue($property, $value);
+                            unset($result[$fullAlias]);
+                            break;
+                    }
+                    break;
+            }
+        }
 
+        return new DataObject();
     }
+
 }
