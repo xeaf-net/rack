@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
@@ -229,7 +230,12 @@ abstract class Entity extends DataObject {
                             break;
                     }
                 } elseif ($this->_relationValues->exists($name)) {
-                    $result[$name] = $this->{$name};
+                    $value = $this->{$name};
+                    if ($value instanceof ICollection) {
+                        $result[$name] = $value->toArray();
+                    } else {
+                        $result[$name] = $value;
+                    }
                 }
             }
         }

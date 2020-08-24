@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Interfaces;
 
 use XEAF\Rack\API\Interfaces\IFactoryObject;
+use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
 
@@ -32,6 +33,28 @@ interface IResolver extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function resolveWith(EntityQuery $query, WithModel $withModel): void;
+    public function resolveWithModel(EntityQuery $query, WithModel $withModel): void;
+
+    /**
+     * Разрешает "ленивое" знаечение
+     *
+     * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function resolveLazyValue(Entity $entity, WithModel $withModel): void;
+
+    /**
+     * Разрешает "нетерпеливое" знаечение связи Один ко многим
+     *
+     * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function resolveEagerOneToManyValue(Entity $entity, WithModel $withModel): void;
 
 }

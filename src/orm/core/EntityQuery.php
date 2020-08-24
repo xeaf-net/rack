@@ -467,7 +467,7 @@ class EntityQuery extends DataModel {
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             if ($withModel->getRelation() == null) {
-                $resolver->resolveWith($this, $withModel);
+                $resolver->resolveWithModel($this, $withModel);
             }
         }
     }
@@ -561,7 +561,6 @@ class EntityQuery extends DataModel {
         $aliasModels     = new KeyValue();
         $aliasClassNames = new KeyValue();
         $this->prepareAliases($aliasModels, $aliasClassNames);
-        $isMultiple = count($aliasModels->keys()) > 1;
         foreach ($data as $record) {
             $multi = [];
             foreach ($aliasModels as $aliasName => $aliasModel) {
@@ -572,21 +571,14 @@ class EntityQuery extends DataModel {
                 assert($entity instanceof Entity);
                 if ($entity->getPrimaryKey()) {
                     $this->_em->watch($entity);
-                    if (!$isMultiple) {
-                        $result->push($entity);
-                        continue;
-                    }
                     $multi[$aliasName] = $entity;
                 } else {
                     $multi[$aliasName] = null;
                 }
             }
-            if ($isMultiple) {
-                // @todo Упаковка
-                $this->processRelationProperties($multi);
-                $recordObject = new DataObject($multi);
-                $result->push($recordObject);
-            }
+            $this->processRelationProperties($multi);
+            $recordObject = new DataObject($multi);
+            $result->push($recordObject);
         }
         return $result;
     }
@@ -681,7 +673,7 @@ class EntityQuery extends DataModel {
     protected function processRelationProperties(array $multi): DataObject {
         $result     = $multi;
         $withModels = $this->_model->getWithModels();
-        // print_r($withModels->toArray());
+        $resolver   = Resolver::getInstance();
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             $alias    = $withModel->getAlias();
@@ -694,25 +686,17 @@ class EntityQuery extends DataModel {
                 case RelationTypes::ONE_TO_MANY:
                     switch ($resolveType) {
                         case ResolveTypes::LAZY:
-                            print "L1";
+                            $resolver->resolveLazyValue($entity, $withModel);
                             break;
                         case ResolveTypes::EAGER:
-                            $query  = $withModel->getQuery();
-                            $params = $entity->getModel()->getPrimaryKeyNames();
-                            foreach ($params as $param) {
-                                $query->parameter($param, $entity->{$param});
-                            }
-                            $data  = $query->get();
-                            $value = new RelationValue($withModel);
-                            $value->setValue($data);
-                            $entity->setRelationValue($property, $value);
+                            $resolver->resolveEagerOneToManyValue($entity, $withModel);
                             break;
                     }
                     break;
                 case RelationTypes::MANY_TO_ONE:
                     switch ($resolveType) {
                         case ResolveTypes::LAZY:
-                            print "L2";
+                            $resolver->resolveLazyValue($entity, $withModel);
                             break;
                         case ResolveTypes::EAGER:
                             $fullAlias = $withModel->getFullAlias();

@@ -13,6 +13,7 @@
 namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Interfaces\IResolver;
@@ -24,6 +25,7 @@ use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\RelationModel;
 use XEAF\Rack\ORM\Models\QueryModel;
+use XEAF\Rack\ORM\Models\RelationValue;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
@@ -44,7 +46,7 @@ class Resolver implements IResolver {
     /**
      * @inheritDoc
      */
-    public function resolveWith(EntityQuery $query, WithModel $withModel): void {
+    public function resolveWithModel(EntityQuery $query, WithModel $withModel): void {
         $em          = $query->getEntityManager();
         $entityName  = $this->findEntityName($query->getModel(), $withModel);
         $entityModel = $this->findEntityModel($em, $entityName);
@@ -64,6 +66,31 @@ class Resolver implements IResolver {
                 $this->resolveManyToOne($query, $entityModel, $withModel, $property);
                 break;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resolveLazyValue(Entity $entity, WithModel $withModel): void {
+        $property = $withModel->getProperty();
+        $value    = new RelationValue($withModel);
+        $entity->setRelationValue($property, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resolveEagerOneToManyValue(Entity $entity, WithModel $withModel): void {
+        $query    = $withModel->getQuery();
+        $property = $withModel->getProperty();
+        $params   = $entity->getModel()->getPrimaryKeyNames();
+        foreach ($params as $param) {
+            $query->parameter($param, $entity->{$param});
+        }
+        $data  = $query->get();
+        $value = new RelationValue($withModel);
+        $value->setValue($data);
+        $entity->setRelationValue($property, $value);
     }
 
     /**
