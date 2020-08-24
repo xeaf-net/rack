@@ -22,7 +22,6 @@ use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\API\Utils\Exceptions\SerializerException;
 use XEAF\Rack\API\Utils\Serializer;
-use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
 use XEAF\Rack\ORM\Models\Parsers\FilterModel;
@@ -376,14 +375,10 @@ class EntityQuery extends DataModel {
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
             $this->resolveWithModels();
-            $sql  = $this->generateSQL(count($filters) > 0);
-            $prm  = $this->processParameters($filters, $params);
-            $data = $this->_em->getDb()->select($sql, $prm, $count, $offset);
-            if (!$this->_model->getIsMultiEntity()) {
-                $result = $this->processSingleRecords($data);
-            } else {
-                $result = $this->processMultipleRecords($data);
-            }
+            $sql    = $this->generateSQL(count($filters) > 0);
+            $prm    = $this->processParameters($filters, $params);
+            $data   = $this->_em->getDb()->select($sql, $prm, $count, $offset);
+            $result = $this->processRecords($data);
         } catch (Throwable $exception) {
             throw EntityException::internalError($exception);
         }
@@ -531,36 +526,6 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Обрабатывает поля результата с единичной сущностью
-     *
-     * @param array $data Массив полей результата
-     *
-     * @return \XEAF\Rack\API\Interfaces\ICollection
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    protected function processSingleRecords(array $data): ICollection {
-        $result = new Collection();
-        try {
-            $alias = $this->_model->getAliasModels()->first();
-            assert($alias instanceof AliasModel);
-            $model      = $alias->getModel();
-            $tableName  = $model->getTableName();
-            $entityName = $this->_em->findByTableName($tableName);
-            $className  = $this->_em->getEntityClass($entityName);
-            $properties = $model->getPropertyByNames();
-            foreach ($data as $record) {
-                $item   = $this->processRecord($alias->name, $properties, $record);
-                $entity = new $className($item);
-                $this->_em->watch($entity);
-                $result->push($entity);
-            }
-            return $result;
-        } catch (CollectionException $exception) {
-            throw EntityException::internalError($exception);
-        }
-    }
-
-    /**
      * Инициализирует коллекции своцств псевдонимов для быстрой обработки
      *
      * @param \XEAF\Rack\API\Interfaces\IKeyValue $models  Хранилище моделей
@@ -589,20 +554,17 @@ class EntityQuery extends DataModel {
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processMultipleRecords(array $data): ICollection {
+    protected function processRecords(array $data): ICollection {
         $result          = new Collection();
         $aliasModels     = new KeyValue();
         $aliasClassNames = new KeyValue();
         $this->prepareAliases($aliasModels, $aliasClassNames);
+        $isMultiple = count($aliasModels->keys()) > 1;
         foreach ($data as $record) {
             $multi = [];
-            foreach ($this->_model->getAliasModels() as $alias) {
-                assert($alias instanceof AliasModel);
-                $aliasName = $alias->getName();
-                $model     = $aliasModels->get($aliasName);
-                assert($model instanceof EntityModel);
+            foreach ($aliasModels as $aliasName => $aliasModel) {
                 $className  = $aliasClassNames->get($aliasName);
-                $properties = $model->getPropertyByNames();
+                $properties = $aliasModel->getPropertyByNames();
                 $item       = $this->processRecord($aliasName, $properties, $record);
                 $entity     = new $className($item);
                 assert($entity instanceof Entity);
@@ -612,9 +574,14 @@ class EntityQuery extends DataModel {
                 } else {
                     $multi[$aliasName] = null;
                 }
+                if (!$isMultiple) {
+                    $result->push($multi[$aliasName]);
+                }
             }
-            $recordObject = new DataObject($multi);
-            $result->push($recordObject);
+            if ($isMultiple) {
+                $recordObject = new DataObject($multi);
+                $result->push($recordObject);
+            }
         }
         return $result;
     }
