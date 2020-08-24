@@ -687,15 +687,11 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Возвращает значения вычисляемого свойства
+     * Обрабатывает свойсва связей
      *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
-     *
-     * @return mixed
-     * @noinspection PhpUnusedParameterInspection
+     * @return void
      */
-    protected function processCalculatedProperty(string $name, PropertyModel $property) {
-        return null;
+    protected function processRelationProperties(): void {
+
     }
 }
