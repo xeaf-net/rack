@@ -13,9 +13,9 @@
 namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
-use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
+use XEAF\Rack\ORM\Interfaces\IResolver;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
@@ -33,7 +33,7 @@ use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
  *
  * @package XEAF\Rack\ORM\Utils
  */
-class Resolver implements IFactoryObject {
+class Resolver implements IResolver {
 
     /**
      * Конструктор класса
