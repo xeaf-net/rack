@@ -561,6 +561,27 @@ class EntityQuery extends DataModel {
     }
 
     /**
+     * Инициализирует коллекции своцств псевдонимов для быстрой обработки
+     *
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue $models  Хранилище моделей
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue $classes Хранилище классов сущностей
+     *
+     * @return void
+     */
+    protected function prepareAliases(IKeyValue $models, IKeyValue $classes): void {
+        foreach ($this->_model->getAliasModels() as $alias) {
+            assert($alias instanceof AliasModel);
+            $name       = $alias->getName();
+            $model      = $alias->getModel();
+            $tableName  = $model->getTableName();
+            $entityName = $this->_em->findByTableName($tableName);
+            $className  = $this->_em->getEntityClass($entityName);
+            $models->put($name, $model);
+            $classes->put($name, $className);
+        }
+    }
+
+    /**
      * Обрабатывает поля результата с множественными сущностями
      *
      * @param array $data Массив полей результата
@@ -569,27 +590,18 @@ class EntityQuery extends DataModel {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function processMultipleRecords(array $data): ICollection {
-        $result         = new Collection();
-        $aliasModel     = new KeyValue();
-        $aliasClassName = new KeyValue();
-        foreach ($this->_model->getAliasModels() as $alias) {
-            assert($alias instanceof AliasModel);
-            $name       = $alias->getName();
-            $model      = $alias->getModel();
-            $tableName  = $model->getTableName();
-            $entityName = $this->_em->findByTableName($tableName);
-            $className  = $this->_em->getEntityClass($entityName);
-            $aliasModel->put($name, $model);
-            $aliasClassName->put($name, $className);
-        }
+        $result          = new Collection();
+        $aliasModels     = new KeyValue();
+        $aliasClassNames = new KeyValue();
+        $this->prepareAliases($aliasModels, $aliasClassNames);
         foreach ($data as $record) {
             $multi = [];
             foreach ($this->_model->getAliasModels() as $alias) {
                 assert($alias instanceof AliasModel);
                 $aliasName = $alias->getName();
-                $model     = $aliasModel->get($aliasName);
+                $model     = $aliasModels->get($aliasName);
                 assert($model instanceof EntityModel);
-                $className  = $aliasClassName->get($aliasName);
+                $className  = $aliasClassNames->get($aliasName);
                 $properties = $model->getPropertyByNames();
                 $item       = $this->processRecord($aliasName, $properties, $record);
                 $entity     = new $className($item);
