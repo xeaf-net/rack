@@ -42,13 +42,7 @@ class Resolver implements IResolver {
     }
 
     /**
-     * Разрешает ссылку конструкции WITH
-     *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery         $query     Объект запроса
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Объект модели WITH
-     *
-     * @return void
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     * @inheritDoc
      */
     public function resolveWith(EntityQuery $query, WithModel $withModel): void {
         $em          = $query->getEntityManager();
@@ -250,11 +244,11 @@ class Resolver implements IResolver {
     /**
      * Возвращает единичный экземпляр объекта
      *
-     * @return \XEAF\Rack\ORM\Utils\Resolver
+     * @return \XEAF\Rack\ORM\Interfaces\IResolver
      */
-    public static function getInstance(): Resolver {
+    public static function getInstance(): IResolver {
         $result = Factory::getFactoryObject(self::class);
-        assert($result instanceof Resolver);
+        assert($result instanceof IResolver);
         return $result;
     }
 }

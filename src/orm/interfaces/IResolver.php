@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * IResolver.php
@@ -10,7 +10,6 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\;
 namespace XEAF\Rack\ORM\Interfaces;
 
 use XEAF\Rack\API\Interfaces\IFactoryObject;
@@ -34,4 +33,5 @@ interface IResolver extends IFactoryObject {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function resolveWith(EntityQuery $query, WithModel $withModel): void;
+
 }
