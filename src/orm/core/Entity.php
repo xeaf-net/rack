@@ -277,14 +277,13 @@ abstract class Entity extends DataObject {
             if ($property->getIsRelation()) {
                 assert($property instanceof RelationModel);
                 if ($property->getType() == RelationTypes::MANY_TO_ONE) {
-                    $item   = [];
-                    $entity = $property->getEntity();
-                    $links  = $property->getLinks();
+                    $item  = [];
+                    $links = $property->getLinks();
                     foreach ($links as $link => $primaryKey) {
                         $item[$primaryKey] = $data[$link];
                         unset($result[$link]);
                     }
-                    if (!array_key_exists($entity, $result)) {
+                    if (!array_key_exists($name, $result)) {
                         $result[$name] = $item;
                     }
                 }
