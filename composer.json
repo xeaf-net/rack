@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.17",
+    "version"          : "1.0.18",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
@@ -82,6 +82,16 @@
             "src/redis/autoload.php",
             "src/ui/autoload.php"
         ]
+    },
+    "autoload-dev"     : {
+        "psr-4": {
+            "XEAF\\Rack\\Demo\\"          : "src.demo/",
+            "XEAF\\Rack\\Demo\\App\\"     : "src.demo/app",
+            "XEAF\\Rack\\Demo\\Entities\\": "src.demo/entities",
+            "XEAF\\Rack\\Demo\\Modules\\" : "src.demo/modules",
+            "XEAF\\Rack\\Demo\\Utils\\"   : "src.demo/utils",
+            "XEAF\\Rack\\Demo\\WWW\\"     : "src.demo/www"
+        }
     },
     "require"          : {
         "php"                : ">=7.3",

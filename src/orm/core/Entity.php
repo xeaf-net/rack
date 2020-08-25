@@ -14,8 +14,8 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Utils\Formatter;
-use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -23,16 +23,22 @@ use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
+use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
+use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
+use XEAF\Rack\ORM\Models\Properties\RelationModel;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
+use XEAF\Rack\ORM\Models\RelationValue;
 use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
+use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
  * Реализует методы объекта сущности
@@ -54,16 +60,16 @@ abstract class Entity extends DataObject {
     private $_primaryKey = null;
 
     /**
+     * Значения свойств отношений
+     * @var \XEAF\Rack\API\Interfaces\IKeyValue
+     */
+    private $_relationValues;
+
+    /**
      * Вычисленное значение ключа слежения
      * @var string|null
      */
     private $_entityWatchingId = null;
-
-    /**
-     * Коллекция разрешенных значение
-     * @var \XEAF\Rack\API\Interfaces\IKeyValue
-     */
-    private $_resolvedValues;
 
     /**
      * Конструктор класса
@@ -73,7 +79,7 @@ abstract class Entity extends DataObject {
     public function __construct(array $data = []) {
         $this->initializeModel();
         parent::__construct($this->createInitData($data));
-        $this->_resolvedValues = new KeyValue();
+        $this->_relationValues = new KeyValue();
     }
 
     /**
@@ -103,7 +109,7 @@ abstract class Entity extends DataObject {
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated()) {
+            if (!$property->getIsRelation()) {
                 if (array_key_exists($name, $data)) {
                     $result[$name] = $data[$name];
                 } else {
@@ -145,6 +151,33 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * Возвращает значение свойства отношения
+     *
+     * @param string $name Имя свойства
+     *
+     * @return \XEAF\Rack\ORM\Models\RelationValue|null
+     */
+    public function getRelationValue(string $name): ?RelationValue {
+        $result = $this->_relationValues->get($name);
+        if ($result) {
+            assert($result instanceof RelationValue);
+        }
+        return $result;
+    }
+
+    /**
+     * Задает значение свойства отношения
+     *
+     * @param string                              $name  Имя свойства
+     * @param \XEAF\Rack\ORM\Models\RelationValue $value Модель значения
+     *
+     * @return void
+     */
+    public function setRelationValue(string $name, RelationValue $value): void {
+        $this->_relationValues->put($name, $value);
+    }
+
+    /**
      * Возвращает идентификатор слежения
      *
      * @return string|null
@@ -161,32 +194,19 @@ abstract class Entity extends DataObject {
 
     /**
      * @inheritDoc
+     *
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function toArray(array $map = []): array {
-        $result     = parent::toArray($map);
-        $properties = $this->_model->getPropertyByNames();
-        foreach ($properties as $name => $property) {
-            if (count($map) == 0 || in_array($name, $map)) {
-                assert($property instanceof PropertyModel);
-                if ($property->getIsCalculated()) {
-                    $result[$name] = $this->{$name};
-                }
-                switch ($property->dataType) {
-                    case DataTypes::DT_INTEGER:
-                    case DataTypes::DT_DATE:
-                    case DataTypes::DT_DATETIME:
-                        $result[$name] = (int)$result[$name];
-                        break;
-                    case DataTypes::DT_BOOL:
-                        $result[$name] = (bool)$result[$name];
-                        break;
-                    case DataTypes::DT_NUMERIC:
-                        $result[$name] = (float)$result[$name];
-                        break;
-                }
+    public function __get(string $name) {
+        $value = $this->getRelationValue($name);
+        if ($value) {
+            if (!$value->getIsResolved()) {
+                $resolver = Resolver::getInstance();
+                $value    = $resolver->resolveEagerValue($this, $value->getWithModel());
             }
+            return $value->getValue();
         }
-        return $result;
+        return parent::__get($name);
     }
 
     /**
@@ -206,38 +226,71 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Задает значения свойств из параметров вызова приложения
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function assignParameters(): void {
-        $parameters = Parameters::getInstance();
+    public function toArray(array $map = []): array {
+        $result     = parent::toArray($map);
+        $empty      = count($map) == 0;
+        $properties = $this->_model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            if ($empty || in_array($name, $map)) {
+                assert($property instanceof PropertyModel);
+                if (!$property->getIsRelation()) {
+                    switch ($property->getDataType()) {
+                        case DataTypes::DT_INTEGER:
+                        case DataTypes::DT_DATE:
+                        case DataTypes::DT_DATETIME:
+                            $result[$name] = (int)$result[$name];
+                            break;
+                        case DataTypes::DT_BOOL:
+                            $result[$name] = (bool)$result[$name];
+                            break;
+                        case DataTypes::DT_NUMERIC:
+                            $result[$name] = (float)$result[$name];
+                            break;
+                    }
+                } elseif ($this->_relationValues->exists($name)) {
+                    $value = $this->{$name};
+                    if ($value instanceof ICollection) {
+                        $result[$name] = $value->toArray();
+                    } else {
+                        $result[$name] = $value;
+                    }
+                }
+            }
+        }
+        return $this->extractEntities($result);
+    }
+
+    /**
+     * Вычленяет свойства сущностей из массива данных
+     *
+     * @param array $data Массив исходных данных
+     *
+     * @return array
+     */
+    protected function extractEntities(array $data): array {
+        $result     = $data;
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated() && $parameters->exists($name)) {
-                $value = null;
-                switch ($property->dataType) {
-                    case DataTypes::DT_INTEGER:
-                        $value = $parameters->getInteger($name, 0);
-                        break;
-                    case DataTypes::DT_DATE:
-                    case DataTypes::DT_DATETIME:
-                        $value = $parameters->getInteger($name);
-                        break;
-                    case DataTypes::DT_BOOL:
-                        $value = $parameters->getBool($name);
-                        break;
-                    case DataTypes::DT_NUMERIC:
-                        $value = $parameters->getFloat($name, 0.00);
-                        break;
-                    default:
-                        $value = $parameters->getString($name);
-                        break;
+            if ($property->getIsRelation()) {
+                assert($property instanceof RelationModel);
+                if ($property->getType() == RelationTypes::MANY_TO_ONE) {
+                    $item   = [];
+                    $entity = $property->getEntity();
+                    $links  = $property->getLinks();
+                    foreach ($links as $link => $primaryKey) {
+                        $item[$primaryKey] = $data[$link];
+                        unset($result[$link]);
+                    }
+                    if (!array_key_exists($entity, $result)) {
+                        $result[$name] = $item;
+                    }
                 }
-                $this->{$name} = $value;
             }
         }
+        return $result;
     }
 
     /**
@@ -336,7 +389,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * вызывается после сохранения значения сущности
+     * Вызывается после сохранения значения сущности
      *
      * @param \XEAF\Rack\ORM\Core\EntityManager $entityManager Менеджер сущностей
      *
@@ -362,7 +415,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\UUIDProperty
      */
-    public static function uuid(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): UUIDProperty {
+    protected static function uuid(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): UUIDProperty {
         return new UUIDProperty($fieldName, $primaryKey, $accessType);
     }
 
@@ -376,7 +429,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\StringProperty
      */
-    public static function string(string $fieldName, int $length = 255, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): StringProperty {
+    protected static function string(string $fieldName, int $length = 255, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): StringProperty {
         return new StringProperty($fieldName, $length, $primaryKey, $accessType);
     }
 
@@ -388,7 +441,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\TextProperty
      */
-    public static function text(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): TextProperty {
+    protected static function text(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): TextProperty {
         return new TextProperty($fieldName, $accessType);
     }
 
@@ -402,7 +455,7 @@ abstract class Entity extends DataObject {
      *
      * @return IntegerProperty
      */
-    public static function integer(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT, bool $autoIncrement = false): IntegerProperty {
+    protected static function integer(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT, bool $autoIncrement = false): IntegerProperty {
         return new IntegerProperty($fieldName, $primaryKey, $accessType, $autoIncrement);
     }
 
@@ -417,7 +470,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\NumericProperty
      */
-    public static function numeric(string $fieldName, int $size = 15, int $precision = 2, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): NumericProperty {
+    protected static function numeric(string $fieldName, int $size = 15, int $precision = 2, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): NumericProperty {
         return new NumericProperty($fieldName, $size, $precision, $primaryKey, $accessType);
     }
 
@@ -430,7 +483,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateProperty
      */
-    public static function date(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateProperty {
+    protected static function date(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateProperty {
         return new DateProperty($fieldName, $primaryKey, $accessType);
     }
 
@@ -443,7 +496,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
      */
-    public static function dateTime(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateTimeProperty {
+    protected static function dateTime(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): DateTimeProperty {
         return new DateTimeProperty($fieldName, $primaryKey, $accessType);
     }
 
@@ -456,7 +509,7 @@ abstract class Entity extends DataObject {
      *
      * @return BoolProperty
      */
-    public static function bool(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): BoolProperty {
+    protected static function bool(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT): BoolProperty {
         return new BoolProperty($fieldName, $primaryKey, $accessType);
     }
 
@@ -469,7 +522,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\EnumProperty
      */
-    public static function enum(string $fieldName, array $enums, int $accessType = AccessTypes::AC_DEFAULT): EnumProperty {
+    protected static function enum(string $fieldName, array $enums, int $accessType = AccessTypes::AC_DEFAULT): EnumProperty {
         return new EnumProperty($fieldName, $enums, $accessType);
     }
 
@@ -481,7 +534,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ArrayProperty
      */
-    public static function array(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ArrayProperty {
+    protected static function array(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ArrayProperty {
         return new ArrayProperty($fieldName, $accessType);
     }
 
@@ -493,8 +546,32 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ObjectProperty
      */
-    public static function object(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ObjectProperty {
+    protected static function object(string $fieldName, int $accessType = AccessTypes::AC_DEFAULT): ObjectProperty {
         return new ObjectProperty($fieldName, $accessType);
+    }
+
+    /**
+     * Создает описание свойства отношения Один ко многим
+     *
+     * @param string $entity Имя сущности
+     * @param array  $links  Свойства связи
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
+     */
+    protected static function oneToMany(string $entity, array $links): OneToManyProperty {
+        return new OneToManyProperty($entity, $links);
+    }
+
+    /**
+     * Создает описание свойства отношения Многин к одному
+     *
+     * @param string $entity Имя сущности
+     * @param array  $links  Свойства связи
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty
+     */
+    protected static function manyToOne(string $entity, array $links): ManyToOneProperty {
+        return new ManyToOneProperty($entity, $links);
     }
 
     /**
@@ -504,7 +581,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
      */
-    public static function createdTime(string $fieldName): DateTimeProperty {
+    protected static function createdTime(string $fieldName): DateTimeProperty {
         $accessType = AccessTypes::AC_READABLE;
         return new DateTimeProperty($fieldName, false, $accessType);
     }
@@ -516,7 +593,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\DateTimeProperty
      */
-    public static function modifiedTime(string $fieldName): DateTimeProperty {
+    protected static function modifiedTime(string $fieldName): DateTimeProperty {
         $accessType = AccessTypes::AC_READABLE | AccessTypes::AC_UPDATABLE;
         return new DateTimeProperty($fieldName, false, $accessType);
     }

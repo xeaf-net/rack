@@ -40,9 +40,9 @@ class AccessTypes {
     public const AC_UPDATABLE = 0x04;
 
     /**
-     * Вычисляемое поле
+     * Свойство отношения
      */
-    public const AC_CALCULATED = 0x08;
+    public const AC_RELATION = 0x08;
 
     /**
      * Свойство с полным доступом

@@ -16,6 +16,8 @@
             <path value="file://$PROJECT_DIR$/src/www/favicon" />
             <path value="file://$PROJECT_DIR$/src/ui/public/dist" />
             <path value="file://$PROJECT_DIR$/src/api/utils/l10n" />
+            <path value="file://$PROJECT_DIR$/src.demo/sql" />
+            <path value="file://$PROJECT_DIR$/src.demo/etc" />
           </resourceRoots>
         </entryData>
       </entry>

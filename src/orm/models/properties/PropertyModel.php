@@ -30,7 +30,7 @@ use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
  * @property-read bool   $isReadable    Признак читаемого свойства
  * @property-read bool   $isInsertable  Признак вставляемого свойства
  * @property-read bool   $isUpdatable   Признак изменяемого свойства
- * @property-read bool   $isCalculated  Признак вычисляемого свойства
+ * @property-read bool   $isRelation    Признак свойства отношения
  *
  * @package XEAF\Rack\ORM\Models\Properties
  */
@@ -191,12 +191,12 @@ abstract class PropertyModel extends DataModel {
     }
 
     /**
-     * Возвращает признак вычисляемого свойства
+     * Возвращает признак свойства отношения
      *
      * @return bool
      */
-    public function getIsCalculated(): bool {
-        return $this->getAccessType() == AccessTypes::AC_CALCULATED;
+    public function getIsRelation(): bool {
+        return $this->getAccessType() == AccessTypes::AC_RELATION;
     }
 
     /**

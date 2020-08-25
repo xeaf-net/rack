@@ -22,21 +22,25 @@ use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\API\Utils\Exceptions\SerializerException;
 use XEAF\Rack\API\Utils\Serializer;
-use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
 use XEAF\Rack\ORM\Models\Parsers\FilterModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
+use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 use XEAF\Rack\ORM\Models\QueryModel;
+use XEAF\Rack\ORM\Models\RelationValue;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Generator;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
+use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
 use XEAF\Rack\ORM\Utils\QueryParser;
+use XEAF\Rack\ORM\Utils\Resolver;
 use XEAF\Rack\ORM\Utils\Tokenizer;
 
 /**
@@ -59,6 +63,18 @@ class EntityQuery extends DataModel {
     private $_em;
 
     /**
+     * Объект методов генерации SQL команд
+     * @var \XEAF\Rack\ORM\Interfaces\IGenerator
+     */
+    private $_generator;
+
+    /**
+     * Объект методов разрешения связей
+     * @var \XEAF\Rack\ORM\Interfaces\IResolver
+     */
+    private $_resolver;
+
+    /**
      * Конструктор класса
      *
      * @param EntityManager $em  Менеджер сущностей
@@ -68,9 +84,11 @@ class EntityQuery extends DataModel {
      */
     public function __construct(EntityManager $em, string $xql) {
         parent::__construct();
-        $this->_em    = $em;
-        $parser       = QueryParser::getInstance();
-        $this->_model = $parser->buildQueryModel($xql);
+        $this->_em        = $em;
+        $parser           = QueryParser::getInstance();
+        $this->_model     = $parser->buildQueryModel($xql);
+        $this->_generator = Generator::getInstance();
+        $this->_resolver  = Resolver::getInstance();
     }
 
     /**
@@ -316,6 +334,66 @@ class EntityQuery extends DataModel {
     }
 
     /**
+     * Добавляет тебование разрешения связей
+     *
+     * @param string $alias       Псевдоним
+     * @param string $property    Свойство
+     * @param int    $resolveType Тип разрешения
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function with(string $alias, string $property, int $resolveType): EntityQuery {
+        $with = new WithModel($alias, $property, $resolveType);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
+     * Добавляет "ленивое" тебование разрешения связей
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function withLazy(string $alias, string $property): EntityQuery {
+        $with = new WithModel($alias, $property, ResolveTypes::LAZY);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
+     * Добавляет "нетерпеливое" тебование разрешения связей
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     */
+    public function withEager(string $alias, string $property): EntityQuery {
+        $with = new WithModel($alias, $property, ResolveTypes::EAGER);
+        $this->_model->getWithModels()->push($with);
+        return $this;
+    }
+
+    /**
+     * Возвращает подзапрос для выбора связанных элементов
+     *
+     * @param string $alias    Псевоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function subquery(string $alias, string $property): EntityQuery {
+        $withModel = $this->_model->findWithModel($alias, $property);
+        if (!$withModel) {
+            throw EntityException::unknownEntityProperty($alias, $property);
+        }
+        return $this->_resolver->withModelQuery($this->getEntityManager(), $withModel);
+    }
+
+    /**
      * Возвращает набор сущностей удовляетворяющих условию отбора
      *
      * @param array $params Параметры запроса
@@ -357,15 +435,11 @@ class EntityQuery extends DataModel {
      */
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
-            $sql   = $this->generateSQL(count($filters) > 0);
-            $prm   = $this->processParameters($filters, $params);
-            $data  = $this->_em->getDb()->select($sql, $prm, $count, $offset);
-            $multi = $this->_model->getAliasModels()->count() > 1;
-            if (!$multi) {
-                $result = $this->processSingleRecords($data);
-            } else {
-                $result = $this->processMultipleRecords($data);
-            }
+            $this->resolveWithModels($params);
+            $sql    = $this->generateSQL(count($filters) > 0);
+            $prm    = $this->processParameters($filters, $params);
+            $data   = $this->_em->getDb()->select($sql, $prm, $count, $offset);
+            $result = $this->processRecords($data);
         } catch (Throwable $exception) {
             throw EntityException::internalError($exception);
         }
@@ -398,7 +472,7 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Внутренняя реализация методв получения количества записей
+     * Внутренняя реализация методов получения количества записей
      *
      * @param array $filters Параметры фильтрации
      * @param array $params  Параметры запроса
@@ -426,7 +500,7 @@ class EntityQuery extends DataModel {
      * @return string
      */
     protected function generateSQL(bool $useFilter): string {
-        return Generator::getInstance()->selectSQL($this, $useFilter);
+        return $this->_generator->selectSQL($this, $useFilter);
     }
 
     /**
@@ -437,7 +511,26 @@ class EntityQuery extends DataModel {
      * @return string
      */
     public function generateCountSQL(bool $useFilter): string {
-        return Generator::getInstance()->selectCountSQL($this, $useFilter);
+        return $this->_generator->selectCountSQL($this, $useFilter);
+    }
+
+    /**
+     * Разрешает связи модели WITH
+     *
+     * @param array $parameters Параметры вызова основного запроса
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function resolveWithModels(array $parameters): void {
+        $withModels = $this->_model->getWithModels();
+        foreach ($withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            if ($withModel->getRelation() == null) {
+                $this->_resolver->resolveWithModel($this, $withModel);
+            }
+            $withModel->setParameters($parameters);
+        }
     }
 
     /**
@@ -496,32 +589,23 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Обрабатывает поля результата с единичной сущностью
+     * Инициализирует коллекции свойств псевдонимов для быстрой обработки
      *
-     * @param array $data Массив полей результата
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue $models  Хранилище моделей
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue $classes Хранилище классов сущностей
      *
-     * @return \XEAF\Rack\API\Interfaces\ICollection
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     * @return void
      */
-    protected function processSingleRecords(array $data): ICollection {
-        $result = new Collection();
-        try {
-            $alias = $this->_model->getAliasModels()->first();
+    protected function prepareAliases(IKeyValue $models, IKeyValue $classes): void {
+        foreach ($this->_model->getAliasModels() as $alias) {
             assert($alias instanceof AliasModel);
+            $name       = $alias->getName();
             $model      = $alias->getModel();
             $tableName  = $model->getTableName();
             $entityName = $this->_em->findByTableName($tableName);
             $className  = $this->_em->getEntityClass($entityName);
-            $properties = $model->getPropertyByNames();
-            foreach ($data as $record) {
-                $item   = $this->processRecord($alias->name, $properties, $record);
-                $entity = new $className($item);
-                $this->_em->watch($entity);
-                $result->push($entity);
-            }
-            return $result;
-        } catch (CollectionException $exception) {
-            throw EntityException::internalError($exception);
+            $models->put($name, $model);
+            $classes->put($name, $className);
         }
     }
 
@@ -533,29 +617,16 @@ class EntityQuery extends DataModel {
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processMultipleRecords(array $data): ICollection {
-        $result         = new Collection();
-        $aliasModel     = new KeyValue();
-        $aliasClassName = new KeyValue();
-        foreach ($this->_model->getAliasModels() as $alias) {
-            assert($alias instanceof AliasModel);
-            $name       = $alias->getName();
-            $model      = $alias->getModel();
-            $tableName  = $model->getTableName();
-            $entityName = $this->_em->findByTableName($tableName);
-            $className  = $this->_em->getEntityClass($entityName);
-            $aliasModel->put($name, $model);
-            $aliasClassName->put($name, $className);
-        }
+    protected function processRecords(array $data): ICollection {
+        $result          = new Collection();
+        $aliasModels     = new KeyValue();
+        $aliasClassNames = new KeyValue();
+        $this->prepareAliases($aliasModels, $aliasClassNames);
         foreach ($data as $record) {
             $multi = [];
-            foreach ($this->_model->getAliasModels() as $alias) {
-                assert($alias instanceof AliasModel);
-                $aliasName = $alias->getName();
-                $model     = $aliasModel->get($aliasName);
-                assert($model instanceof EntityModel);
-                $className  = $aliasClassName->get($aliasName);
-                $properties = $model->getPropertyByNames();
+            foreach ($aliasModels as $aliasName => $aliasModel) {
+                $className  = $aliasClassNames->get($aliasName);
+                $properties = $aliasModel->getPropertyByNames();
                 $item       = $this->processRecord($aliasName, $properties, $record);
                 $entity     = new $className($item);
                 assert($entity instanceof Entity);
@@ -566,7 +637,7 @@ class EntityQuery extends DataModel {
                     $multi[$aliasName] = null;
                 }
             }
-            $recordObject = new DataObject($multi);
+            $recordObject = $this->processRelationProperties($multi);
             $result->push($recordObject);
         }
         return $result;
@@ -585,9 +656,9 @@ class EntityQuery extends DataModel {
         $result = [];
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsCalculated()) {
+            if (!$property->getIsRelation()) {
                 $fieldAlias    = $aliasName . '_' . $property->getFieldName();
-                $result[$name] = $this->processReadableProperty($property, (string)$record[$fieldAlias]);
+                $result[$name] = $this->processReadableProperty($property, $record[$fieldAlias]);
             }
         }
         return $result;
@@ -603,62 +674,108 @@ class EntityQuery extends DataModel {
      */
     protected function processReadableProperty(PropertyModel $property, $value) {
         $result = null;
-        $db     = $this->_em->getDb();
-        switch ($property->getDataType()) {
-            case DataTypes::DT_INTEGER:
-                $result = $value === null ? null : (int)$value;
-                break;
-            case DataTypes::DT_NUMERIC:
-                $result = $value === null ? null : (float)$value;
-                break;
-            case DataTypes::DT_BOOL:
-                $result = $db->sqlBool($value);
-                break;
-            case DataTypes::DT_DATE:
-                $result = $db->sqlDate($value);
-                break;
-            case DataTypes::DT_DATETIME:
-                $result = $db->sqlDateTime($value);
-                break;
-            case DataTypes::DT_ARRAY:
-                try {
-                    $result = Serializer::getInstance()->unserialize($value);
-                    if (!is_array($result)) {
+        if ($value !== null) {
+            $db = $this->_em->getDb();
+            switch ($property->getDataType()) {
+                case DataTypes::DT_INTEGER:
+                    $result = $value === null ? null : (int)$value;
+                    break;
+                case DataTypes::DT_NUMERIC:
+                    $result = $value === null ? null : (float)$value;
+                    break;
+                case DataTypes::DT_BOOL:
+                    $result = $db->sqlBool($value);
+                    break;
+                case DataTypes::DT_DATE:
+                    $result = $db->sqlDate($value);
+                    break;
+                case DataTypes::DT_DATETIME:
+                    $result = $db->sqlDateTime($value);
+                    break;
+                case DataTypes::DT_ARRAY:
+                    try {
+                        $result = Serializer::getInstance()->unserialize($value);
+                        if (!is_array($result)) {
+                            $result = [];
+                        }
+                    } catch (SerializerException $exception) {
                         $result = [];
                     }
-                } catch (SerializerException $exception) {
-                    $result = [];
-                }
-                break;
-            case DataTypes::DT_OBJECT:
-                try {
-                    $result = Serializer::getInstance()->unserialize($value);
-                    if (!is_object($result)) {
+                    break;
+                case DataTypes::DT_OBJECT:
+                    try {
+                        $result = Serializer::getInstance()->unserialize($value);
+                        if (!is_object($result)) {
+                            $result = null;
+                        }
+                    } catch (SerializerException $exception) {
                         $result = null;
                     }
-                } catch (SerializerException $exception) {
-                    $result = null;
-                }
-                break;
-            case DataTypes::DT_STRING:
-            case DataTypes::DT_UUID:
-            case DataTypes::DT_ENUM:
-                $result = $value;
-                break;
+                    break;
+                case DataTypes::DT_STRING:
+                case DataTypes::DT_UUID:
+                case DataTypes::DT_ENUM:
+                    $result = $value;
+                    break;
+            }
         }
         return $result;
     }
 
     /**
-     * Возвращает значения вычисляемого свойства
+     * Обрабатывает свойсва связей
      *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\ORM\Models\Properties\PropertyModel $property Модель свойства
+     * @param array $multi Массив объектов данных
      *
-     * @return mixed
-     * @noinspection PhpUnusedParameterInspection
+     * @return \XEAF\Rack\API\Core\DataObject
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function processCalculatedProperty(string $name, PropertyModel $property) {
-        return null;
+    protected function processRelationProperties(array $multi): DataObject {
+        $result     = $multi;
+        $withModels = $this->_model->getWithModels();
+        foreach ($withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            $alias    = $withModel->getAlias();
+            $property = $withModel->getProperty();
+            $entity   = $result[$alias];
+            assert($entity instanceof Entity);
+            switch ($withModel->getResolveType()) {
+                case ResolveTypes::LAZY:
+                    $this->_resolver->resolveLazyValue($entity, $withModel);
+                    break;
+                case ResolveTypes::EAGER:
+                    switch ($withModel->getRelation()->getType()) {
+                        case RelationTypes::ONE_TO_MANY:
+                            $this->_resolver->resolveEagerValue($entity, $withModel);
+                            break;
+                        case RelationTypes::MANY_TO_ONE:
+                            $fullAlias = $withModel->getFullAlias();
+                            $value     = new RelationValue($withModel);
+                            $value->setValue($multi[$fullAlias]);
+                            $entity->setRelationValue($property, $value);
+                            unset($result[$fullAlias]);
+                            break;
+                    }
+                    break;
+            }
+        }
+        $keys = array_keys($result);
+        return count($result) > 1 ? new DataObject($result) : $result[$keys[0]];
+    }
+
+    /**
+     * Обрабатывает параметры для подчиненных запросов
+     *
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue     $parameters Набор параметров
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel  Модель связи WITH
+     *
+     * @return void
+     */
+    protected function processRelationParameters(IKeyValue $parameters, WithModel $withModel): void {
+        $query = $withModel->getQuery();
+        foreach ($parameters as $name => $parameter) {
+            assert($parameter instanceof ParameterModel);
+            $query->parameter($name, $parameter->getValue());
+        }
     }
 }

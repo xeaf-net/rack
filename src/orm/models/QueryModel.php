@@ -23,17 +23,19 @@ use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\OrderModel;
 use XEAF\Rack\ORM\Models\Parsers\WhereModel;
+use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
 /**
  * Модель данных разобранного запроса
  *
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $aliasModels Модели данных конструкции ALIAS
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $fromModels  Модели данных конструкции FROM
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $joinModels  Модели данных конструкции JOIN
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $whereModels Модели данных конструкции WHERE
- * @property-read \XEAF\Rack\API\Interfaces\ICollection $orderModels Модели данных конструкции ORDER
- * @property-read \XEAF\Rack\API\Interfaces\IKeyValue   $parameters  Набор паарметров запроса
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $aliasModels  Модели данных конструкции ALIAS
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $fromModels   Модели данных конструкции FROM
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $joinModels   Модели данных конструкции JOIN
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $whereModels  Модели данных конструкции WHERE
+ * @property-read \XEAF\Rack\API\Interfaces\ICollection $orderModels  Модели данных конструкции ORDER
+ * @property-read \XEAF\Rack\API\Interfaces\IKeyValue   $parameters   Набор параметров запроса
+ * @property-read bool                                  isMultiEntity Признак выбора множества сущностей
  *
  * @package XEAF\Rack\ORM\Models
  */
@@ -76,10 +78,10 @@ class QueryModel extends DataModel {
     protected $_orderModels = null;
 
     /**
-     * Модели разрешения ссылок
+     * Модели разрешения связей
      * @var \XEAF\Rack\API\Interfaces\ICollection
      */
-    protected $_resolveModels = null;
+    protected $_withModels = null;
 
     /**
      * Определения параметров
@@ -92,14 +94,14 @@ class QueryModel extends DataModel {
      */
     public function __construct() {
         parent::__construct();
-        $this->_aliasModels   = new Collection();
-        $this->_fromModels    = new Collection();
-        $this->_joinModels    = new Collection();
-        $this->_whereModels   = new Collection();
-        $this->_filterModels  = new Collection();
-        $this->_orderModels   = new Collection();
-        $this->_resolveModels = new Collection();
-        $this->_parameters    = new KeyValue();
+        $this->_aliasModels  = new Collection();
+        $this->_fromModels   = new Collection();
+        $this->_joinModels   = new Collection();
+        $this->_whereModels  = new Collection();
+        $this->_filterModels = new Collection();
+        $this->_orderModels  = new Collection();
+        $this->_withModels   = new Collection();
+        $this->_parameters   = new KeyValue();
     }
 
     /**
@@ -227,12 +229,12 @@ class QueryModel extends DataModel {
     }
 
     /**
-     * Возвращает модели разрешения ссылок
+     * Возвращает модели разрешения связей
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      */
-    public function getResolveModels(): ICollection {
-        return $this->_resolveModels;
+    public function getWithModels(): ICollection {
+        return $this->_withModels;
     }
 
     /**
@@ -293,6 +295,24 @@ class QueryModel extends DataModel {
             assert($result instanceof JoinModel);
         }
         return $result;
+    }
+
+    /**
+     * Ищет модель WITH
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Models\Parsers\WithModel|null
+     */
+    public function findWithModel(string $alias, string $property): ?WithModel {
+        foreach ($this->_withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            if ($withModel->getAlias() == $alias && $withModel->getProperty() == $property) {
+                return $withModel;
+            }
+        }
+        return null;
     }
 
     /**

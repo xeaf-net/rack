@@ -78,6 +78,11 @@ class EntityException extends Exception {
     public const INVALID_ENUM_VALUE = 'F011';
 
     /**
+     * Неподдерживаемая возможность
+     */
+    public const UNSUPPORTED_FEATURE = 'EF998';
+
+    /**
      * Внутренняя ошибка ORM
      */
     public const INTERNAL_ERROR = 'EF999';
@@ -120,6 +125,9 @@ class EntityException extends Exception {
                 break;
             case self::INVALID_ENUM_VALUE:
                 $result = 'Invalid enum value [%s].';
+                break;
+            case self::UNSUPPORTED_FEATURE:
+                $result = "Unsupported feature.";
                 break;
             case self::INTERNAL_ERROR:
                 $result = 'Internal ORM error.';
@@ -244,6 +252,15 @@ class EntityException extends Exception {
      */
     public static function invalidEnumValue(string $value): self {
         return new self(self::INVALID_ENUM_VALUE, [$value]);
+    }
+
+    /**
+     * Неподдерживаемая возможность
+     *
+     * @return \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public static function unsupportedFeature(): self {
+        return new self(self::UNSUPPORTED_FEATURE);
     }
 
     /**

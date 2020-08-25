@@ -93,6 +93,17 @@ class EntityModel extends DataModel {
     }
 
     /**
+     * Возвращает признак существования свойства
+     *
+     * @param string $name Имя свойства
+     *
+     * @return bool
+     */
+    public function propertyExists(string $name): bool {
+        return $this->_propertyByNames->exists($name);
+    }
+
+    /**
      * Возвращает информацию о свойстве модели сущности по имени
      *
      * @param string $name Имя свойства
