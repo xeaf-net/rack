@@ -105,10 +105,10 @@ class Resolver implements IResolver {
         }
         switch ($withModel->getRelation()->getType()) {
             case RelationTypes::ONE_TO_MANY:
-                $data = $query->get();
+                $data = $query->get($withModel->getParameters());
                 break;
             case RelationTypes::MANY_TO_ONE:
-                $data = $query->getFirst();
+                $data = $query->getFirst($withModel->getParameters());
                 break;
         }
         $value = new RelationValue($withModel);

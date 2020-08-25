@@ -435,7 +435,7 @@ class EntityQuery extends DataModel {
      */
     protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
         try {
-            $this->resolveWithModels();
+            $this->resolveWithModels($params);
             $sql    = $this->generateSQL(count($filters) > 0);
             $prm    = $this->processParameters($filters, $params);
             $data   = $this->_em->getDb()->select($sql, $prm, $count, $offset);
@@ -517,16 +517,19 @@ class EntityQuery extends DataModel {
     /**
      * Разрешает связи модели WITH
      *
+     * @param array $parameters Параметры вызова основного запроса
+     *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveWithModels(): void {
+    protected function resolveWithModels(array $parameters): void {
         $withModels = $this->_model->getWithModels();
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             if ($withModel->getRelation() == null) {
                 $this->_resolver->resolveWithModel($this, $withModel);
             }
+            $withModel->setParameters($parameters);
         }
     }
 

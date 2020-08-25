@@ -27,6 +27,7 @@ use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
  *
  * @property \XEAF\Rack\ORM\Models\Properties\RelationModel $relation    Модель отношения
  * @property \XEAF\Rack\ORM\Core\EntityQuery                $query       Запрос для выбора данных
+ * @property array                                          $parameters  Параметры вызова основного запроса
  *
  * @package XEAF\Rack\ORM\Models\Parsers
  */
@@ -61,6 +62,12 @@ class WithModel extends DataModel {
      * @var \XEAF\Rack\ORM\Core\EntityQuery|null
      */
     protected $_query = null;
+
+    /**
+     * Параметры вызова основного запроса
+     * @var array
+     */
+    protected $_parameters = [];
 
     /**
      * Конструктор класса
@@ -141,6 +148,26 @@ class WithModel extends DataModel {
      */
     public function setQuery(?EntityQuery $query): void {
         $this->_query = $query;
+    }
+
+    /**
+     * Возвращает параемтры вызова основного запроса
+     *
+     * @return array
+     */
+    public function getParameters(): array {
+        return $this->_parameters;
+    }
+
+    /**
+     * Задает параметры вызова основного запроса
+     *
+     * @param array $parameters Параметры вызова основного запроса
+     *
+     * @return void
+     */
+    public function setParameters(array $parameters): void {
+        $this->_parameters = $parameters;
     }
 
     /**
