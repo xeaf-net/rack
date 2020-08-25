@@ -98,8 +98,9 @@ class Resolver implements IResolver {
         $property = $withModel->getProperty();
         $params   = $query->getModel()->getParameters()->keys();
         foreach ($params as $param) {
-            if ($entity->getModel()->propertyExists($param)) {
-                $query->parameter($param, $entity->{$param});
+            $prop = ltrim($param, '__');
+            if ($entity->getModel()->propertyExists($prop)) {
+                $query->parameter($param, $entity->{$prop});
             }
         }
         switch ($withModel->getRelation()->getType()) {
@@ -135,9 +136,10 @@ class Resolver implements IResolver {
         $query->select($entity)->from($entity);
         $key = 0;
         foreach ($primaryKeys as $primaryKey) {
-            $param = $parameters[$key++];
-            $query->andWhere("$entity.$param == :$primaryKey");
-            $query->parameter($primaryKey, null);
+            $prop  = $parameters[$key++];
+            $param = "__$primaryKey";
+            $query->andWhere("$entity.$prop == :$param");
+            $query->parameter($param, null);
         }
     }
 
@@ -182,7 +184,7 @@ class Resolver implements IResolver {
         $query->select($entity)->from($entity);
         $key = 0;
         foreach ($primaryKeys as $primaryKey) {
-            $foreignKey = $foreignKeys[$key++];
+            $foreignKey = '__' . $foreignKeys[$key++];
             $query->andWhere("$entity.$primaryKey == :$foreignKey");
             $query->parameter($foreignKey, null);
         }
