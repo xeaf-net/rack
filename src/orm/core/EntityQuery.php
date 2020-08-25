@@ -351,8 +351,8 @@ class EntityQuery extends DataModel {
     /**
      * Добавляет "ленивое" тебование разрешения связей
      *
-     * @param string $alias       Псевдоним
-     * @param string $property    Свойство
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      */
@@ -365,8 +365,8 @@ class EntityQuery extends DataModel {
     /**
      * Добавляет "нетерпеливое" тебование разрешения связей
      *
-     * @param string $alias       Псевдоним
-     * @param string $property    Свойство
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
      */
@@ -374,6 +374,23 @@ class EntityQuery extends DataModel {
         $with = new WithModel($alias, $property, ResolveTypes::EAGER);
         $this->_model->getWithModels()->push($with);
         return $this;
+    }
+
+    /**
+     * Возвращает подзапрос для выбора связанных элементов
+     *
+     * @param string $alias    Псевоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function subquery(string $alias, string $property): EntityQuery {
+        $withModel = $this->_model->findWithModel($alias, $property);
+        if (!$withModel) {
+            throw EntityException::unknownEntityProperty($alias, $property);
+        }
+        return $this->_resolver->withModelQuery($this->getEntityManager(), $withModel);
     }
 
     /**
@@ -569,7 +586,7 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Инициализирует коллекции своцств псевдонимов для быстрой обработки
+     * Инициализирует коллекции свойств псевдонимов для быстрой обработки
      *
      * @param \XEAF\Rack\API\Interfaces\IKeyValue $models  Хранилище моделей
      * @param \XEAF\Rack\API\Interfaces\IKeyValue $classes Хранилище классов сущностей
@@ -743,4 +760,19 @@ class EntityQuery extends DataModel {
         return count($result) > 1 ? new DataObject($result) : $result[$keys[0]];
     }
 
+    /**
+     * Обрабатывает параметры для подчиненных запросов
+     *
+     * @param \XEAF\Rack\API\Interfaces\IKeyValue     $parameters Набор параметров
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel  Модель связи WITH
+     *
+     * @return void
+     */
+    protected function processRelationParameters(IKeyValue $parameters, WithModel $withModel): void {
+        $query = $withModel->getQuery();
+        foreach ($parameters as $name => $parameter) {
+            assert($parameter instanceof ParameterModel);
+            $query->parameter($name, $parameter->getValue());
+        }
+    }
 }

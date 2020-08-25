@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Interfaces;
 
 use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\ORM\Core\Entity;
+use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Models\RelationValue;
@@ -24,6 +25,17 @@ use XEAF\Rack\ORM\Models\RelationValue;
  * @package XEAF\Rack\ORM\Utils
  */
 interface IResolver extends IFactoryObject {
+
+    /**
+     * Возвращает запрос конструкции WITH
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager       $entityManager Менеджер сущностей
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel     Модель конструкции WITH
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityQuery
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function withModelQuery(EntityManager $entityManager, WithModel $withModel): EntityQuery;
 
     /**
      * Разрешает ссылку конструкции WITH
@@ -50,8 +62,8 @@ interface IResolver extends IFactoryObject {
     /**
      * Разрешает "нетерпеливое" значение
      *
-     * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
+     * @param \XEAF\Rack\ORM\Core\Entity              $entity     Объект сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel  Модель конструкции WITH
      *
      * @return \XEAF\Rack\ORM\Models\RelationValue
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException

@@ -25,8 +25,6 @@ use XEAF\Rack\ORM\Models\Parsers\OrderModel;
 use XEAF\Rack\ORM\Models\Parsers\WhereModel;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
-use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
-use XEAF\Rack\ORM\Utils\Lex\ResolveTypes;
 
 /**
  * Модель данных разобранного запроса
@@ -300,6 +298,24 @@ class QueryModel extends DataModel {
     }
 
     /**
+     * Ищет модель WITH
+     *
+     * @param string $alias    Псевдоним
+     * @param string $property Свойство
+     *
+     * @return \XEAF\Rack\ORM\Models\Parsers\WithModel|null
+     */
+    public function findWithModel(string $alias, string $property): ?WithModel {
+        foreach ($this->_withModels as $withModel) {
+            assert($withModel instanceof WithModel);
+            if ($withModel->getAlias() == $alias && $withModel->getProperty() == $property) {
+                return $withModel;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Возвращает имя сущности по псевдониму
      *
      * @param string $alias Псевдоним
@@ -318,25 +334,5 @@ class QueryModel extends DataModel {
             }
         }
         return $result;
-    }
-
-    /**
-     * Возвращает признак выбора множества сущностей
-     *
-     * @return bool
-     */
-    public function getIsMultiEntity(): bool {
-        $aliasCount  = $this->_aliasModels->count();
-        $entityCount = 0;
-        foreach ($this->_withModels as $withModel) {
-            assert($withModel instanceof WithModel);
-            if ($withModel->getResolveType() == ResolveTypes::EAGER) {
-                $relation = $withModel->getRelation();
-                if ($relation != null && $relation->getType() == RelationTypes::MANY_TO_ONE) {
-                    $entityCount = $entityCount + 1;
-                }
-            }
-        }
-        return ($aliasCount - $entityCount) > 1;
     }
 }

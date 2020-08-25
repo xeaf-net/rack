@@ -193,7 +193,7 @@ insert into tasks (
 ) values (
     '6c2c6235-5796-434f-8575-b2dc85221a8f'  ,
     'be01a180-2951-4c64-a971-445fcf8bd469'  ,
-    'ACTIVE'                                ,
+    'COMPLETE'                              ,
     'Установить зимнюю резину'              ,
     ''
 );

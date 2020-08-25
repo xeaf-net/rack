@@ -46,6 +46,18 @@ class Resolver implements IResolver {
     /**
      * @inheritDoc
      */
+    public function withModelQuery(EntityManager $entityManager, WithModel $withModel): EntityQuery {
+        $query = $withModel->getQuery();
+        if (!$query) {
+            $query = $entityManager->query('');
+            $withModel->setQuery($query);
+        }
+        return $query;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function resolveWithModel(EntityQuery $query, WithModel $withModel): void {
         $em          = $query->getEntityManager();
         $entityName  = $this->findEntityName($query->getModel(), $withModel);
@@ -86,7 +98,9 @@ class Resolver implements IResolver {
         $property = $withModel->getProperty();
         $params   = $query->getModel()->getParameters()->keys();
         foreach ($params as $param) {
-            $query->parameter($param, $entity->{$param});
+            if ($entity->getModel()->propertyExists($param)) {
+                $query->parameter($param, $entity->{$param});
+            }
         }
         switch ($withModel->getRelation()->getType()) {
             case RelationTypes::ONE_TO_MANY:
@@ -191,24 +205,6 @@ class Resolver implements IResolver {
         $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
         $foreignKey = implode('_', $property->getLinks());
         $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
-    }
-
-    /**
-     * Возвращает запрос конструкции WITH
-     *
-     * @param \XEAF\Rack\ORM\Core\EntityManager       $entityManager Менеджер сущностей
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel     Модель конструкции WITH
-     *
-     * @return \XEAF\Rack\ORM\Core\EntityQuery
-     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     */
-    protected function withModelQuery(EntityManager $entityManager, WithModel $withModel): EntityQuery {
-        $query = $withModel->getQuery();
-        if (!$query) {
-            $query = $entityManager->query('');
-            $withModel->setQuery($query);
-        }
-        return $query;
     }
 
     /**
