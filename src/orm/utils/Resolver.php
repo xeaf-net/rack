@@ -71,7 +71,7 @@ class Resolver implements IResolver {
         switch ($property->getType()) {
             case RelationTypes::ONE_TO_MANY:
                 assert($property instanceof OneToManyProperty);
-                $this->resolveOneToMany($em, $entityModel, $withModel, $property);
+                $this->resolveOneToMany($em, $withModel, $property);
                 break;
             case RelationTypes::MANY_TO_ONE:
                 assert($property instanceof ManyToOneProperty);
@@ -120,15 +120,14 @@ class Resolver implements IResolver {
     /**
      * Разрешает отношение Один ко многим
      *
-     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em          Менеджер сущностей
-     * @param \XEAF\Rack\ORM\Models\EntityModel                  $entityModel Модель сущности
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
-     * @param \XEAF\Rack\ORM\Models\Properties\OneToManyProperty $property    Свойство отношения
+     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em        Менеджер сущностей
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\OneToManyProperty $property  Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveOneToMany(EntityManager $em, EntityModel $entityModel, WithModel $withModel, OneToManyProperty $property): void {
+    protected function resolveOneToMany(EntityManager $em, WithModel $withModel, OneToManyProperty $property): void {
         $query  = $this->withModelQuery($em, $withModel);
         $entity = $property->getEntity();
         $links  = $withModel->getRelation()->getLinks();
@@ -154,7 +153,7 @@ class Resolver implements IResolver {
     protected function resolveManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
         switch ($withModel->getResolveType()) {
             case ResolveTypes::LAZY:
-                $this->resolveLazyManyToOne($query->getEntityManager(), $entityModel, $withModel, $property);
+                $this->resolveLazyManyToOne($query->getEntityManager(), $withModel, $property);
                 break;
             case ResolveTypes::EAGER:
                 $this->resolveEagerManyToOne($query, $entityModel, $withModel, $property);
@@ -165,15 +164,14 @@ class Resolver implements IResolver {
     /**
      * Разрешает "ленивое" отношение Многие к одному
      *
-     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em          Менеджер сущностей
-     * @param \XEAF\Rack\ORM\Models\EntityModel                  $entityModel Модель сущности
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
-     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
+     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em        Менеджер сущностей
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property  Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveLazyManyToOne(EntityManager $em, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
+    protected function resolveLazyManyToOne(EntityManager $em, WithModel $withModel, ManyToOneProperty $property): void {
         $query  = $this->withModelQuery($em, $withModel);
         $entity = $property->getEntity();
         $query->select($entity)->from($entity);
