@@ -100,7 +100,7 @@ class EntityModel extends DataModel {
      * @return bool
      */
     public function propertyExists(string $name): bool {
-        return $this->_propertyByNames->get($name) != null;
+        return $this->_propertyByNames->exists($name);
     }
 
     /**

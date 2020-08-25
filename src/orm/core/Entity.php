@@ -16,7 +16,6 @@ use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Utils\Formatter;
-use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -29,6 +28,7 @@ use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
 use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
+use XEAF\Rack\ORM\Models\Properties\RelationModel;
 use XEAF\Rack\ORM\Models\Properties\StringProperty;
 use XEAF\Rack\ORM\Models\Properties\TextProperty;
 use XEAF\Rack\ORM\Models\Properties\UUIDProperty;
@@ -37,6 +37,7 @@ use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
@@ -209,6 +210,22 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * Задает значения свойств сущности из массива
+     *
+     * @param array $data Массив значений
+     *
+     * @return void
+     */
+    public function assign(array $data): void {
+        foreach ($data as $name => $value) {
+            $property = $this->_model->getPropertyByName($name);
+            if ($property != null) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
+    /**
      * @inheritDoc
      */
     public function toArray(array $map = []): array {
@@ -242,58 +259,36 @@ abstract class Entity extends DataObject {
                 }
             }
         }
-        return $result;
+        return $this->extractEntities($result);
     }
 
     /**
-     * Задает значения свойств сущности из массива
+     * Вычленяет свойства сущностей из массива данных
      *
-     * @param array $data Массив значений
+     * @param array $data Массив исходных данных
      *
-     * @return void
+     * @return array
      */
-    public function assign(array $data): void {
-        foreach ($data as $name => $value) {
-            $property = $this->_model->getPropertyByName($name);
-            if ($property != null) {
-                $this->{$name} = $value;
-            }
-        }
-    }
-
-    /**
-     * Задает значения свойств из параметров вызова приложения
-     *
-     * @return void
-     */
-    public function assignParameters(): void {
-        $parameters = Parameters::getInstance();
+    protected function extractEntities(array $data): array {
+        $result     = $data;
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
-            if (!$property->getIsRelation() && $parameters->exists($name)) {
-                $value = null;
-                switch ($property->dataType) {
-                    case DataTypes::DT_INTEGER:
-                        $value = $parameters->getInteger($name, 0);
-                        break;
-                    case DataTypes::DT_DATE:
-                    case DataTypes::DT_DATETIME:
-                        $value = $parameters->getInteger($name);
-                        break;
-                    case DataTypes::DT_BOOL:
-                        $value = $parameters->getBool($name);
-                        break;
-                    case DataTypes::DT_NUMERIC:
-                        $value = $parameters->getFloat($name, 0.00);
-                        break;
-                    default:
-                        $value = $parameters->getString($name);
-                        break;
+            if ($property->getIsRelation()) {
+                assert($property instanceof RelationModel);
+                if ($property->getType() == RelationTypes::MANY_TO_ONE) {
+                    $item   = [];
+                    $entity = $property->getEntity();
+                    $links  = $property->getLinks();
+                    foreach ($links as $link) {
+                        $item[$link] = $data[$link];
+                    }
+                    print $entity . ' ';
+                    print_r($item);
                 }
-                $this->{$name} = $value;
             }
         }
+        return $result;
     }
 
     /**
