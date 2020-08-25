@@ -199,11 +199,15 @@ class Resolver implements IResolver {
      * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
      *
      * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveEagerManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
         $alias      = $withModel->getAlias();
         $fullAlias  = $withModel->getFullAlias();
         $entity     = $property->getEntity();
+        if (count($property->getLinks()) != 1) {
+            throw EntityException::unsupportedFeature();
+        }
         $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
         $foreignKey = implode('_', $property->getLinks());
         $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
