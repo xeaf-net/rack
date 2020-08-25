@@ -129,16 +129,13 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveOneToMany(EntityManager $em, EntityModel $entityModel, WithModel $withModel, OneToManyProperty $property): void {
-        $query       = $this->withModelQuery($em, $withModel);
-        $entity      = $property->getEntity();
-        $primaryKeys = $entityModel->getPrimaryKeyNames();
-        $parameters  = $withModel->getRelation()->getLinks();
+        $query  = $this->withModelQuery($em, $withModel);
+        $entity = $property->getEntity();
+        $links  = $withModel->getRelation()->getLinks();
         $query->select($entity)->from($entity);
-        $key = 0;
-        foreach ($primaryKeys as $primaryKey) {
-            $prop  = $parameters[$key++];
+        foreach ($links as $link => $primaryKey) {
             $param = "__$primaryKey";
-            $query->andWhere("$entity.$prop == :$param");
+            $query->andWhere("$entity.$link == :$param");
             $query->parameter($param, null);
         }
     }
@@ -177,16 +174,13 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveLazyManyToOne(EntityManager $em, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
-        $query       = $this->withModelQuery($em, $withModel);
-        $entity      = $property->getEntity();
-        $primaryKeys = $entityModel->getPrimaryKeyNames();
-        $foreignKeys = $property->getLinks();
+        $query  = $this->withModelQuery($em, $withModel);
+        $entity = $property->getEntity();
         $query->select($entity)->from($entity);
-        $key = 0;
-        foreach ($primaryKeys as $primaryKey) {
-            $foreignKey = '__' . $foreignKeys[$key++];
-            $query->andWhere("$entity.$primaryKey == :$foreignKey");
-            $query->parameter($foreignKey, null);
+        foreach ($property->getLinks() as $foreignKey => $primaryKey) {
+            $param = "__$foreignKey";
+            $query->andWhere("$entity.$primaryKey == :$param");
+            $query->parameter($param, null);
         }
     }
 
@@ -202,15 +196,17 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveEagerManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
-        $alias      = $withModel->getAlias();
-        $fullAlias  = $withModel->getFullAlias();
-        $entity     = $property->getEntity();
-        if (count($property->getLinks()) != 1) {
+        $alias     = $withModel->getAlias();
+        $fullAlias = $withModel->getFullAlias();
+        $entity    = $property->getEntity();
+        $links     = $property->getLinks();
+        if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
-        $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
-        $foreignKey = implode('_', $property->getLinks());
-        $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
+        foreach ($links as $foreignKey => $primaryKey) {
+            $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
+            $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
+        }
     }
 
     /**

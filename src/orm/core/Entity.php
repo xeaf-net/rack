@@ -280,11 +280,13 @@ abstract class Entity extends DataObject {
                     $item   = [];
                     $entity = $property->getEntity();
                     $links  = $property->getLinks();
-                    foreach ($links as $link) {
-                        $item[$link] = $data[$link];
+                    foreach ($links as $link => $primaryKey) {
+                        $item[$primaryKey] = $data[$link];
+                        unset($result[$link]);
                     }
-                    print $entity . ' ';
-                    print_r($item);
+                    if (!array_key_exists($entity, $result)) {
+                        $result[$name] = $item;
+                    }
                 }
             }
         }
