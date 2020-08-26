@@ -15,7 +15,6 @@ namespace XEAF\Rack\ORM\Core;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
-use XEAF\Rack\API\Utils\Formatter;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -37,7 +36,6 @@ use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
-use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
@@ -226,9 +224,14 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * @inheritDoc
+     * Возвращает представление данных объекта в виде массива
+     *
+     * @param array $map     Карта свойств
+     * @param array $cleanup Идентификаторы очищаемых сущностей связей
+     *
+     * @return array
      */
-    public function toArray(array $map = []): array {
+    public function toArray(array $map = [], array $cleanup = []): array {
         $result     = parent::toArray($map);
         $empty      = count($map) == 0;
         $properties = $this->_model->getPropertyByNames();
@@ -249,12 +252,16 @@ abstract class Entity extends DataObject {
                             $result[$name] = (float)$result[$name];
                             break;
                     }
-                } elseif ($this->_relationValues->exists($name)) {
-                    $value = $this->{$name};
-                    if ($value instanceof ICollection) {
-                        $result[$name] = $value->toArray();
-                    } else {
-                        $result[$name] = $value;
+                } else {
+                    
+                    if ($this->_relationValues->exists($name)) {
+                        assert($property instanceof RelationModel);
+                        $value = $this->{$name};
+                        if ($value instanceof ICollection) {
+                            $result[$name] = $value->toArray();
+                        } else {
+                            $result[$name] = $value->toArray();
+                        }
                     }
                 }
             }
@@ -270,54 +277,18 @@ abstract class Entity extends DataObject {
      * @return array
      */
     protected function extractEntities(array $data): array {
-        $result     = $data;
+        $result = $data;
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
-            assert($property instanceof PropertyModel);
-            if ($property->getIsRelation()) {
-                assert($property instanceof RelationModel);
-                if ($property->getType() == RelationTypes::MANY_TO_ONE) {
-                    $item  = [];
-                    $links = $property->getLinks();
-                    foreach ($links as $link => $primaryKey) {
-                        $item[$primaryKey] = $data[$link];
-                        unset($result[$link]);
-                    }
-                    if (!array_key_exists($name, $result)) {
-                        $result[$name] = $item;
-                    }
+            if ($property instanceof ManyToOneProperty) {
+                $item  = [];
+                $links = $property->getLinks();
+                foreach ($links as $link => $primaryKey) {
+                    $item[$primaryKey] = $data[$link];
+                    unset($result[$link]);
                 }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Возвращает массив отформатированных значений свойств
-     *
-     * @param array $map Карта возвращаемых свойств
-     *
-     * @return array
-     */
-    public function toFormattedArray(array $map = []): array {
-        $result = $this->toArray($map);
-        $model  = $this->getModel();
-        $names  = array_keys($result);
-        $fmt    = Formatter::getInstance();
-        foreach ($names as $name) {
-            $property = $model->getPropertyByName($name);
-            if ($property != null) {
-                $type = $property->getDataType();
-                switch ($type) {
-                    case DataTypes::DT_DATE:
-                        $result[$name] = $fmt->formatDate($result[$name]);
-                        break;
-                    case DataTypes::DT_DATETIME:
-                        $result[$name] = $fmt->formatDateTime($result[$name]);
-                        break;
-                    case DataTypes::DT_OBJECT:
-                        $result[$name] = (array)$result[$name];
-                        break;
+                if (!array_key_exists($name, $result)) {
+                    $result[$name] = $item;
                 }
             }
         }

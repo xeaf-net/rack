@@ -31,13 +31,14 @@ class EntityTableResult extends TableResult {
      *
      * @param \XEAF\Rack\API\Interfaces\ICollection|null $list            Список объектов сущностей
      * @param array                                      $map             Карта возвращаемых свойств
+     * @param array                                      $simplify        Идентификаторы упрощаемых посей связей
      * @param int                                        $recordsTotal    Общее количество записей
      * @param int                                        $recordsFiltered Количество отфильтрованных записей
      * @param bool                                       $useCache        Признак использования кеширования
      * @param int                                        $status          Код состояния HTTP
      */
-    public function __construct(?ICollection $list, array $map = [], int $recordsTotal = 0, int $recordsFiltered = 0, bool $useCache = false, int $status = HttpResponse::OK) {
-        $realList = $this->prepareCollection($list, $map);
+    public function __construct(?ICollection $list, array $map = [], array $simplify = [], int $recordsTotal = 0, int $recordsFiltered = 0, bool $useCache = false, int $status = HttpResponse::OK) {
+        $realList = $this->prepareCollection($list, $map, $simplify);
         parent::__construct($realList, $recordsTotal, $recordsFiltered, $useCache, $status);
     }
 }

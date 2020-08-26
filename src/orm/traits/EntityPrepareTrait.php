@@ -34,13 +34,13 @@ trait EntityPrepareTrait {
      */
     public function prepareDataObject(DataObject $dataObject, array $map = []): DataObject {
         if ($dataObject instanceof Entity) {
-            $result = new DataObject($dataObject->toFormattedArray($map));
+            $result = new DataObject($dataObject->toArray($map));
         } else {
             $properties = [];
             foreach ($dataObject as $name => $entity) {
                 assert($entity instanceof Entity);
                 $subMap            = $map[$name] ?? [];
-                $properties[$name] = $entity->toFormattedArray($subMap);
+                $properties[$name] = $entity->toArray($subMap);
             }
             $result = new DataObject($properties);
         }

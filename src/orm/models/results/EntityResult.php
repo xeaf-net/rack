@@ -33,13 +33,14 @@ class EntityResult extends DataResult {
      *
      * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект сущности
      * @param array                               $map        Карта возвращаемых свойств
+     * @param array                               $simplify   Идентификаторы упрощаемых посей связей
      * @param bool                                $useCache   Признак исопльзования кеша
      * @param int                                 $status     Код состояния HTTP
      */
-    public function __construct(?DataObject $dataObject, array $map = [], bool $useCache = false, int $status = HttpResponse::OK) {
+    public function __construct(?DataObject $dataObject, array $map = [], array $simplify = [], bool $useCache = false, int $status = HttpResponse::OK) {
         $realDataObject = null;
         if ($dataObject != null) {
-            $realDataObject = $this->prepareDataObject($dataObject, $map);
+            $realDataObject = $this->prepareDataObject($dataObject, $map, $simplify);
         }
         parent::__construct($realDataObject, $useCache, $status);
     }

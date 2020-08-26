@@ -16,6 +16,7 @@ use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\ListResult;
 use XEAF\Rack\Demo\App\DemoEM;
+use XEAF\Rack\ORM\Models\Results\EntityListResult;
 
 /**
  * Реализует методы работы с проектами
@@ -52,6 +53,6 @@ class ProjectsModule extends Module {
         ]);
         // print "<pre>";
         // print_r($q->getModel());
-        return new ListResult($list);
+        return new EntityListResult($list, [], ['user', 'tasks']);
     }
 }
