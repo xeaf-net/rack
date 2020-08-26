@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -255,34 +256,17 @@ abstract class Entity extends DataObject {
                 } else {
                     assert($property instanceof RelationModel);
                     $value  = null;
-                    $exists = false;
-                    if ($this->_relationValues->exists($name)) {
-                        $value  = $this->getRelationValue($name)->getValue();
-                        $exists = true;
+                    $exists = $this->_relationValues->exists($name);
+                    if ($exists) {
+                        $value = $this->{$name};
                     }
                     switch ($property->getType()) {
                         case RelationTypes::ONE_TO_MANY:
                             if ($exists) {
-                                if ($value == null) {
-                                    $value = $this->{$name}; // Lazy
-                                }
-                                $map  = [];
-                                $list = [];
-                                if (in_array($name, $cleanups)) {
-                                    $map = array_values($property->getLinks());
-                                }
-                                foreach ($value as $item) {
-                                    assert($item instanceof Entity);
-                                    $list[] = $item->toArray($map, $cleanups);
-                                }
-                                $result[$name] = $list;
+                                $result[$name] = $this->oneToManyToArray($name, $value, $property, $cleanups);
                             }
                             break;
                         case RelationTypes::MANY_TO_ONE:
-                            if ($exists && $value == null) {
-                                $value         = $this->{$name}; // Lazy
-                                $result[$name] = $value;
-                            }
                             $result[$name] = $this->manyToOneToArray($name, $value, $property, $result, $cleanups);
                             break;
                     }
@@ -294,6 +278,29 @@ abstract class Entity extends DataObject {
             }
         }
         return $result;
+    }
+
+    /**
+     * Преобразует сущность связи Один ко многим в массив
+     *
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\API\Interfaces\ICollection|null     $value    Коллекция объектов сущностей
+     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
+     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
+     *
+     * @return array
+     */
+    protected function oneToManyToArray(string $name, ?ICollection $value, RelationModel $property, array $cleanups): array {
+        $map  = [];
+        $list = [];
+        if (in_array($name, $cleanups)) {
+            $map = array_values($property->getLinks());
+        }
+        foreach ($value as $item) {
+            assert($item instanceof Entity);
+            $list[] = $item->toArray($map, $cleanups);
+        }
+        return $list;
     }
 
     /**
