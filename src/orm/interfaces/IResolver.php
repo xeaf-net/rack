@@ -74,11 +74,13 @@ interface IResolver extends IFactoryObject {
     /**
      * Преобразует зачение свойства в массив
      *
+     * @param \XEAF\Rack\ORM\Core\Entity                     $entity   Исходная сущность
      * @param string                                         $name     Имя свойста
      * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
+     * @param array                                          $data     Массив исходных данных
      * @param array                                          $cleanups Идентификаирпы очищаемых сущностей
      *
      * @return array
      */
-    public function relationToArray(string $name, RelationModel $property, array $cleanups): array;
+    public function relationToArray(Entity $entity, string $name, RelationModel $property, array $data, array $cleanups): array;
 }

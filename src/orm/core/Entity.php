@@ -14,7 +14,6 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
-use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -36,7 +35,6 @@ use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
-use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
@@ -235,6 +233,7 @@ abstract class Entity extends DataObject {
     public function toArray(array $map = [], array $cleanups = []): array {
         $result     = parent::toArray($map);
         $empty      = count($map) == 0;
+        $resolver   = Resolver::getInstance();
         $properties = $this->_model->getPropertyByNames();
         foreach ($properties as $name => $property) {
             if ($empty || in_array($name, $map)) {
@@ -255,78 +254,9 @@ abstract class Entity extends DataObject {
                     }
                 } else {
                     assert($property instanceof RelationModel);
-                    $value  = null;
-                    $exists = $this->_relationValues->exists($name);
-                    if ($exists) {
-                        $value = $this->{$name};
-                    }
-                    switch ($property->getType()) {
-                        case RelationTypes::ONE_TO_MANY:
-                            if ($exists) {
-                                $result[$name] = $this->oneToManyToArray($name, $value, $property, $cleanups);
-                            }
-                            break;
-                        case RelationTypes::MANY_TO_ONE:
-                            $result[$name] = $this->manyToOneToArray($name, $value, $property, $result, $cleanups);
-                            break;
-                    }
-                    $links = $property->getLinks();
-                    foreach ($links as $link => $primaryKey) {
-                        unset($result[$link]);
-                    }
+                    $result = $resolver->relationToArray($this, $name, $property, $result, $cleanups);
                 }
             }
-        }
-        return $result;
-    }
-
-    /**
-     * Преобразует сущность связи Один ко многим в массив
-     *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\API\Interfaces\ICollection|null     $value    Коллекция объектов сущностей
-     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
-     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
-     *
-     * @return array
-     */
-    protected function oneToManyToArray(string $name, ?ICollection $value, RelationModel $property, array $cleanups): array {
-        $map  = [];
-        $list = [];
-        if (in_array($name, $cleanups)) {
-            $map = array_values($property->getLinks());
-        }
-        foreach ($value as $item) {
-            assert($item instanceof Entity);
-            $list[] = $item->toArray($map, $cleanups);
-        }
-        return $list;
-    }
-
-    /**
-     * Преобразует сущность связи Многие к одному в массив
-     *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\ORM\Core\Entity|null                $entity   Объект сущности
-     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
-     * @param array                                          $data     Набор исходных данных
-     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
-     *
-     * @return array|null
-     */
-    protected function manyToOneToArray(string $name, ?Entity $entity, RelationModel $property, array $data, array $cleanups): ?array {
-        $result = [];
-        if (!$entity || in_array($name, $cleanups)) {
-            $links = $property->getLinks();
-            foreach ($links as $link => $primaryKey) {
-                $value = $data[$link];
-                if ($value == null) {
-                    return null;
-                }
-                $result[$primaryKey] = $value;
-            }
-        } else {
-            $result = $entity->toArray([], $cleanups);
         }
         return $result;
     }
