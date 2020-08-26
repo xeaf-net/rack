@@ -29,18 +29,20 @@ trait EntityPrepareTrait {
      *
      * @param \XEAF\Rack\API\Core\DataObject $dataObject Объект данных
      * @param array                          $map        Карта возвращаемых свойств
+     * @param array                          $cleanups   Массив упрощаемых свойств связей
      *
      * @return \XEAF\Rack\API\Core\DataObject
      */
-    public function prepareDataObject(DataObject $dataObject, array $map = []): DataObject {
+    public function prepareDataObject(DataObject $dataObject, array $map, array $cleanups): DataObject {
         if ($dataObject instanceof Entity) {
-            $result = new DataObject($dataObject->toFormattedArray($map));
+            $result = new DataObject($dataObject->toArray($map, $cleanups));
         } else {
             $properties = [];
             foreach ($dataObject as $name => $entity) {
                 assert($entity instanceof Entity);
                 $subMap            = $map[$name] ?? [];
-                $properties[$name] = $entity->toFormattedArray($subMap);
+                $supClean          = $cleanups[$name] ?? [];
+                $properties[$name] = $entity->toArray($subMap, $supClean);
             }
             $result = new DataObject($properties);
         }
@@ -50,17 +52,18 @@ trait EntityPrepareTrait {
     /**
      * Подготавливает коллекцию объектов данных к отправке
      *
-     * @param \XEAF\Rack\API\Interfaces\ICollection|null $list Коллекция объектоа
-     * @param array                                      $map  Карта возвращаемых свойств
+     * @param \XEAF\Rack\API\Interfaces\ICollection|null $list     Коллекция объектоа
+     * @param array                                      $map      Карта возвращаемых свойств
+     * @param array                                      $cleanups Массив упрощаемых свойств связей
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      */
-    public function prepareCollection(?ICollection $list, array $map = []): ICollection {
+    public function prepareCollection(?ICollection $list, array $map, array $cleanups): ICollection {
         $result = new Collection();
         if ($list != null) {
             foreach ($list as $dataObject) {
                 assert($dataObject instanceof DataObject);
-                $result->push($this->prepareDataObject($dataObject, $map));
+                $result->push($this->prepareDataObject($dataObject, $map, $cleanups));
             }
         }
         return $result;

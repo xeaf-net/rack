@@ -31,11 +31,12 @@ class EntityListResult extends ListResult {
      *
      * @param \XEAF\Rack\API\Interfaces\ICollection|null $list     Список объектов сущностей
      * @param array                                      $map      Карта возвращаемых свойств
+     * @param array                                      $cleanups Идентификаторы упрощаемых свойств связей
      * @param bool                                       $useCache Признак использования кеширования
      * @param int                                        $status   Код состояния HTTP
      */
-    public function __construct(?ICollection $list, array $map = [], bool $useCache = false, int $status = HttpResponse::OK) {
-        $realList = $this->prepareCollection($list, $map);
+    public function __construct(?ICollection $list, array $map = [], array $cleanups= [], bool $useCache = false, int $status = HttpResponse::OK) {
+        $realList = $this->prepareCollection($list, $map, $cleanups);
         parent::__construct($realList, $useCache, $status);
     }
 }
