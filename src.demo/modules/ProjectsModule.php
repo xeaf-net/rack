@@ -41,8 +41,8 @@ class ProjectsModule extends Module {
         $xql   = "p from projects p";
         $query = $em->query($xql);
         // $query->select('u')->leftJoin('users', 'u', 'id', 'p', 'userId');
-        // $query->withEager('p', 'user');
-        $query->withEager('p', 'tasks');
+        $query->withLazy('p', 'user');
+        $query->withLazy('p', 'tasks');
         // $q = $query->subquery('p', 'tasks')->andWhere("tasks.status == 'ACTIVE'")->orderBy('tasks', 'status', true);
         // $subquery = $query->subquery('p', 'tasks')->orderBy('tasks', 'status');
         // $subquery->andWhere("tasks.status == :status");
@@ -52,6 +52,6 @@ class ProjectsModule extends Module {
         ]);
         // print "<pre>";
         // print_r($q->getModel());
-        return new EntityListResult($list, [], ['user', 'tasks']);
+        return new EntityListResult($list, [], ['user1', 'tasks1']);
     }
 }
