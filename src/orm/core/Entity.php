@@ -266,10 +266,14 @@ abstract class Entity extends DataObject {
                                 if ($value == null) {
                                     $value = $this->{$name}; // Lazy
                                 }
+                                $map  = [];
                                 $list = [];
+                                if (in_array($name, $cleanups)) {
+                                    $map = array_values($property->getLinks());
+                                }
                                 foreach ($value as $item) {
                                     assert($item instanceof Entity);
-                                    $list[] = $item->toArray([], $cleanups);
+                                    $list[] = $item->toArray($map, $cleanups);
                                 }
                                 $result[$name] = $list;
                             }
@@ -282,7 +286,7 @@ abstract class Entity extends DataObject {
                             }
                             break;
                     }
-                    $links         = $property->getLinks();
+                    $links = $property->getLinks();
                     foreach ($links as $link => $primaryKey) {
                         unset($result[$link]);
                     }
@@ -345,7 +349,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Проверяет корректность значения свойтсва типа перечисление
+     * Проверяет корректность значения свойства типа перечисление
      *
      * @param string                                        $name
      * @param \XEAF\Rack\ORM\Models\Properties\EnumProperty $property
