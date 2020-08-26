@@ -17,6 +17,7 @@ use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
+use XEAF\Rack\ORM\Models\Properties\RelationModel;
 use XEAF\Rack\ORM\Models\RelationValue;
 
 /**
@@ -62,12 +63,22 @@ interface IResolver extends IFactoryObject {
     /**
      * Разрешает "нетерпеливое" значение
      *
-     * @param \XEAF\Rack\ORM\Core\Entity              $entity     Объект сущности
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel  Модель конструкции WITH
+     * @param \XEAF\Rack\ORM\Core\Entity              $entity    Объект сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel $withModel Модель конструкции WITH
      *
      * @return \XEAF\Rack\ORM\Models\RelationValue
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     public function resolveEagerValue(Entity $entity, WithModel $withModel): RelationValue;
 
+    /**
+     * Преобразует зачение свойства в массив
+     *
+     * @param string                                         $name     Имя свойста
+     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
+     * @param array                                          $cleanups Идентификаирпы очищаемых сущностей
+     *
+     * @return array
+     */
+    public function relationToArray(string $name, RelationModel $property, array $cleanups): array;
 }

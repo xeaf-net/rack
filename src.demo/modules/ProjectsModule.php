@@ -38,7 +38,7 @@ class ProjectsModule extends Module {
      */
     public function processGet(): ?IActionResult {
         $em    = DemoEM::getInstance();
-        $xql   = "p from projects p where p.id == :id";
+        $xql   = "p from projects p";
         $query = $em->query($xql);
         // $query->select('u')->leftJoin('users', 'u', 'id', 'p', 'userId');
         $query->withEager('p', 'user');
@@ -48,7 +48,6 @@ class ProjectsModule extends Module {
         // $subquery->andWhere("tasks.status == :status");
         // $q = $query->subquery('p', 'tasks');
         $list = $query->get([
-            'id'     => 'd2ebe471-9308-4879-a4d2-f6143a6bf7e6',
             'status' => 'ACTIVE'
         ]);
         // print "<pre>";

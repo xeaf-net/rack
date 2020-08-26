@@ -14,7 +14,6 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
-use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -36,6 +35,7 @@ use XEAF\Rack\ORM\Utils\EntityStorage;
 use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
+use XEAF\Rack\ORM\Utils\Lex\RelationTypes;
 use XEAF\Rack\ORM\Utils\Resolver;
 
 /**
@@ -226,12 +226,12 @@ abstract class Entity extends DataObject {
     /**
      * Возвращает представление данных объекта в виде массива
      *
-     * @param array $map     Карта свойств
-     * @param array $cleanup Идентификаторы очищаемых сущностей связей
+     * @param array $map      Карта свойств
+     * @param array $cleanups Идентификаторы очищаемых сущностей связей
      *
      * @return array
      */
-    public function toArray(array $map = [], array $cleanup = []): array {
+    public function toArray(array $map = [], array $cleanups = []): array {
         $result     = parent::toArray($map);
         $empty      = count($map) == 0;
         $properties = $this->_model->getPropertyByNames();
@@ -253,44 +253,69 @@ abstract class Entity extends DataObject {
                             break;
                     }
                 } else {
-                    
+                    assert($property instanceof RelationModel);
+                    $value  = null;
+                    $exists = false;
                     if ($this->_relationValues->exists($name)) {
-                        assert($property instanceof RelationModel);
-                        $value = $this->{$name};
-                        if ($value instanceof ICollection) {
-                            $result[$name] = $value->toArray();
-                        } else {
-                            $result[$name] = $value->toArray();
-                        }
+                        $value  = $this->getRelationValue($name)->getValue();
+                        $exists = true;
+                    }
+                    switch ($property->getType()) {
+                        case RelationTypes::ONE_TO_MANY:
+                            if ($exists) {
+                                if ($value == null) {
+                                    $value = $this->{$name}; // Lazy
+                                }
+                                $list = [];
+                                foreach ($value as $item) {
+                                    assert($item instanceof Entity);
+                                    $list[] = $item->toArray([], $cleanups);
+                                }
+                                $result[$name] = $list;
+                            }
+                            break;
+                        case RelationTypes::MANY_TO_ONE:
+                            if ($exists && $value == null) {
+                                $result[$name] = null;
+                            } else {
+                                $result[$name] = $this->manyToOneToArray($name, $value, $property, $result, $cleanups);
+                            }
+                            break;
+                    }
+                    $links         = $property->getLinks();
+                    foreach ($links as $link => $primaryKey) {
+                        unset($result[$link]);
                     }
                 }
             }
         }
-        return $this->extractEntities($result);
+        return $result;
     }
 
     /**
-     * Вычленяет свойства сущностей из массива данных
+     * Преобразует сущность связи Многие к одному в массив
      *
-     * @param array $data Массив исходных данных
+     * @param string                                         $name     Имя свойства
+     * @param \XEAF\Rack\ORM\Core\Entity|null                $entity   Объект сущности
+     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
+     * @param array                                          $data     Набор исходных данных
+     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
      *
-     * @return array
+     * @return array|null
      */
-    protected function extractEntities(array $data): array {
-        $result = $data;
-        $properties = $this->_model->getPropertyByNames();
-        foreach ($properties as $name => $property) {
-            if ($property instanceof ManyToOneProperty) {
-                $item  = [];
-                $links = $property->getLinks();
-                foreach ($links as $link => $primaryKey) {
-                    $item[$primaryKey] = $data[$link];
-                    unset($result[$link]);
+    protected function manyToOneToArray(string $name, ?Entity $entity, RelationModel $property, array $data, array $cleanups): ?array {
+        $result = [];
+        if (!$entity || in_array($name, $cleanups)) {
+            $links = $property->getLinks();
+            foreach ($links as $link => $primaryKey) {
+                $value = $data[$link];
+                if ($value == null) {
+                    return null;
                 }
-                if (!array_key_exists($name, $result)) {
-                    $result[$name] = $item;
-                }
+                $result[$primaryKey] = $value;
             }
+        } else {
+            $result = $entity->toArray([], $cleanups);
         }
         return $result;
     }

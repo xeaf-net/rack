@@ -118,6 +118,14 @@ class Resolver implements IResolver {
     }
 
     /**
+     * @inheritDoc
+     */
+    public function relationToArray(string $name, RelationModel $property, array $cleanups): array {
+
+        return [];
+    }
+
+    /**
      * Разрешает отношение Один ко многим
      *
      * @param \XEAF\Rack\ORM\Core\EntityManager                  $em        Менеджер сущностей
