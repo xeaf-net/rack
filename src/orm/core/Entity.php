@@ -280,10 +280,10 @@ abstract class Entity extends DataObject {
                             break;
                         case RelationTypes::MANY_TO_ONE:
                             if ($exists && $value == null) {
-                                $result[$name] = null;
-                            } else {
-                                $result[$name] = $this->manyToOneToArray($name, $value, $property, $result, $cleanups);
+                                $value         = $this->{$name}; // Lazy
+                                $result[$name] = $value;
                             }
+                            $result[$name] = $this->manyToOneToArray($name, $value, $property, $result, $cleanups);
                             break;
                     }
                     $links = $property->getLinks();
