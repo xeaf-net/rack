@@ -653,11 +653,12 @@ class EntityQuery extends DataModel {
      * @return array
      */
     protected function processRecord(string $aliasName, IKeyValue $properties, array $record): array {
-        $result = [];
+        $result  = [];
+        $lcAlias = strtolower($aliasName);
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
             if (!$property->getIsRelation()) {
-                $fieldAlias    = $aliasName . '_' . $property->getFieldName();
+                $fieldAlias    = $lcAlias . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, $record[$fieldAlias]);
             }
         }
