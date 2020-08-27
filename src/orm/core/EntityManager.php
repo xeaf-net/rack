@@ -89,7 +89,23 @@ abstract class EntityManager {
      *
      * @return array
      */
-    abstract public function declareEntities(): array;
+    abstract protected function declareEntities(): array;
+
+    /**
+     * Возвращает информацию о модели сущности
+     *
+     * @param string $name Идентификатор сущности
+     *
+     * @return \XEAF\Rack\ORM\Models\EntityModel
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function __get(string $name) {
+        $result = $this->getEntityModel($name);
+        if (!$result) {
+            throw EntityException::unknownEntity($name);
+        }
+        return $result;
+    }
 
     /**
      * Возващает подключение к базе данных
