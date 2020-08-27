@@ -239,18 +239,20 @@ abstract class Entity extends DataObject {
             if ($empty || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if (!$property->getIsRelation()) {
-                    switch ($property->getDataType()) {
-                        case DataTypes::DT_INTEGER:
-                        case DataTypes::DT_DATE:
-                        case DataTypes::DT_DATETIME:
-                            $result[$name] = (int)$result[$name];
-                            break;
-                        case DataTypes::DT_BOOL:
-                            $result[$name] = (bool)$result[$name];
-                            break;
-                        case DataTypes::DT_NUMERIC:
-                            $result[$name] = (float)$result[$name];
-                            break;
+                    if ($result[$name] !== null) {
+                        switch ($property->getDataType()) {
+                            case DataTypes::DT_INTEGER:
+                            case DataTypes::DT_DATE:
+                            case DataTypes::DT_DATETIME:
+                                $result[$name] = (int)$result[$name];
+                                break;
+                            case DataTypes::DT_BOOL:
+                                $result[$name] = (bool)$result[$name];
+                                break;
+                            case DataTypes::DT_NUMERIC:
+                                $result[$name] = (float)$result[$name];
+                                break;
+                        }
                     }
                 } else {
                     assert($property instanceof RelationModel);
