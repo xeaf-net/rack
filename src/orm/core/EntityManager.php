@@ -572,8 +572,10 @@ abstract class EntityManager {
         foreach ($entities as $name => $className) {
             $item = new $className();
             assert($item instanceof Entity);
-            $this->_entities->put($name, $item->getModel());
-            $this->_entityTables->put($item->getModel()->getTableName(), $name);
+            $model = $item->getModel();
+            $model->setEntityManager($this);
+            $this->_entities->put($name, $model);
+            $this->_entityTables->put($model->getTableName(), $name);
             $this->_entityClasses->put($name, $className);
         }
     }

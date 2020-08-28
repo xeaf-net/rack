@@ -15,6 +15,7 @@ namespace XEAF\Rack\ORM\Models;
 use XEAF\Rack\API\Core\DataModel;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Models\Properties\PropertyModel;
 
 /**
@@ -23,6 +24,8 @@ use XEAF\Rack\ORM\Models\Properties\PropertyModel;
  * @property-read string                              $tableName            Имя таблицы БД
  * @property-read \XEAF\Rack\API\Interfaces\IKeyValue $propertyByNames      Набор свойств по имени свойства
  * @property-read \XEAF\Rack\API\Interfaces\IKeyValue $propertyByFieldNames Набор свойств по имени поля БД
+ *
+ * @property \XEAF\Rack\ORM\Core\EntityManager|null   $entityManager        Менеджер сущностей
  *
  * @package XEAF\Rack\ORM\Models
  */
@@ -51,6 +54,12 @@ class EntityModel extends DataModel {
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
     private $_propertyByFieldNames;
+
+    /**
+     * Менеджер сущностей
+     * @var \XEAF\Rack\ORM\Core\EntityManager|null
+     */
+    private $_entityManager = null;
 
     /**
      * Конструктор класса
@@ -90,6 +99,26 @@ class EntityModel extends DataModel {
      */
     public function getPrimaryKeyNames(): array {
         return $this->_primaryKeyNames;
+    }
+
+    /**
+     * Возвращает объект менеджера сущностей
+     *
+     * @return \XEAF\Rack\ORM\Core\EntityManager|null
+     */
+    public function getEntityManager(): ?EntityManager {
+        return $this->_entityManager;
+    }
+
+    /**
+     * Задает объект менеджера сущностей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager|null $entityManager Менеджер сущностей
+     *
+     * @return void
+     */
+    public function setEntityManager(?EntityManager $entityManager): void {
+        $this->_entityManager = $entityManager;
     }
 
     /**

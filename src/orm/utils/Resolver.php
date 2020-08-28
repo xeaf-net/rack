@@ -135,12 +135,18 @@ class Resolver implements IResolver {
                 }
                 break;
             case RelationTypes::MANY_TO_ONE:
-                $result[$name] = $this->manyToOneToArray($name, $value, $property, $data, $cleanups);
+                if ($value && !in_array($name, $cleanups)) {
+                    $result[$name] = $value->toArray([], $cleanups);
+                } else {
+                    $em            = $entity->getModel()->getEntityManager();
+                    $entity        = $property->getEntity();
+                    $result[$name] = $this->manyToOneToArray($em, $entity, $property, $data);
+                }
                 break;
         }
-        // PK!
+        // PK! OK!
         $links = $property->getLinks();
-        foreach ($links as $link => $primaryKey) {
+        foreach ($links as $link) {
             unset($result[$link]);
         }
         return $result;
@@ -157,12 +163,13 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveOneToMany(EntityManager $em, WithModel $withModel, OneToManyProperty $property): void {
-        $query  = $this->withModelQuery($em, $withModel);
-        $entity = $property->getEntity();
-        $links  = $withModel->getRelation()->getLinks();
+        $query   = $this->withModelQuery($em, $withModel);
+        $entity  = $property->getEntity();
+        $links   = $withModel->getRelation()->getLinks();
+        $linksPK = $this->resolveLinksPK($em, $entity, $links);
         $query->select($entity)->from($entity);
-        // PK!
-        foreach ($links as $link => $primaryKey) {
+        // PK! OK!
+        foreach ($linksPK as $link => $primaryKey) {
             $param = "__$primaryKey";
             $query->andWhere("$entity.$link == :$param");
             $query->parameter($param, null);
@@ -202,11 +209,13 @@ class Resolver implements IResolver {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function resolveLazyManyToOne(EntityManager $em, WithModel $withModel, ManyToOneProperty $property): void {
-        $query  = $this->withModelQuery($em, $withModel);
-        $entity = $property->getEntity();
+        $query   = $this->withModelQuery($em, $withModel);
+        $entity  = $property->getEntity();
+        $links   = $property->getLinks();
+        $linksPK = $this->resolveLinksPK($em, $entity, $links);
         $query->select($entity)->from($entity);
-        // PK!
-        foreach ($property->getLinks() as $foreignKey => $primaryKey) {
+        // PK! OK!
+        foreach ($linksPK as $foreignKey => $primaryKey) {
             $param = "__$foreignKey";
             $query->andWhere("$entity.$primaryKey == :$param");
             $query->parameter($param, null);
@@ -229,11 +238,12 @@ class Resolver implements IResolver {
         $fullAlias = $withModel->getFullAlias();
         $entity    = $property->getEntity();
         $links     = $property->getLinks();
+        $linksPK   = $this->resolveLinksPK($query->getEntityManager(), $entity, $links);
         if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
-        // PK!
-        foreach ($links as $foreignKey => $primaryKey) {
+        // PK! OK!
+        foreach ($linksPK as $foreignKey => $primaryKey) {
             $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
             $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
         }
@@ -329,8 +339,8 @@ class Resolver implements IResolver {
         $map  = [];
         $list = [];
         if (in_array($name, $cleanups)) {
-            // PK!
-            $map = array_values($property->getLinks());
+            // PK! OK!
+            $map = $property->getLinks();
         }
         foreach ($value as $item) {
             assert($item instanceof Entity);
@@ -342,28 +352,46 @@ class Resolver implements IResolver {
     /**
      * Преобразует сущность связи Многие к одному в массив
      *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\ORM\Core\Entity|null                $entity   Объект сущности
+     * @param \XEAF\Rack\ORM\Core\EntityManager|null         $em       Менеджер сущностей
+     * @param string                                         $entity   Имя сущности
      * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
      * @param array                                          $data     Набор исходных данных
-     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
      *
      * @return array|null
      */
-    protected function manyToOneToArray(string $name, ?Entity $entity, RelationModel $property, array $data, array $cleanups): ?array {
+    protected function manyToOneToArray(?EntityManager $em, string $entity, RelationModel $property, array $data): ?array {
         $result = [];
-        if (!$entity || in_array($name, $cleanups)) {
-            // PK!
-            $links = $property->getLinks();
-            foreach ($links as $link => $primaryKey) {
+        // PK! OK!
+        if ($em != null) {
+            $links   = $property->getLinks();
+            $linksPK = $this->resolveLinksPK($em, $entity, $links);
+            foreach ($linksPK as $link => $primaryKey) {
                 $value = $data[$link];
                 if ($value == null) {
                     return null;
                 }
                 $result[$primaryKey] = $value;
             }
-        } else {
-            $result = $entity->toArray([], $cleanups);
+        }
+        return $result;
+    }
+
+    /**
+     * Возвращает массив разрешенных первичных ключей для связей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $em     Менеджер сущностей
+     * @param string                            $entity Имя сущности
+     * @param array                             $links  Исходынй массив связей
+     *
+     * @return array
+     */
+    protected function resolveLinksPK(EntityManager $em, string $entity, array $links): array {
+        $result      = [];
+        $model       = $em->getEntityModel($entity);
+        $primaryKeys = $model->getPrimaryKeyNames();
+        $key         = 0;
+        foreach ($links as $link) {
+            $result[$link] = $primaryKeys[$key++];
         }
         return $result;
     }
