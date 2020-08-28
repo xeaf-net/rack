@@ -138,6 +138,7 @@ class Resolver implements IResolver {
                 $result[$name] = $this->manyToOneToArray($name, $value, $property, $data, $cleanups);
                 break;
         }
+        // PK!
         $links = $property->getLinks();
         foreach ($links as $link => $primaryKey) {
             unset($result[$link]);
@@ -160,6 +161,7 @@ class Resolver implements IResolver {
         $entity = $property->getEntity();
         $links  = $withModel->getRelation()->getLinks();
         $query->select($entity)->from($entity);
+        // PK!
         foreach ($links as $link => $primaryKey) {
             $param = "__$primaryKey";
             $query->andWhere("$entity.$link == :$param");
@@ -203,6 +205,7 @@ class Resolver implements IResolver {
         $query  = $this->withModelQuery($em, $withModel);
         $entity = $property->getEntity();
         $query->select($entity)->from($entity);
+        // PK!
         foreach ($property->getLinks() as $foreignKey => $primaryKey) {
             $param = "__$foreignKey";
             $query->andWhere("$entity.$primaryKey == :$param");
@@ -229,6 +232,7 @@ class Resolver implements IResolver {
         if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
+        // PK!
         foreach ($links as $foreignKey => $primaryKey) {
             $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
             $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
@@ -325,6 +329,7 @@ class Resolver implements IResolver {
         $map  = [];
         $list = [];
         if (in_array($name, $cleanups)) {
+            // PK!
             $map = array_values($property->getLinks());
         }
         foreach ($value as $item) {
@@ -348,6 +353,7 @@ class Resolver implements IResolver {
     protected function manyToOneToArray(string $name, ?Entity $entity, RelationModel $property, array $data, array $cleanups): ?array {
         $result = [];
         if (!$entity || in_array($name, $cleanups)) {
+            // PK!
             $links = $property->getLinks();
             foreach ($links as $link => $primaryKey) {
                 $value = $data[$link];
