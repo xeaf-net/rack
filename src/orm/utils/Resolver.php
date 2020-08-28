@@ -14,6 +14,8 @@ namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ICollection;
+use XEAF\Rack\API\Utils\Exceptions\CollectionException;
+use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
@@ -125,6 +127,7 @@ class Resolver implements IResolver {
         $value  = null;
         $result = $data;
         $exists = $entity->getRelationValue($name) != null;
+        $em     = $entity->getModel()->getEntityManager();
         if ($exists) {
             $value = $entity->{$name};
         }
@@ -138,7 +141,6 @@ class Resolver implements IResolver {
                 if ($value && !in_array($name, $cleanups)) {
                     $result[$name] = $value->toArray([], $cleanups);
                 } else {
-                    $em            = $entity->getModel()->getEntityManager();
                     $entity        = $property->getEntity();
                     $result[$name] = $this->manyToOneToArray($em, $entity, $property, $data);
                 }
@@ -336,15 +338,20 @@ class Resolver implements IResolver {
      * @return array
      */
     protected function oneToManyToArray(string $name, ?ICollection $value, RelationModel $property, array $cleanups): array {
-        $map  = [];
         $list = [];
-        if (in_array($name, $cleanups)) {
-            // PK! OK!
-            $map = $property->getLinks();
-        }
-        foreach ($value as $item) {
-            assert($item instanceof Entity);
-            $list[] = $item->toArray($map, $cleanups);
+        if ($value->count() > 0) {
+            $map   = [];
+            $first = true;
+            foreach ($value as $item) {
+                assert($item instanceof Entity);
+                if ($first) {
+                    if (in_array($name, $cleanups)) {
+                        $map = $item->getModel()->getPrimaryKeyNames();
+                    }
+                    $first = false;
+                }
+                $list[] = $item->toArray($map, $cleanups);
+            }
         }
         return $list;
     }
