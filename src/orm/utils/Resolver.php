@@ -14,8 +14,6 @@ namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ICollection;
-use XEAF\Rack\API\Utils\Exceptions\CollectionException;
-use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
@@ -74,7 +72,7 @@ class Resolver implements IResolver {
         switch ($property->getType()) {
             case RelationTypes::ONE_TO_MANY:
                 assert($property instanceof OneToManyProperty);
-                $this->resolveOneToMany($em, $withModel, $property);
+                $this->resolveOneToMany($em, $entityName, $withModel, $property);
                 break;
             case RelationTypes::MANY_TO_ONE:
                 assert($property instanceof ManyToOneProperty);
@@ -157,17 +155,23 @@ class Resolver implements IResolver {
     /**
      * Разрешает отношение Один ко многим
      *
-     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em        Менеджер сущностей
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel Объект модели WITH
-     * @param \XEAF\Rack\ORM\Models\Properties\OneToManyProperty $property  Свойство отношения
+     * @param \XEAF\Rack\ORM\Core\EntityManager                  $em         Менеджер сущностей
+     * @param string                                             $entityName Имя разбираемой сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel  Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\OneToManyProperty $property   Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveOneToMany(EntityManager $em, WithModel $withModel, OneToManyProperty $property): void {
-        $query   = $this->withModelQuery($em, $withModel);
-        $entity  = $property->getEntity();
-        $links   = $withModel->getRelation()->getLinks();
+    protected function resolveOneToMany(EntityManager $em, string $entityName, WithModel $withModel, OneToManyProperty $property): void {
+        $query    = $this->withModelQuery($em, $withModel);
+        $entity   = $property->getEntity();
+        $relation = $withModel->getRelation();
+        $links    = $relation->getLinks();
+        if (!$links) {
+            $links = $this->resolveOneToManyLinks($em, $entity, $entityName);
+            $relation->setLinks($links);
+        }
         $linksPK = $this->resolveLinksPK($em, $entity, $links);
         $query->select($entity)->from($entity);
         // PK! OK!
@@ -401,6 +405,27 @@ class Resolver implements IResolver {
             $result[$link] = $primaryKeys[$key++];
         }
         return $result;
+    }
+
+    /**
+     * Возвращает массив ссылок связей
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager $em         Менеджер сущостей
+     * @param string                            $fromEntity Имя сущности источника
+     * @param string                            $toEntity   Имя сущности назначения
+     *
+     * @return array
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function resolveOneToManyLinks(EntityManager $em, string $fromEntity, string $toEntity): array {
+        $model      = $em->getEntityModel($fromEntity);
+        $properties = $model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            if ($property instanceof ManyToOneProperty && $property->getEntity() == $toEntity) {
+                return $property->getLinks();
+            }
+        }
+        throw EntityException::unresolvedLink($fromEntity, $toEntity);
     }
 
     /**

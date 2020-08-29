@@ -14,8 +14,8 @@ namespace XEAF\Rack\Demo\Modules;
 
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
-use XEAF\Rack\API\Models\Results\ListResult;
 use XEAF\Rack\Demo\App\DemoEM;
+use XEAF\Rack\ORM\Models\Results\EntityListResult;
 
 /**
  * Реализует методы работы с Задачами
@@ -37,9 +37,9 @@ class TasksModule extends Module {
      */
     public function processGet(): ?IActionResult {
         $em    = DemoEM::getInstance();
-        $xql   = "t from tasks t";
+        $xql   = "userTasks from userTasks";
         $query = $em->query($xql);
         $list  = $query->get();
-        return new ListResult($list);
+        return new EntityListResult($list);
     }
 }

@@ -20,7 +20,7 @@ use XEAF\Rack\ORM\Utils\Lex\DataTypes;
  *
  * @property-read int    $type   Тип отношения
  * @property-read string $entity Имя сущности
- * @property-read array  $links  Свойства связи
+ * @property      array  $links  Свойства связи
  *
  * @package XEAF\Rack\ORM\Models\Properties
  */
@@ -91,5 +91,16 @@ abstract class RelationModel extends PropertyModel {
      */
     public function getLinks(): array {
         return $this->_links;
+    }
+
+    /**
+     * Задает свойства связи
+     *
+     * @param array $links Массив свойств связи
+     *
+     * @return void
+     */
+    public function setLinks(array $links): void {
+        $this->_links = $links;
     }
 }

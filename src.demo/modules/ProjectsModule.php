@@ -52,6 +52,6 @@ class ProjectsModule extends Module {
         ]);
         // print "<pre>";
         // print_r($q->getModel());
-        return new EntityListResult($list, [], ['user', 'tasks']);
+        return new EntityListResult($list, [], ['user1', 'tasks1']);
     }
 }

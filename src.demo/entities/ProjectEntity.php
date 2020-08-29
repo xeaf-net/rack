@@ -38,7 +38,7 @@ class ProjectEntity extends Entity {
             'userId' => self::uuid('user_id'),
             'title'  => self::string('project_title', 64),
             'user'   => self::manyToOne('users', ['userId']),
-            'tasks'  => self::oneToMany('tasks', ['projectId'])
+            'tasks'  => self::oneToMany('tasks')
         ]);
     }
 }

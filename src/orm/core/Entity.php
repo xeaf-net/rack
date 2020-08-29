@@ -496,7 +496,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
      */
-    protected static function oneToMany(string $entity, array $links): OneToManyProperty {
+    protected static function oneToMany(string $entity, array $links = []): OneToManyProperty {
         return new OneToManyProperty($entity, $links);
     }
 
