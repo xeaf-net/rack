@@ -132,7 +132,7 @@ class Resolver implements IResolver {
         switch ($property->getType()) {
             case RelationTypes::ONE_TO_MANY:
                 if ($exists) {
-                    $result[$name] = $this->oneToManyToArray($name, $value, $property, $cleanups);
+                    $result[$name] = $this->oneToManyToArray($name, $value, $cleanups);
                 }
                 break;
             case RelationTypes::MANY_TO_ONE:
@@ -144,7 +144,6 @@ class Resolver implements IResolver {
                 }
                 break;
         }
-        // PK! OK!
         $links = $property->getLinks();
         foreach ($links as $link) {
             unset($result[$link]);
@@ -174,7 +173,6 @@ class Resolver implements IResolver {
         }
         $linksPK = $this->resolveLinksPK($em, $entity, $links);
         $query->select($entity)->from($entity);
-        // PK! OK!
         foreach ($linksPK as $link => $primaryKey) {
             $param = "__$primaryKey";
             $query->andWhere("$entity.$link == :$param");
@@ -220,7 +218,6 @@ class Resolver implements IResolver {
         $links   = $property->getLinks();
         $linksPK = $this->resolveLinksPK($em, $entity, $links);
         $query->select($entity)->from($entity);
-        // PK! OK!
         foreach ($linksPK as $foreignKey => $primaryKey) {
             $param = "__$foreignKey";
             $query->andWhere("$entity.$primaryKey == :$param");
@@ -248,7 +245,6 @@ class Resolver implements IResolver {
         if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
-        // PK! OK!
         foreach ($linksPK as $foreignKey => $primaryKey) {
             $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
             $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
@@ -336,12 +332,11 @@ class Resolver implements IResolver {
      *
      * @param string                                         $name     Имя свойства
      * @param \XEAF\Rack\API\Interfaces\ICollection|null     $value    Коллекция объектов сущностей
-     * @param \XEAF\Rack\ORM\Models\Properties\RelationModel $property Модель свойства
      * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
      *
      * @return array
      */
-    protected function oneToManyToArray(string $name, ?ICollection $value, RelationModel $property, array $cleanups): array {
+    protected function oneToManyToArray(string $name, ?ICollection $value, array $cleanups): array {
         $list = [];
         if ($value->count() > 0) {
             $map   = [];
@@ -372,7 +367,6 @@ class Resolver implements IResolver {
      */
     protected function manyToOneToArray(?EntityManager $em, string $entity, RelationModel $property, array $data): ?array {
         $result = [];
-        // PK! OK!
         if ($em != null) {
             $links   = $property->getLinks();
             $linksPK = $this->resolveLinksPK($em, $entity, $links);
