@@ -18,8 +18,11 @@ use XEAF\Rack\ORM\Models\EntityModel;
 /**
  * Описывает поля сущности задачи пользователя
  *
- * @property string $userId Идентификатор пользователя
- * @property string $taskId Идентификатор задачи
+ * @property string                                   $userId Идентификатор пользователя
+ * @property string                                   $taskId Идентификатор задачи
+ *
+ * @property-read \XEAF\Rack\Demo\Entities\UserEntity $user   Пользователь
+ * @property-read \XEAF\Rack\Demo\Entities\TaskEntity $task   Задача
  *
  * @package XEAF\Rack\Demo\Entities
  */
@@ -31,7 +34,9 @@ class UserTasks extends Entity {
     protected function createEntityModel(): EntityModel {
         return new EntityModel('user_tasks', [
             'userId' => self::uuid('user_id', true),
-            'taskId' => self::uuid('task_id', true)
+            'taskId' => self::uuid('task_id', true),
+            'user'   => self::manyToOne('users', ['userId']),
+            'task'   => self::manyToOne('tasks', ['taskId'])
         ]);
     }
 }
