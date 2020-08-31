@@ -76,7 +76,7 @@ class Resolver implements IResolver {
                 break;
             case RelationTypes::MANY_TO_ONE:
                 assert($property instanceof ManyToOneProperty);
-                $this->resolveManyToOne($query, $entityModel, $withModel, $property);
+                $this->resolveManyToOne($query, $withModel, $property);
                 break;
         }
     }
@@ -184,20 +184,19 @@ class Resolver implements IResolver {
      * Разрешает отношение Многие к одному
      *
      * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query       Объект запроса
-     * @param \XEAF\Rack\ORM\Models\EntityModel                  $entityModel Модель сущности
      * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
      * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
+    protected function resolveManyToOne(EntityQuery $query, WithModel $withModel, ManyToOneProperty $property): void {
         switch ($withModel->getResolveType()) {
             case ResolveTypes::LAZY:
                 $this->resolveLazyManyToOne($query->getEntityManager(), $withModel, $property);
                 break;
             case ResolveTypes::EAGER:
-                $this->resolveEagerManyToOne($query, $entityModel, $withModel, $property);
+                $this->resolveEagerManyToOne($query, $withModel, $property);
                 break;
         }
     }
@@ -229,14 +228,13 @@ class Resolver implements IResolver {
      * Разрешает "нетерпеливое" отношение Многие к одному
      *
      * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query       Объект запроса
-     * @param \XEAF\Rack\ORM\Models\EntityModel                  $entityModel Модель сущности
      * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
      * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function resolveEagerManyToOne(EntityQuery $query, EntityModel $entityModel, WithModel $withModel, ManyToOneProperty $property): void {
+    protected function resolveEagerManyToOne(EntityQuery $query, WithModel $withModel, ManyToOneProperty $property): void {
         $alias     = $withModel->getAlias();
         $fullAlias = $withModel->getFullAlias();
         $entity    = $property->getEntity();
@@ -245,20 +243,7 @@ class Resolver implements IResolver {
         if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
-//        var_dump($linksPK);
-
         foreach ($linksPK as $foreignKey => $primaryKey) {
-//            $primaryKeys = $entityModel->getPrimaryKeyNames();
-//            if (count($primaryKeys) > 1) {
-//                $primaryKey = $foreignKey;
-//            } else {
-//                $primaryKey = $primaryKeys[0];
-//            }
-
-//            print_r($primaryKeys);
-//            $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
-//            print "$fullAlias $entity $primaryKey $alias $foreignKey ";
-
             $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
         }
     }
