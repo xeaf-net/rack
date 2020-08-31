@@ -22,6 +22,7 @@ use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Parsers\FromModel;
 use XEAF\Rack\ORM\Models\Parsers\JoinModel;
 use XEAF\Rack\ORM\Models\Parsers\WithModel;
+use XEAF\Rack\ORM\Models\Properties\ManyToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\OneToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\RelationModel;
@@ -78,6 +79,10 @@ class Resolver implements IResolver {
                 assert($property instanceof ManyToOneProperty);
                 $this->resolveManyToOne($query, $withModel, $property);
                 break;
+            case RelationTypes::MANY_TO_MANY:
+                assert($property instanceof ManyToManyProperty);
+                $this->resolveManyToMany($em, $entityName, $withModel, $property);
+                break;
         }
     }
 
@@ -106,6 +111,7 @@ class Resolver implements IResolver {
         }
         switch ($withModel->getRelation()->getType()) {
             case RelationTypes::ONE_TO_MANY:
+            case RelationTypes::MANY_TO_MANY:
                 $data = $query->get($withModel->getParameters());
                 break;
             case RelationTypes::MANY_TO_ONE:
@@ -131,6 +137,7 @@ class Resolver implements IResolver {
         }
         switch ($property->getType()) {
             case RelationTypes::ONE_TO_MANY:
+            case RelationTypes::MANY_TO_MANY:
                 if ($exists) {
                     $result[$name] = $this->oneToManyToArray($name, $value, $cleanups);
                 }
@@ -181,11 +188,54 @@ class Resolver implements IResolver {
     }
 
     /**
+     * Разрешает отношение Многие ко многим
+     *
+     * @param \XEAF\Rack\ORM\Core\EntityManager                   $em         Менеджер сущностей
+     * @param string                                              $entityName Имя разбираемой сущности
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel             $withModel  Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\ManyToManyProperty $property   Свойство отношения
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    protected function resolveManyToMany(EntityManager $em, string $entityName, WithModel $withModel, ManyToManyProperty $property): void {
+        $query       = $this->withModelQuery($em, $withModel);
+        $entity      = $property->getEntity();
+        $interEntity = $property->getInterEntity();
+        $links       = $property->getLinks();
+        $interLinks  = $property->getInterLinks();
+        $relation    = $withModel->getRelation();
+        assert($relation instanceof ManyToManyProperty);
+        if (!$links) {
+            $links = $this->resolveOneToManyLinks($em, $interEntity, $entityName);
+            $relation->setLinks($links);
+        }
+        if (!$interLinks) {
+            $interLinks = $this->resolveOneToManyLinks($em, $interEntity, $entity);
+            $relation->setInterLinks($interLinks);
+        }
+        $linksPK      = $this->resolveLinksPK($em, $entityName, $links);
+        $interLinksPK = $this->resolveLinksPK($em, $entity, $interLinks);
+        $query->select($entity)->from($entity)->from($interEntity);
+        foreach ($interLinksPK as $link => $primaryKey) {
+            $query->andWhere("$interEntity.$link == $entity.$primaryKey");
+        }
+        foreach ($linksPK as $link => $primaryKey) {
+            $param = "__$primaryKey";
+            $query->andWhere("$interEntity.$link == :$param");
+            $query->parameter($param, null);
+        }
+//        print "<pre>";
+//        print_r($query->getModel());
+//        die();
+    }
+
+    /**
      * Разрешает отношение Многие к одному
      *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query       Объект запроса
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
-     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
+     * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query     Объект запроса
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property  Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
@@ -227,9 +277,9 @@ class Resolver implements IResolver {
     /**
      * Разрешает "нетерпеливое" отношение Многие к одному
      *
-     * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query       Объект запроса
-     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel   Объект модели WITH
-     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property    Свойство отношения
+     * @param \XEAF\Rack\ORM\Core\EntityQuery                    $query     Объект запроса
+     * @param \XEAF\Rack\ORM\Models\Parsers\WithModel            $withModel Объект модели WITH
+     * @param \XEAF\Rack\ORM\Models\Properties\ManyToOneProperty $property  Свойство отношения
      *
      * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException

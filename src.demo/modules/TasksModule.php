@@ -40,6 +40,8 @@ class TasksModule extends Module {
 
         $xql   = "tasks from tasks";
         $query = $em->query($xql);
+        $query->withLazy('tasks', 'users');
+
         // $query->withLazy('tasks', 'tasks');
 
 //        $xql   = "userTasks from userTasks";
@@ -50,6 +52,6 @@ class TasksModule extends Module {
 //        $query->withEager('projects', 'project');
 
         $list = $query->get();
-        return new EntityListResult($list);
+        return new EntityListResult($list, [], ['users']);
     }
 }

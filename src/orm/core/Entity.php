@@ -21,6 +21,7 @@ use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
+use XEAF\Rack\ORM\Models\Properties\ManyToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
@@ -501,7 +502,7 @@ abstract class Entity extends DataObject {
     }
 
     /**
-     * Создает описание свойства отношения Многин к одному
+     * Создает описание свойства отношения Многие к одному
      *
      * @param string $entity Имя сущности
      * @param array  $links  Свойства связи
@@ -510,6 +511,20 @@ abstract class Entity extends DataObject {
      */
     protected static function manyToOne(string $entity, array $links): ManyToOneProperty {
         return new ManyToOneProperty($entity, $links);
+    }
+
+    /**
+     *  Создает описание свойства отношения Многие ко многим
+     *
+     * @param string $entity      Имя сущности
+     * @param string $interEntity Имя промежуточной сщности
+     * @param array  $links       Свойства связи
+     * @param array  $interLinks  Свойства связи промежуточной сущности
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ManyToManyProperty
+     */
+    protected static function manyToMany(string $entity, string $interEntity, array $links = [], array $interLinks = []) {
+        return new ManyToManyProperty($entity, $interEntity, $links, $interLinks);
     }
 
     /**
