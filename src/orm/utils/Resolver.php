@@ -245,8 +245,20 @@ class Resolver implements IResolver {
         if (count($links) != 1) {
             throw EntityException::unsupportedFeature();
         }
+//        var_dump($linksPK);
+
         foreach ($linksPK as $foreignKey => $primaryKey) {
-            $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
+//            $primaryKeys = $entityModel->getPrimaryKeyNames();
+//            if (count($primaryKeys) > 1) {
+//                $primaryKey = $foreignKey;
+//            } else {
+//                $primaryKey = $primaryKeys[0];
+//            }
+
+//            print_r($primaryKeys);
+//            $primaryKey = implode('_', $entityModel->getPrimaryKeyNames());
+//            print "$fullAlias $entity $primaryKey $alias $foreignKey ";
+
             $query->select($fullAlias)->leftJoin($entity, $fullAlias, $primaryKey, $alias, $foreignKey);
         }
     }
@@ -330,9 +342,9 @@ class Resolver implements IResolver {
     /**
      * Преобразует сущность связи Один ко многим в массив
      *
-     * @param string                                         $name     Имя свойства
-     * @param \XEAF\Rack\API\Interfaces\ICollection|null     $value    Коллекция объектов сущностей
-     * @param array                                          $cleanups Идентификаторы очищаемых сущностей связей
+     * @param string                                     $name     Имя свойства
+     * @param \XEAF\Rack\API\Interfaces\ICollection|null $value    Коллекция объектов сущностей
+     * @param array                                      $cleanups Идентификаторы очищаемых сущностей связей
      *
      * @return array
      */
