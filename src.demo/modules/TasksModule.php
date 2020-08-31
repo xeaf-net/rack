@@ -39,7 +39,11 @@ class TasksModule extends Module {
         $em    = DemoEM::getInstance();
         $xql   = "userTasks from userTasks";
         $query = $em->query($xql);
+//        $query->withEager('userTasks', 'user');
         $query->withEager('userTasks', 'task');
+        $query->withEager('userTasks_task', 'project');
+        // $query->withEager('projects', 'project');
+
         $list  = $query->get();
         return new EntityListResult($list);
     }

@@ -229,7 +229,7 @@ class Generator implements IGenerator {
                 if ($accessType & AccessTypes::AC_READABLE > 0) {
                     $fieldName  = $property->getFieldName();
                     $fieldAlias = $lcAlias . '_' . $fieldName; // Для множественных сущностей
-                    $result[] = "$lcAlias.$fieldName as $fieldAlias";
+                    $result[]   = "$lcAlias.$fieldName as $fieldAlias";
                 }
             }
         }

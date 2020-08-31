@@ -734,6 +734,7 @@ class EntityQuery extends DataModel {
     protected function processRelationProperties(array $multi): DataObject {
         $result     = $multi;
         $withModels = $this->_model->getWithModels();
+        $unsets     = [];
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             $alias    = $withModel->getAlias();
@@ -754,11 +755,15 @@ class EntityQuery extends DataModel {
                             $value     = new RelationValue($withModel);
                             $value->setValue($multi[$fullAlias]);
                             $entity->setRelationValue($property, $value);
-                            unset($result[$fullAlias]);
+                            $unsets[] = $fullAlias;
+                            // unset($result[$fullAlias]);
                             break;
                     }
                     break;
             }
+        }
+        foreach ($unsets as $alias) {
+            unset($result[$alias]);
         }
         $keys = array_keys($result);
         return count($result) > 1 ? new DataObject($result) : $result[$keys[0]];
