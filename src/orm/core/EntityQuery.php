@@ -748,6 +748,7 @@ class EntityQuery extends DataModel {
                 case ResolveTypes::EAGER:
                     switch ($withModel->getRelation()->getType()) {
                         case RelationTypes::ONE_TO_MANY:
+                        case RelationTypes::MANY_TO_MANY:
                             $this->_resolver->resolveEagerValue($entity, $withModel);
                             break;
                         case RelationTypes::MANY_TO_ONE:

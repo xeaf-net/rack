@@ -40,7 +40,7 @@ class TasksModule extends Module {
 
         $xql   = "tasks from tasks";
         $query = $em->query($xql);
-        $query->withLazy('tasks', 'users');
+        $query->withEager('tasks', 'users');
 
         // $query->withLazy('tasks', 'tasks');
 
