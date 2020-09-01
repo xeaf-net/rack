@@ -29,4 +29,9 @@ class RelationTypes {
      */
     public const MANY_TO_ONE = 2;
 
+    /**
+     * Многие ко многим
+     */
+    public const MANY_TO_MANY = 3;
+
 }

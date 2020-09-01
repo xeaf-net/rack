@@ -653,11 +653,12 @@ class EntityQuery extends DataModel {
      * @return array
      */
     protected function processRecord(string $aliasName, IKeyValue $properties, array $record): array {
-        $result = [];
+        $result  = [];
+        $lcAlias = strtolower($aliasName);
         foreach ($properties as $name => $property) {
             assert($property instanceof PropertyModel);
             if (!$property->getIsRelation()) {
-                $fieldAlias    = $aliasName . '_' . $property->getFieldName();
+                $fieldAlias    = $lcAlias . '_' . $property->getFieldName();
                 $result[$name] = $this->processReadableProperty($property, $record[$fieldAlias]);
             }
         }
@@ -733,6 +734,7 @@ class EntityQuery extends DataModel {
     protected function processRelationProperties(array $multi): DataObject {
         $result     = $multi;
         $withModels = $this->_model->getWithModels();
+        $unsets     = [];
         foreach ($withModels as $withModel) {
             assert($withModel instanceof WithModel);
             $alias    = $withModel->getAlias();
@@ -746,6 +748,7 @@ class EntityQuery extends DataModel {
                 case ResolveTypes::EAGER:
                     switch ($withModel->getRelation()->getType()) {
                         case RelationTypes::ONE_TO_MANY:
+                        case RelationTypes::MANY_TO_MANY:
                             $this->_resolver->resolveEagerValue($entity, $withModel);
                             break;
                         case RelationTypes::MANY_TO_ONE:
@@ -753,11 +756,15 @@ class EntityQuery extends DataModel {
                             $value     = new RelationValue($withModel);
                             $value->setValue($multi[$fullAlias]);
                             $entity->setRelationValue($property, $value);
-                            unset($result[$fullAlias]);
+                            $unsets[] = $fullAlias;
+                            // unset($result[$fullAlias]);
                             break;
                     }
                     break;
             }
+        }
+        foreach ($unsets as $alias) {
+            unset($result[$alias]);
         }
         $keys = array_keys($result);
         return count($result) > 1 ? new DataObject($result) : $result[$keys[0]];

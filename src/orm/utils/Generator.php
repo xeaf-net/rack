@@ -222,13 +222,14 @@ class Generator implements IGenerator {
             $model      = $this->entityModelByAlias($alias);
             $properties = $model->getPropertyByNames();
             $aliasModel->setModel($model);
+            $lcAlias = strtolower($alias);
             foreach ($properties as $name => $property) {
                 assert($property instanceof PropertyModel);
                 $accessType = $property->getAccessType();
                 if ($accessType & AccessTypes::AC_READABLE > 0) {
                     $fieldName  = $property->getFieldName();
-                    $fieldAlias = $alias . '_' . $fieldName; // Для множественных сущностей
-                    $result[]   = "$alias.$fieldName as $fieldAlias";
+                    $fieldAlias = $lcAlias . '_' . $fieldName; // Для множественных сущностей
+                    $result[]   = "$lcAlias.$fieldName as $fieldAlias";
                 }
             }
         }

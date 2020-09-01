@@ -56,7 +56,8 @@ class TaskEntity extends Entity {
             'status'    => self::enum('task_status', self::STATUSES),
             'title'     => self::string('task_title', 64),
             'comment'   => self::text('task_comment'),
-            'project'   => self::manyToOne('projects', ['projectId' => 'id'])
+            'project'   => self::manyToOne('projects', ['projectId']),
+            'users'     => self::manyToMany('users', 'userTasks')
         ]);
     }
 }

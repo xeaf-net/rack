@@ -29,7 +29,7 @@ class BoolProperty extends PropertyModel {
      * @param bool   $primaryKey Признак первичного ключа
      * @param int    $accessType Определение доступа
      */
-    public function __construct($fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT) {
+    public function __construct(string $fieldName, bool $primaryKey = false, int $accessType = AccessTypes::AC_DEFAULT) {
         parent::__construct(DataTypes::DT_BOOL, 0, 0, $fieldName, $primaryKey, $accessType);
     }
 

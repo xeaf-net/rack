@@ -21,6 +21,7 @@ use XEAF\Rack\ORM\Models\Properties\DateProperty;
 use XEAF\Rack\ORM\Models\Properties\DateTimeProperty;
 use XEAF\Rack\ORM\Models\Properties\EnumProperty;
 use XEAF\Rack\ORM\Models\Properties\IntegerProperty;
+use XEAF\Rack\ORM\Models\Properties\ManyToManyProperty;
 use XEAF\Rack\ORM\Models\Properties\ManyToOneProperty;
 use XEAF\Rack\ORM\Models\Properties\NumericProperty;
 use XEAF\Rack\ORM\Models\Properties\ObjectProperty;
@@ -239,18 +240,20 @@ abstract class Entity extends DataObject {
             if ($empty || in_array($name, $map)) {
                 assert($property instanceof PropertyModel);
                 if (!$property->getIsRelation()) {
-                    switch ($property->getDataType()) {
-                        case DataTypes::DT_INTEGER:
-                        case DataTypes::DT_DATE:
-                        case DataTypes::DT_DATETIME:
-                            $result[$name] = (int)$result[$name];
-                            break;
-                        case DataTypes::DT_BOOL:
-                            $result[$name] = (bool)$result[$name];
-                            break;
-                        case DataTypes::DT_NUMERIC:
-                            $result[$name] = (float)$result[$name];
-                            break;
+                    if ($result[$name] !== null) {
+                        switch ($property->getDataType()) {
+                            case DataTypes::DT_INTEGER:
+                            case DataTypes::DT_DATE:
+                            case DataTypes::DT_DATETIME:
+                                $result[$name] = (int)$result[$name];
+                                break;
+                            case DataTypes::DT_BOOL:
+                                $result[$name] = (bool)$result[$name];
+                                break;
+                            case DataTypes::DT_NUMERIC:
+                                $result[$name] = (float)$result[$name];
+                                break;
+                        }
                     }
                 } else {
                     assert($property instanceof RelationModel);
@@ -494,12 +497,12 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\OneToManyProperty
      */
-    protected static function oneToMany(string $entity, array $links): OneToManyProperty {
+    protected static function oneToMany(string $entity, array $links = []): OneToManyProperty {
         return new OneToManyProperty($entity, $links);
     }
 
     /**
-     * Создает описание свойства отношения Многин к одному
+     * Создает описание свойства отношения Многие к одному
      *
      * @param string $entity Имя сущности
      * @param array  $links  Свойства связи
@@ -508,6 +511,20 @@ abstract class Entity extends DataObject {
      */
     protected static function manyToOne(string $entity, array $links): ManyToOneProperty {
         return new ManyToOneProperty($entity, $links);
+    }
+
+    /**
+     *  Создает описание свойства отношения Многие ко многим
+     *
+     * @param string $entity      Имя сущности
+     * @param string $interEntity Имя промежуточной сщности
+     * @param array  $links       Свойства связи
+     * @param array  $interLinks  Свойства связи промежуточной сущности
+     *
+     * @return \XEAF\Rack\ORM\Models\Properties\ManyToManyProperty
+     */
+    protected static function manyToMany(string $entity, string $interEntity, array $links = [], array $interLinks = []) {
+        return new ManyToManyProperty($entity, $interEntity, $links, $interLinks);
     }
 
     /**

@@ -78,6 +78,11 @@ class EntityException extends Exception {
     public const INVALID_ENUM_VALUE = 'F011';
 
     /**
+     * Неразрешенная связь
+     */
+    public const UNRESOLVED_LINK = 'F12';
+
+    /**
      * Неподдерживаемая возможность
      */
     public const UNSUPPORTED_FEATURE = 'EF998';
@@ -125,6 +130,9 @@ class EntityException extends Exception {
                 break;
             case self::INVALID_ENUM_VALUE:
                 $result = 'Invalid enum value [%s].';
+                break;
+            case self::UNRESOLVED_LINK:
+                $result = 'Unresolved link between [%s] and [%s].';
                 break;
             case self::UNSUPPORTED_FEATURE:
                 $result = "Unsupported feature.";
@@ -252,6 +260,18 @@ class EntityException extends Exception {
      */
     public static function invalidEnumValue(string $value): self {
         return new self(self::INVALID_ENUM_VALUE, [$value]);
+    }
+
+    /**
+     * Неразрешенная связь
+     *
+     * @param string $fromEntity Сущость источника
+     * @param string $toEntity   Сущность назначения
+     *
+     * @return static
+     */
+    public static function unresolvedLink(string $fromEntity, string $toEntity): self {
+        return new self(self::UNRESOLVED_LINK, [$fromEntity, $toEntity]);
     }
 
     /**
