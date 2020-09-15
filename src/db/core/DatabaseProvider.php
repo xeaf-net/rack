@@ -44,6 +44,16 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     protected const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
+     * Представление константы FALSE в SQL
+     */
+    public const SQL_FALSE = 0;
+
+    /**
+     * Представление константы TRUE в SQL
+     */
+    public const SQL_TRUE = 1;
+
+    /**
      * Ресурс подключения к базе данных
      * @var \PDO|null
      */
@@ -293,9 +303,9 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
      * @return array
      */
     protected function defaultOptions(): array {
-        $result                               = [];
-        $result[PDO::ATTR_CASE]               = PDO::CASE_NATURAL;
-        $result[PDO::ATTR_ERRMODE]            = PDO::ERRMODE_EXCEPTION;
+        $result                    = [];
+        $result[PDO::ATTR_CASE]    = PDO::CASE_NATURAL;
+        $result[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
         // $result[PDO::ATTR_ORACLE_NULLS]       = PDO::NULL_TO_STRING;
         $result[PDO::ATTR_DEFAULT_FETCH_MODE] = PDO::FETCH_ASSOC;
         $result[PDO::MYSQL_ATTR_FOUND_ROWS]   = true;
@@ -356,14 +366,14 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     /**
      * @inheritDoc
      */
-    public function formatBool(bool $flag): string {
-        return $flag ? '1' : '0';
+    public function formatBool(bool $flag): int {
+        return $flag ? self::SQL_TRUE : self::SQL_FALSE;
     }
 
     /**
      * @inheritDoc
      */
-    public function sqlBool(?string $flag): bool {
-        return $flag != null && $flag != '0';
+    public function sqlBool(?int $flag): bool {
+        return $flag !== null && $flag;
     }
 }

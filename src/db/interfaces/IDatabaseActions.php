@@ -211,16 +211,16 @@ interface IDatabaseActions {
      *
      * @param bool $flag Логическое значение
      *
-     * @return string
+     * @return int
      */
-    public function formatBool(bool $flag): string;
+    public function formatBool(bool $flag): int;
 
     /**
      * Преобразует логическое значение формата SQL в тип bool
      *
-     * @param string|null $flag Логические значение в формате SQL
+     * @param int|null $flag Логические значение в формате SQL
      *
      * @return bool
      */
-    public function sqlBool(?string $flag): bool;
+    public function sqlBool(?int $flag): bool;
 }
