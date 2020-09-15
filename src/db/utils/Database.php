@@ -224,14 +224,14 @@ class Database implements IDatabase {
     /**
      * @inheritDoc
      */
-    public function formatBool(bool $flag): string {
+    public function formatBool(bool $flag): int {
         return $this->_provider->formatBool($flag);
     }
 
     /**
      * @inheritDoc
      */
-    public function sqlBool(?string $flag): bool {
+    public function sqlBool(?int $flag): bool {
         return $this->_provider->sqlBool($flag);
     }
 
