@@ -50,6 +50,7 @@ interface IReflection extends IFactoryObject {
      * @param string $className Имя класса
      *
      * @return mixed
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     public function createInjectable(string $className);
 
@@ -60,6 +61,7 @@ interface IReflection extends IFactoryObject {
      * @param string $method Имя метода
      *
      * @return mixed
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
      */
     public function returnInjectable(object $object, string $method);

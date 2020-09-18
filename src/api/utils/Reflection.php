@@ -20,6 +20,7 @@ use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IFactoryObject;
 use XEAF\Rack\API\Interfaces\INamedObject;
 use XEAF\Rack\API\Interfaces\IReflection;
+use XEAF\Rack\API\Traits\SingletonTrait;
 use XEAF\Rack\API\Utils\Exceptions\CoreException;
 
 /**
@@ -28,6 +29,8 @@ use XEAF\Rack\API\Utils\Exceptions\CoreException;
  * @package XEAF\Rack\API\Utils
  */
 class Reflection implements IReflection {
+
+    use SingletonTrait;
 
     /**
      * @inheritDoc
@@ -66,38 +69,42 @@ class Reflection implements IReflection {
 
     /**
      * @inheritDoc
-     *
-     * @throws \ReflectionException
      */
     public function createInjectable(string $className) {
-        $result    = null;
-        $refClass  = new ReflectionClass($className);
-        $refMethod = $refClass->getConstructor();
-        if ($refClass->implementsInterface(INamedObject::class)) {
-            $result = Factory::getFactoryNamedObject($className, Factory::DEFAULT_NAME);
-        } elseif ($refClass->implementsInterface(IFactoryObject::class)) {
-            $result = Factory::getFactoryObject($className);
-        } else {
-            $args   = $this->injectMethodArgs($refMethod);
-            $result = $refClass->newInstanceArgs($args);
+        try {
+            $result    = null;
+            $refClass  = new ReflectionClass($className);
+            $refMethod = $refClass->getConstructor();
+            if ($refClass->implementsInterface(INamedObject::class)) {
+                $result = Factory::getFactoryNamedObject($className, Factory::DEFAULT_NAME);
+            } elseif ($refClass->implementsInterface(IFactoryObject::class)) {
+                $result = Factory::getFactoryObject($className);
+            } else {
+                $args   = $this->injectMethodArgs($refMethod);
+                $result = $refClass->newInstanceArgs($args);
+            }
+            return $result;
+        } catch (ReflectionException $re) {
+            throw CoreException::internalReflectionError($re);
         }
-        return $result;
     }
 
     /**
      * @inheritDoc
-     *
-     * @throws \ReflectionException
      */
     public function returnInjectable(object $object, string $method) {
-        $className = get_class($object);
-        $refMethod = new ReflectionMethod($className, $method);
-        $args      = $this->injectMethodArgs($refMethod);
-        // if ($refMethod->isPrivate() || $refMethod->isProtected()) {
-        if ($refMethod->isProtected()) {
-            $refMethod->setAccessible(true);
+        try {
+            $className = get_class($object);
+            $refMethod = new ReflectionMethod($className, $method);
+            $args      = $this->injectMethodArgs($refMethod);
+            // if ($refMethod->isPrivate() || $refMethod->isProtected()) {
+            if ($refMethod->isProtected()) {
+                $refMethod->setAccessible(true);
+            }
+            return $refMethod->invokeArgs($object, $args);
+        } catch (ReflectionException $re) {
+            throw CoreException::internalReflectionError($re);
         }
-        return $refMethod->invokeArgs($object, $args);
     }
 
     /**
@@ -121,17 +128,6 @@ class Reflection implements IReflection {
                 $result[] = new $paramClassName();
             }
         }
-        return $result;
-    }
-
-    /**
-     * Возвращает единичный экземпляр объекта класса
-     *
-     * @return \XEAF\Rack\API\Interfaces\IReflection
-     */
-    public static function getInstance(): IReflection {
-        $result = Factory::getFactoryObject(self::class);
-        assert($result instanceof IReflection);
         return $result;
     }
 }

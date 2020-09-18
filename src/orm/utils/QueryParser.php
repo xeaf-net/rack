@@ -12,7 +12,7 @@
  */
 namespace XEAF\Rack\ORM\Utils;
 
-use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Traits\SingletonTrait;
 use XEAF\Rack\ORM\Interfaces\IQueryParser;
 use XEAF\Rack\ORM\Models\QueryModel;
 use XEAF\Rack\ORM\Utils\Parsers\AliasParser;
@@ -28,6 +28,8 @@ use XEAF\Rack\ORM\Utils\Parsers\WhereParser;
  * @package XEAF\Rack\ORM\Utils
  */
 class QueryParser implements IQueryParser {
+
+    use SingletonTrait;
 
     /**
      * Фаза разбора псевдонимов
@@ -137,16 +139,5 @@ class QueryParser implements IQueryParser {
                 $this->_phase = $parser->parse($tokens);
             }
         }
-    }
-
-    /**
-     * Возвращает единичный экземпляр объекта класса
-     *
-     * @return \XEAF\Rack\ORM\Interfaces\IQueryParser
-     */
-    public static function getInstance(): IQueryParser {
-        $result = Factory::getFactoryObject(self::class);
-        assert($result instanceof IQueryParser);
-        return $result;
     }
 }

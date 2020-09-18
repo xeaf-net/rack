@@ -176,6 +176,7 @@ class Application extends Extension {
      * Создает объект исполняемого модуля
      *
      * @return \XEAF\Rack\API\Interfaces\IModule|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     protected function createModule(): ?IModule {
         $result    = null;
@@ -191,6 +192,7 @@ class Application extends Extension {
      * Создает объект модуля обработки узла
      *
      * @return \XEAF\Rack\API\Interfaces\INodeModule|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
      */
     protected function createNodeModule(): ?INodeModule {
         $result    = null;

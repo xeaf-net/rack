@@ -20,6 +20,7 @@ use XEAF\Rack\API\Models\Config\LoggerConfig;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Config\ProviderConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
+use XEAF\Rack\API\Traits\NamedSingletonTrait;
 use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 
 /**
@@ -30,6 +31,7 @@ use XEAF\Rack\API\Traits\ProviderFactoryTrait;
 class Logger implements ILogger {
 
     use NamedObjectTrait;
+    use NamedSingletonTrait;
     use ProviderFactoryTrait;
 
     /**
@@ -180,18 +182,5 @@ class Logger implements ILogger {
         $config    = ProviderConfig::getInstance(LoggerConfig::SECTION_NAME, $this->getName());
         $className = self::getProviderClass($config->getProvider());
         return new $className($this->getName());
-    }
-
-    /**
-     * Возвращает единичный экземпляр объекта
-     *
-     * @param string $name Имя объекта
-     *
-     * @return \XEAF\Rack\API\Interfaces\ILogger
-     */
-    public static function getInstance(string $name = Factory::DEFAULT_NAME): ILogger {
-        $result = Factory::getFactoryNamedObject(self::class, $name);
-        assert($result instanceof ILogger);
-        return $result;
     }
 }
