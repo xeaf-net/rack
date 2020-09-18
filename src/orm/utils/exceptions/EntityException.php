@@ -70,17 +70,22 @@ class EntityException extends Exception {
     /**
      * Нежиданный конец XQL выражения
      */
-    public const UNEXPECTED_EXPRESSION_END = 'F010';
+    public const UNEXPECTED_EXPRESSION_END = 'EF010';
 
     /**
      * Некорректное значение перечисления
      */
-    public const INVALID_ENUM_VALUE = 'F011';
+    public const INVALID_ENUM_VALUE = 'EF011';
 
     /**
      * Неразрешенная связь
      */
-    public const UNRESOLVED_LINK = 'F12';
+    public const UNRESOLVED_LINK = 'EF012';
+
+    /**
+     * Ошибка перезагрузки сущности
+     */
+    public const RELOAD_ERROR = 'EF013';
 
     /**
      * Неподдерживаемая возможность
@@ -133,6 +138,9 @@ class EntityException extends Exception {
                 break;
             case self::UNRESOLVED_LINK:
                 $result = 'Unresolved link between [%s] and [%s].';
+                break;
+            case self::RELOAD_ERROR:
+                $result = 'Could not reload entity.';
                 break;
             case self::UNSUPPORTED_FEATURE:
                 $result = "Unsupported feature.";
@@ -272,6 +280,15 @@ class EntityException extends Exception {
      */
     public static function unresolvedLink(string $fromEntity, string $toEntity): self {
         return new self(self::UNRESOLVED_LINK, [$fromEntity, $toEntity]);
+    }
+
+    /**
+     * Ошибка перезагрузки сущности
+     *
+     * @return static
+     */
+    public static function reloadError(): self {
+        return new self(self::RELOAD_ERROR);
     }
 
     /**

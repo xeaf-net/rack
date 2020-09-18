@@ -567,7 +567,7 @@ class EntityQuery extends DataModel {
     }
 
     /**
-     * Возвращает первую удовляетворяющую условиям отбора сущность
+     * Возвращает первый удовляетворяющий условиям отбора набор данных
      *
      * @param array $params Параметры запроса
      *
@@ -586,6 +586,22 @@ class EntityQuery extends DataModel {
         } catch (CollectionException $exception) {
             throw EntityException::internalError($exception);
         }
+    }
+
+    /**
+     * Возвращает первую удовляетворяющую условиям отбора сущность
+     *
+     * @param array $params Параметры запроса
+     *
+     * @return \XEAF\Rack\API\Core\DataObject|null
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function getFirstEntity(array $params = []): ?Entity {
+        $result = $this->getFirst($params);
+        if ($result) {
+            assert($result instanceof Entity);
+        }
+        return $result;
     }
 
     /**

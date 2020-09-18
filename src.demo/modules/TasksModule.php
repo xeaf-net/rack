@@ -16,6 +16,7 @@ use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\Demo\App\DemoEM;
 use XEAF\Rack\ORM\Models\Results\EntityListResult;
+use XEAF\Rack\ORM\Models\Results\EntityResult;
 
 /**
  * Реализует методы работы с Задачами
@@ -51,7 +52,10 @@ class TasksModule extends Module {
 //        $query->withEager('userTasks_task', 'project');
 //        $query->withEager('projects', 'project');
 
-        $list = $query->get();
-        return new EntityListResult($list, [], ['users']);
+        $task = $query->getFirstEntity();
+        $em->reload($task);
+        return new EntityResult($task);
+        // $list = $query->get();
+        // return new EntityListResult($list, [], ['users']);
     }
 }

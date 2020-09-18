@@ -304,14 +304,27 @@ abstract class EntityManager {
      *
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
      *
-     * @return \XEAF\Rack\ORM\Core\Entity|null
+     * @return void
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function reload(Entity $entity): ?Entity {
+    public function reload(Entity $entity): void {
         $name   = $this->findByClassName($entity->getClassName());
         $params = $entity->getPrimaryKeyParams();
         $this->stopWatch($entity);
-        return $this->findByPK($name, $params);
+        $double = $this->findByPK($name, $params);
+        if (!$double) {
+            throw EntityException::reloadError();
+        }
+        $model      = $entity->getModel();
+        $properties = $model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if ($property->getIsReadable()) {
+                $entity->{$name} = $double->{$name};
+            }
+        }
+        $this->stopWatch($double);
+        $this->watch($entity);
     }
 
     /**
