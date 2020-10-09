@@ -16,6 +16,7 @@ use XEAF\Rack\API\Core\Exception;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\FormResult;
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Localization;
 
 /**
  * Исключения проверки параметров форм ввода
@@ -51,6 +52,7 @@ class FormException extends Exception {
     public function __construct(int $status, string $langVar, array $args = [], string $tag = '') {
         $code = self::ERROR_CODE . $status;
         parent::__construct($code);
+        $this->registerLanguageClasses();
         $this->_result = new FormResult($status, $langVar, $args, $tag);
     }
 
@@ -71,9 +73,21 @@ class FormException extends Exception {
     }
 
     /**
+     * Добавляет поддержку языковых переменных исключения
+     *
+     * @return void
+     */
+    private function registerLanguageClasses(): void {
+        $l10n      = Localization::getInstance();
+        $className = get_class($this);
+        $l10n->registerLanguageClass(self::class);
+        $l10n->registerLanguageClass($className);
+    }
+
+    /**
      * Создает исключение, возвращающее ошибку 400 - BAD REQUEST
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -86,7 +100,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 401 - UNAUTHORIZED
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -99,7 +113,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 403 - FORBIDDEN
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -112,7 +126,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 404 - NOT FOUND
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -125,7 +139,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 409 - CONFLICT
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -138,7 +152,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 500 - INTERNAL SERVER ERROR
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
@@ -151,7 +165,7 @@ class FormException extends Exception {
     /**
      * Создает исключение, возвращающее ошибку 501 - NOT IMPLEMENTED
      *
-     * @param string $langVar Языковая формата сообщения
+     * @param string $langVar Языковая переменная формата сообщения
      * @param array  $args    Аргументы сообщения
      * @param string $tag     Тег
      *
