@@ -31,9 +31,44 @@ class FormException extends Exception {
     private const ERROR_CODE = 'FORM';
 
     /**
-     * Текст сообщения об ошибке
+     * Формат сообщения об ошибке
      */
-    private const ERROR_MESSAGE = 'Form verification error';
+    private const ERROR_FORMAT = 'Form verification error [%s].';
+
+    /**
+     * Ошибка запроса
+     */
+    private const BAD_REQUEST = 'FormException.BAD_REQUEST';
+
+    /**
+     * Пользователь не авторизован
+     */
+    private const UNAUTHORIZED = 'FormException.UNAUTHORIZED';
+
+    /**
+     * Доступ запрещен
+     */
+    private const FORBIDDEN = 'FormException.FORBIDDEN';
+
+    /**
+     * Данные не найдены
+     */
+    private const NOT_FOUND = 'FormException.NOT_FOUND';
+
+    /**
+     * Конфликт данных
+     */
+    private const CONFLICT = 'FormException.CONFLICT';
+
+    /**
+     * Внутренняя ошибка
+     */
+    private const INTERNAL_ERROR = 'FormException.INTERNAL_ERROR';
+
+    /**
+     * Функционал не реализован
+     */
+    private const NOT_IMPLEMENTED = 'FormException.NOT_IMPLEMENTED';
 
     /**
      * Результат исполнения
@@ -60,7 +95,8 @@ class FormException extends Exception {
      * @inheritDoc
      */
     protected function getFormat(string $code): ?string {
-        return self::ERROR_MESSAGE . $code . '.';
+        $msg = $this->_result->getMessage();
+        return ($msg) ? $msg : vsprintf(self::ERROR_FORMAT, [$code]);
     }
 
     /**
@@ -93,7 +129,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function badRequest(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function badRequest(string $langVar = self::BAD_REQUEST, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::BAD_REQUEST, $langVar, $args, $tag);
     }
 
@@ -106,7 +142,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function unauthorized(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function unauthorized(string $langVar = self::UNAUTHORIZED, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::UNAUTHORIZED, $langVar, $args, $tag);
     }
 
@@ -119,7 +155,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function forbidden(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function forbidden(string $langVar = self::FORBIDDEN, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::FORBIDDEN, $langVar, $args, $tag);
     }
 
@@ -132,7 +168,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function notFound(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function notFound(string $langVar = self::NOT_FOUND, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::NOT_FOUND, $langVar, $args, $tag);
     }
 
@@ -145,7 +181,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function conflict(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function conflict(string $langVar = self::CONFLICT, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::CONFLICT, $langVar, $args, $tag);
     }
 
@@ -158,7 +194,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function internalServerError(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function internalServerError(string $langVar = self::INTERNAL_ERROR, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::FATAL_ERROR, $langVar, $args, $tag);
     }
 
@@ -171,7 +207,7 @@ class FormException extends Exception {
      *
      * @return \XEAF\Rack\API\Utils\Exceptions\FormException
      */
-    public static function notImplemented(string $langVar = '', array $args = [], string $tag = ''): self {
+    public static function notImplemented(string $langVar = self::NOT_IMPLEMENTED, array $args = [], string $tag = ''): self {
         return new self(HttpResponse::NOT_IMPLEMENTED, $langVar, $args, $tag);
     }
 }
