@@ -72,14 +72,15 @@ class Generator implements IGenerator {
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function selectSQL(EntityQuery $query, bool $useFilter): string {
+    public function selectSQL(EntityQuery $query, bool $useFilter, bool $distinct): string {
         $this->_aliases->clear();
         $this->_em       = $query->getEntityManager();
         $this->_entities = $this->_em->getEntities();
         $model           = $query->getModel();
         $condition       = $this->selectSQLConditions($query, $useFilter);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
-        return 'select ' . $aliasSQL . ' ' . $condition;
+        $select          = !$distinct ? 'select' : 'select distinct';
+        return $select . ' ' . $aliasSQL . ' ' . $condition;
     }
 
     /**
@@ -87,12 +88,13 @@ class Generator implements IGenerator {
      *
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function selectCountSQL(EntityQuery $query, bool $useFilter): string {
+    public function selectCountSQL(EntityQuery $query, bool $useFilter, bool $distinct): string {
         $this->_aliases->clear();
         $this->_em       = $query->getEntityManager();
         $this->_entities = $this->_em->getEntities();
         $condition       = $this->selectSQLConditions($query, $useFilter);
-        return 'select count(*) as _count ' . $condition;
+        $select          = !$distinct ? 'select count(*)' : 'select count(distinct *)';
+        return $select . ' as _count ' . $condition;
     }
 
     /**

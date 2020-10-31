@@ -396,47 +396,50 @@ class EntityQuery extends DataModel {
     /**
      * Возвращает набор сущностей удовляетворяющих условию отбора
      *
-     * @param array $params Параметры запроса
-     * @param int   $count  Количество отбираемых сущностей
-     * @param int   $offset Смещение от начала выбора
+     * @param array $params   Параметры запроса
+     * @param int   $count    Количество отбираемых сущностей
+     * @param int   $offset   Смещение от начала выбора
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function get(array $params = [], int $count = 0, int $offset = 0): ICollection {
-        return $this->internalGet([], $params, $count, $offset);
+    public function get(array $params = [], int $count = 0, int $offset = 0, bool $distinct = false): ICollection {
+        return $this->internalGet([], $params, $count, $offset, $distinct);
     }
 
     /**
      * Возвращает набор сущностей удовляетворяющих условию отбора и фильтру
      *
-     * @param array $filters Параметры фильтрации
-     * @param array $params  Параметры запроса
-     * @param int   $count   Количество отбираемых сущностей
-     * @param int   $offset  Смещение от начала выбора
+     * @param array $filters  Параметры фильтрации
+     * @param array $params   Параметры запроса
+     * @param int   $count    Количество отбираемых сущностей
+     * @param int   $offset   Смещение от начала выбора
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFiltered(array $filters, array $params = [], int $count = 0, int $offset = 0): ICollection {
-        return $this->internalGet($filters, $params, $count, $offset);
+    public function getFiltered(array $filters, array $params = [], int $count = 0, int $offset = 0, bool $distinct = false): ICollection {
+        return $this->internalGet($filters, $params, $count, $offset, $distinct);
     }
 
     /**
      * Внутренняя реализация метода получения данных
      *
-     * @param array $filters Условия фильтрации
-     * @param array $params  Параметры запроса
-     * @param int   $count   Количество отбираемых сущностей
-     * @param int   $offset  Смещение от начала выбора
+     * @param array $filters  Условия фильтрации
+     * @param array $params   Параметры запроса
+     * @param int   $count    Количество отбираемых сущностей
+     * @param int   $offset   Смещение от начала выбора
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function internalGet(array $filters, array $params, int $count, int $offset): ICollection {
+    protected function internalGet(array $filters, array $params, int $count, int $offset, bool $distinct): ICollection {
         try {
             $this->resolveWithModels($params);
-            $sql    = $this->generateSQL(count($filters) > 0);
+            $sql    = $this->generateSQL(count($filters) > 0, $distinct);
             $prm    = $this->processParameters($filters, $params);
             $data   = $this->_em->getDb()->select($sql, $prm, $count, $offset);
             $result = $this->processRecords($data);
@@ -449,40 +452,43 @@ class EntityQuery extends DataModel {
     /**
      * Возвращает количество сущностей удовляетворяющих условию отбора
      *
-     * @param array $params Параметры запроса
+     * @param array $params   Параметры запроса
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return int
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getCount(array $params = []): int {
-        return $this->internalGetCount([], $params);
+    public function getCount(array $params = [], bool $distinct = false): int {
+        return $this->internalGetCount([], $params, $distinct);
     }
 
     /**
      * Возвращает количество сущностей удовляетворяющих условиям отбора и фильтрации
      *
-     * @param array $filters Параметры фильтрации
-     * @param array $params  Параметры запроса
+     * @param array $filters  Параметры фильтрации
+     * @param array $params   Параметры запроса
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return int
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function getFilteredCount(array $filters, array $params = []): int {
-        return $this->internalGetCount($filters, $params);
+    public function getFilteredCount(array $filters, array $params = [], bool $distinct = false): int {
+        return $this->internalGetCount($filters, $params, $distinct);
     }
 
     /**
      * Внутренняя реализация методов получения количества записей
      *
-     * @param array $filters Параметры фильтрации
-     * @param array $params  Параметры запроса
+     * @param array $filters  Параметры фильтрации
+     * @param array $params   Параметры запроса
+     * @param bool  $distinct Признак отбора уникальных значений
      *
      * @return int
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    protected function internalGetCount(array $filters, array $params): int {
+    protected function internalGetCount(array $filters, array $params, bool $distinct): int {
         try {
-            $sql    = $this->generateCountSQL(count($filters) > 0);
+            $sql    = $this->generateCountSQL(count($filters) > 0, $distinct);
             $prm    = $this->processParameters($filters, $params);
             $data   = $this->_em->getDb()->selectFirst($sql, $prm);
             $result = array_shift($data);
@@ -496,22 +502,24 @@ class EntityQuery extends DataModel {
      * Возвращает текст SQL запроса
      *
      * @param bool $useFilter Признак использования условий фильтрации
+     * @param bool $distinct  Признак отбора уникальных значений
      *
      * @return string
      */
-    protected function generateSQL(bool $useFilter): string {
-        return $this->_generator->selectSQL($this, $useFilter);
+    protected function generateSQL(bool $useFilter, bool $distinct): string {
+        return $this->_generator->selectSQL($this, $useFilter, $distinct);
     }
 
     /**
      * Возвращает текст SQL запроса для выбора количества записей
      *
      * @param bool $useFilter Признак использования условий фильтрации
+     * @param bool $distinct  Признак отбора уникальных значений
      *
      * @return string
      */
-    public function generateCountSQL(bool $useFilter): string {
-        return $this->_generator->selectCountSQL($this, $useFilter);
+    public function generateCountSQL(bool $useFilter, bool $distinct): string {
+        return $this->_generator->selectCountSQL($this, $useFilter, $distinct);
     }
 
     /**
