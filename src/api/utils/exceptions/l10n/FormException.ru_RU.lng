@@ -1,0 +1,9 @@
+[FormException]
+
+BAD_REQUEST     = "Некорреткный запрос."
+UNAUTHORIZED    = "Пользователь не авторизован."
+FORBIDDEN       = "Доступ запрещен."
+NOT_FOUND       = "Данные не найдены."
+CONFLICT        = "Конфиликт данных."
+INTERNAL_ERROR  = "Внутренняя ошибка сервера."
+NOT_IMPLEMENTED = "Функционал не реализован."

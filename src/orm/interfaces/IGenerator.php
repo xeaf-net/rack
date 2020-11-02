@@ -28,20 +28,22 @@ interface IGenerator extends IFactoryObject {
      *
      * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
      * @param bool                            $useFilter Признак использования условий фильтрации
+     * @param bool                            $distinct  Призак отбора уникальных записей
      *
      * @return string
      */
-    public function selectSQL(EntityQuery $query, bool $useFilter): string;
+    public function selectSQL(EntityQuery $query, bool $useFilter, bool $distinct): string;
 
     /**
      * Возвращает текст SQL запроса для выбора количества записей
      *
      * @param \XEAF\Rack\ORM\Core\EntityQuery $query     Объект запроса
      * @param bool                            $useFilter Признак использования условий фильтрации
+     * @param bool                            $distinct  Призак отбора уникальных записей
      *
      * @return string
      */
-    public function selectCountSQL(EntityQuery $query, bool $useFilter): string;
+    public function selectCountSQL(EntityQuery $query, bool $useFilter, bool $distinct): string;
 
     /**
      * Возвращает текст SQL команды для вставки записи

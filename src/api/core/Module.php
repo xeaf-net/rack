@@ -14,7 +14,6 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Interfaces\IModule;
-use XEAF\Rack\API\Models\Results\DataResult;
 use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
@@ -22,7 +21,6 @@ use XEAF\Rack\API\Utils\Assets;
 use XEAF\Rack\API\Utils\Exceptions\FormException;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\FileSystem;
-use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Parameters;
 use XEAF\Rack\API\Utils\Reflection;
 use XEAF\Rack\API\Utils\Strings;
@@ -47,9 +45,7 @@ class Module extends Extension implements IModule {
         $result     = null;
         $methodName = $this->args()->getMethodName();
         $actionMode = $this->args()->getActionMode();
-        if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_L10N) {
-            $result = $this->sendLocaleData();
-        } elseif ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
+        if ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_CSS) {
             $result = $this->sendModuleResource(ResourceModule::CSS_FILE_TYPE);
         } elseif ($methodName == Parameters::GET_METHOD_NAME && $actionMode == Assets::MODULE_JS) {
             $result = $this->sendModuleResource(ResourceModule::JS_FILE_TYPE);
@@ -106,25 +102,6 @@ class Module extends Extension implements IModule {
         $strings = Strings::getInstance();
         $result  = self::ACTION_METHOD_PREFIX . ucfirst(strtolower($methodName)) . $strings->kebabToCamel($mode);
         return method_exists($this, $result) ? $result : null;
-    }
-
-    /**
-     * Возвращает данные локализации
-     *
-     * @return \XEAF\Rack\API\Interfaces\IActionResult
-     */
-    protected function sendLocaleData(): IActionResult {
-        $l10n   = Localization::getInstance();
-        $locale = $this->args()->getString('locale');
-        if (!$locale) {
-            $locale = $l10n->getDefaultLocale()->getName();
-        }
-        $l10nData = $l10n->getLocale($locale)->toArray();
-        $landVars = $l10n->getLanguageVars($locale)->toArray();
-        return DataResult::dataArray([
-            Localization::L10N => $l10nData,
-            Localization::LANG => $landVars
-        ]);
     }
 
     /**

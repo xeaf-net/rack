@@ -300,6 +300,34 @@ abstract class EntityManager {
     }
 
     /**
+     * Перезапрашивает сущность из БД
+     *
+     * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности
+     *
+     * @return void
+     * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
+     */
+    public function reload(Entity $entity): void {
+        $name   = $this->findByClassName($entity->getClassName());
+        $params = $entity->getPrimaryKeyParams();
+        $this->stopWatch($entity);
+        $double = $this->findByPK($name, $params);
+        if (!$double) {
+            throw EntityException::reloadError();
+        }
+        $model      = $entity->getModel();
+        $properties = $model->getPropertyByNames();
+        foreach ($properties as $name => $property) {
+            assert($property instanceof PropertyModel);
+            if ($property->getIsReadable()) {
+                $entity->{$name} = $double->{$name};
+            }
+        }
+        $this->stopWatch($double);
+        $this->watch($entity);
+    }
+
+    /**
      * Сохранение изменений сущности в базе данных
      *
      * @param \XEAF\Rack\ORM\Core\Entity $entity Объект сущности

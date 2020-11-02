@@ -18,6 +18,7 @@
             <path value="file://$PROJECT_DIR$/src/api/utils/l10n" />
             <path value="file://$PROJECT_DIR$/src.demo/sql" />
             <path value="file://$PROJECT_DIR$/src.demo/etc" />
+            <path value="file://$PROJECT_DIR$/src/api/utils/exceptions/l10n" />
           </resourceRoots>
         </entryData>
       </entry>

@@ -149,6 +149,20 @@ abstract class Entity extends DataObject {
     }
 
     /**
+     * Возвращает массвив параметров значений первичного ключа
+     *
+     * @return array
+     */
+    public function getPrimaryKeyParams(): array {
+        $result      = [];
+        $primaryKeys = $this->getModel()->getPrimaryKeyNames();
+        foreach ($primaryKeys as $primaryKey) {
+            $result[$primaryKey] = $this->{$primaryKey};
+        }
+        return $result;
+    }
+
+    /**
      * Возвращает значение свойства отношения
      *
      * @param string $name Имя свойства
