@@ -108,11 +108,11 @@ interface ICrypto extends IFactoryObject {
      * Проверяет соответствие пароля хешу
      *
      * @param string|null $password Пароль
-     * @param string      $hash     Хеш пароля
+     * @param string|null $hash     Хеш пароля
      *
      * @return bool
      */
-    public function verifyPassword(?string $password, string $hash): bool;
+    public function verifyPassword(?string $password, ?string $hash): bool;
 
     /**
      * Генерирует значение токена безопасности

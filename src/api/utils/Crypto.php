@@ -172,7 +172,10 @@ class Crypto implements ICrypto {
     /**
      * @inheritDoc
      */
-    public function verifyPassword(?string $password, string $hash): bool {
+    public function verifyPassword(?string $password, ?string $hash): bool {
+        if ($password === null || $hash === null) {
+            return false;
+        }
         return password_verify($password, $hash);
     }
 
