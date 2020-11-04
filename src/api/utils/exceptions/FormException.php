@@ -86,9 +86,9 @@ class FormException extends Exception {
      */
     public function __construct(int $status, string $langVar, array $args = [], string $tag = '') {
         $code = self::ERROR_CODE . $status;
-        parent::__construct($code);
         $this->registerLanguageClasses();
         $this->_result = new FormResult($status, $langVar, $args, $tag);
+        parent::__construct($code);
     }
 
     /**
