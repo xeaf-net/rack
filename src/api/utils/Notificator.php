@@ -80,7 +80,7 @@ class Notificator extends RestAPI implements INotificator {
     /**
      * Конструктор класса
      */
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
         $this->_config  = NotificatorConfig::getInstance();
         $this->_session = Session::getInstance();
