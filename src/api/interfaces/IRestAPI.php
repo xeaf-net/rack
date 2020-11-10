@@ -24,7 +24,14 @@ interface IRestAPI {
      *
      * @return int
      */
-    public function getLastStatusCode(): int;
+    public function getStatusCode(): int;
+
+    /**
+     * Возвращает сообщение об ошибке
+     *
+     * @return string
+     */
+    public function getErrorMessage(): string;
 
     /**
      * Возвращает признак состояния ошибки при обращении к стороннему API

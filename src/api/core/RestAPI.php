@@ -40,7 +40,13 @@ class RestAPI implements IRestAPI {
      * Код статуса последнего обращения к API
      * @var int
      */
-    private $_lastStatusCode = HttpResponse::OK;
+    private $_statusCode = HttpResponse::OK;
+
+    /**
+     * Сообщение об ошибке
+     * @var string
+     */
+    private $_errorMessage = '';
 
     /**
      * Конструктор класса
@@ -65,9 +71,9 @@ class RestAPI implements IRestAPI {
      * @param string $url  URL стороннего API
      * @param array  $args Массив параметров
      *
-     * @return string
+     * @return string|bool
      */
-    protected function get(string $url, array $args = []): string {
+    protected function get(string $url, array $args = []) {
         $api    = curl_init();
         $apiURL = $this->buildURL($url, $args);
         $header = $this->_headers;
@@ -77,8 +83,8 @@ class RestAPI implements IRestAPI {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true
         ]);
-        $result                = curl_exec($api);
-        $this->_lastStatusCode = $this->statusCode($api);
+        $result = curl_exec($api);
+        $this->processError($api);
         curl_close($api);
         return $result;
     }
@@ -90,10 +96,10 @@ class RestAPI implements IRestAPI {
      * @param array  $args     Агрументы пути
      * @param array  $postArgs Агрументы метода POST
      *
-     * @return string
+     * @return string|bool
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    protected function post(string $url, array $args = [], array $postArgs = []): string {
+    protected function post(string $url, array $args = [], array $postArgs = []) {
         $api      = curl_init();
         $apiURL   = $this->buildURL($url, $args);
         $json     = $this->_serializer->jsonArrayEncode($postArgs);
@@ -107,8 +113,8 @@ class RestAPI implements IRestAPI {
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $json
         ]);
-        $result                = curl_exec($api);
-        $this->_lastStatusCode = $this->statusCode($api);
+        $result = curl_exec($api);
+        $this->processError($api);
         curl_close($api);
         return $result;
     }
@@ -120,10 +126,10 @@ class RestAPI implements IRestAPI {
      * @param array  $args     Агрументы пути
      * @param array  $postArgs Агрументы метода POST
      *
-     * @return string
+     * @return string|bool
      * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
-    protected function delete(string $url, array $args = [], array $postArgs = []): string {
+    protected function delete(string $url, array $args = [], array $postArgs = []) {
         $api      = curl_init();
         $apiURL   = $this->buildURL($url, $args);
         $header   = $this->_headers;
@@ -137,28 +143,31 @@ class RestAPI implements IRestAPI {
             CURLOPT_CUSTOMREQUEST  => 'DELETE',
             CURLOPT_POSTFIELDS     => $json
         ]);
-        $result                = curl_exec($api);
-        $this->_lastStatusCode = $this->statusCode($api);
+        $result              = curl_exec($api);
+        $this->_errorMessage = curl_error($api);
         curl_close($api);
         return $result;
     }
 
     /**
-     * Возвращает код статуса последнего обращения к API
-     *
-     * @return int
+     * @inheritDoc
      */
-    public function getLastStatusCode(): int {
-        return $this->_lastStatusCode;
+    public function getStatusCode(): int {
+        return $this->_statusCode;
     }
 
     /**
-     * Возвращает признак состояния ошибки при обращении к стороннему API
-     *
-     * @return bool
+     * @inheritDoc
+     */
+    public function getErrorMessage(): string {
+        return $this->_errorMessage;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getErrorState(): bool {
-        return $this->getLastStatusCode() != HttpResponse::OK;
+        return $this->getStatusCode() != HttpResponse::OK;
     }
 
     /**
@@ -175,6 +184,23 @@ class RestAPI implements IRestAPI {
             $result .= '?' . http_build_query($args);
         }
         return $result;
+    }
+
+    /**
+     * Обрабатывает ошибочную ситуацию
+     *
+     * @param resource|null $api Ресурс подключения к API
+     *
+     * @return void
+     */
+    protected function processError($api = null): void {
+        if ($api) {
+            $this->_statusCode   = $this->statusCode($api);
+            $this->_errorMessage = curl_error($api);
+        } else {
+            $this->_statusCode   = HttpResponse::OK;
+            $this->_errorMessage = '';
+        }
     }
 
     /**
