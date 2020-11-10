@@ -120,7 +120,11 @@ class Notificator extends RestAPI implements INotificator {
                 self::TYPE_FIELD  => $type,
                 self::DATA_FIELD  => $json
             ];
-            $this->post($url, ['sender' => $this->_config->getKey()], $message);
+            $result  = $this->post($url, ['sender' => $this->_config->getKey()], $message);
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            }
         }
     }
 
@@ -129,13 +133,18 @@ class Notificator extends RestAPI implements INotificator {
      */
     public function registerUserSession(): void {
         if ($this->canUseService()) {
-            $url = $this->_config->getUrl() . '/' . self::LOGIN_PATH;
-            $this->post($url, [
+            $url    = $this->_config->getUrl() . '/' . self::LOGIN_PATH;
+            $result = $this->post($url, [
                 'sender'  => $this->_config->getKey(),
                 'session' => $this->_session->getId(),
                 'user'    => $this->_session->getUserId()
             ]);
-            self::setupNotificationCookie();
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            } else {
+                self::setupNotificationCookie();
+            }
         }
     }
 
@@ -144,11 +153,15 @@ class Notificator extends RestAPI implements INotificator {
      */
     public function unregisterUserSession(): void {
         if ($this->canUseService()) {
-            $url = $this->_config->getUrl() . '/' . self::LOGOUT_PATH;
-            $this->post($url, [
+            $url    = $this->_config->getUrl() . '/' . self::LOGOUT_PATH;
+            $result = $this->post($url, [
                 'sender'  => $this->_config->getKey(),
                 'session' => $this->_session->getId()
             ]);
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            }
         }
         self::cleanupNotificationCookie();
     }
