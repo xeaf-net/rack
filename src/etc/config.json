@@ -3,7 +3,7 @@
         "url"      : "http://localhost",
         "origin"   : "*",
         "bearer"   : "rackAPI",
-        "locale"   : "en_GB",
+        "locale"   : "en_US",
         "session"  : "native",
         "tempPath" : "/tmp",
         "debugMode": "true"

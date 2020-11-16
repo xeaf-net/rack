@@ -24,7 +24,7 @@ class EnglishLocale extends Locale {
     /**
      * Имя локали
      */
-    public const LOCALE_NAME = 'en_GB';
+    public const LOCALE_NAME = 'en_US';
 
     /**
      * @inheritDoc
