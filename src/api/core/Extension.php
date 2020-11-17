@@ -33,7 +33,7 @@ class Extension extends StdObject {
      * Объект методов доступа к параметрам
      * @var \XEAF\Rack\API\Interfaces\IActionArgs
      */
-    private $_args;
+    private $_args = null;
 
     /**
      * Объект методов проверки параметров
@@ -45,7 +45,6 @@ class Extension extends StdObject {
      * Конструктор класса
      */
     public function __construct() {
-        $this->_args      = Parameters::getInstance();
         $this->_validator = Validator::getInstance();
         $this->loadLanguageFiles();
     }
@@ -70,6 +69,9 @@ class Extension extends StdObject {
      * @return \XEAF\Rack\API\Interfaces\IActionArgs
      */
     protected function args(): IActionArgs {
+        if (!$this->_args) {
+            $this->_args = Parameters::getInstance();
+        }
         return $this->_args;
     }
 
