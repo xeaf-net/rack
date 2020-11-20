@@ -39,49 +39,49 @@ class JsonWebToken extends DataModel {
      * Идентификатор выпускающей системы
      * @var string
      */
-    protected $_iss = '';
+    protected string $_iss = '';
 
     /**
      * Дополнительная информация о выпускающей системе
      * @var string
      */
-    protected $_sub = '';
+    protected string $_sub = '';
 
     /**
      * Массив получателей ключа
      * @var array
      */
-    protected $_aud = [];
+    protected array $_aud = [];
 
     /**
      * Время прекращения срока действия
      * @var int
      */
-    protected $_exp = 0;
+    protected int $_exp = 0;
 
     /**
      * Время начала строка действия
      * @var int
      */
-    protected $_nbf = 0;
+    protected int $_nbf = 0;
 
     /**
      * Время выпуска токена
      * @var int
      */
-    protected $_iat = 0;
+    protected int $_iat = 0;
 
     /**
      * Уникальный идентификатор токена
      * @var string
      */
-    protected $_jti = '';
+    protected string $_jti = '';
 
     /**
      * Массив данных полезной нагрузки
      * @var array
      */
-    protected $_payload = [];
+    protected array $_payload;
 
     /**
      * Конструктор класса

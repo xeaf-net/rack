@@ -14,6 +14,7 @@ namespace XEAF\Rack\UI\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\Extension;
+use XEAF\Rack\UI\Interfaces\ITemplateEngine;
 use XEAF\Rack\UI\Models\Results\HtmlResult;
 use XEAF\Rack\UI\Utils\TemplateEngine;
 
@@ -32,13 +33,13 @@ abstract class Layout extends Extension {
      * Результат исполнения действия
      * @var \XEAF\Rack\UI\Models\Results\HtmlResult
      */
-    private $_actionResult;
+    private HtmlResult $_actionResult;
 
     /**
      * Шаблонизатор
      * @var \XEAF\Rack\UI\Interfaces\ITemplateEngine
      */
-    private $_templateEngine;
+    private ITemplateEngine $_templateEngine;
 
     /**
      * Конструктор класса

@@ -16,6 +16,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\RestAPI;
 use XEAF\Rack\API\Interfaces\INotificator;
+use XEAF\Rack\API\Interfaces\ISession;
 use XEAF\Rack\API\Models\Config\NotificatorConfig;
 
 /**
@@ -69,13 +70,13 @@ class Notificator extends RestAPI implements INotificator {
      * Параметры конфигурации
      * @var \XEAF\Rack\API\Models\Config\NotificatorConfig
      */
-    private $_config;
+    private NotificatorConfig $_config;
 
     /**
      * Объект методов доступа к сессии
      * @var \XEAF\Rack\API\Interfaces\ISession
      */
-    private $_session;
+    private ISession $_session;
 
     /**
      * Конструктор класса

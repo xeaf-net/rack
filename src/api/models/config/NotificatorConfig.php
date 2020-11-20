@@ -46,19 +46,19 @@ class NotificatorConfig extends ConfigModel implements IFactoryObject {
      * URL сервера отправки сообщений
      * @var string
      */
-    private $_url = self::DEFAULT_URL;
+    private string $_url = self::DEFAULT_URL;
 
     /**
      * Ключ доступа к серверу отправки сообщений
      * @var string
      */
-    private $_key = self::DEFAULT_KEY;
+    private string $_key = self::DEFAULT_KEY;
 
     /**
      * Признак разрешения использования
      * @var bool
      */
-    private $_enabled = false;
+    private bool $_enabled = false;
 
     /**
      * Конструктор класса

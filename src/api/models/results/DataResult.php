@@ -31,7 +31,7 @@ class DataResult extends CachedResult {
      * Возвращаемый объект данных
      * @var \XEAF\Rack\API\Core\DataObject|null
      */
-    protected $_dataObject = null;
+    protected ?DataObject $_dataObject = null;
 
     /**
      * Конструктор класса

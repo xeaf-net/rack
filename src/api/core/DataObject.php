@@ -44,7 +44,7 @@ class DataObject extends StdObject {
      * Уровень вложенности инициализации
      * @var int
      */
-    private static $initialization = 0;
+    private static int $initialization = 0;
 
     /**
      * Конструктор класса

@@ -25,7 +25,7 @@ trait ProviderFactoryTrait {
      * Список зарегистрированных провайдеров
      * @var array
      */
-    private static $_providers = [];
+    private static array $_providers = [];
 
     /**
      * Возвращает признак регистрации провайдера

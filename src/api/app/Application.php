@@ -20,6 +20,8 @@ use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Interfaces\IConfiguration;
 use XEAF\Rack\API\Interfaces\IModule;
 use XEAF\Rack\API\Interfaces\INodeModule;
+use XEAF\Rack\API\Interfaces\IReflection;
+use XEAF\Rack\API\Interfaces\IRouter;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Home\HomeModule;
@@ -49,13 +51,13 @@ class Application extends Extension {
      * Объект методов работы с маршрутами
      * @var \XEAF\Rack\API\Interfaces\IRouter
      */
-    private $_router;
+    private IRouter $_router;
 
     /**
      * Объект методов работы с рефлексией классов
      * @var \XEAF\Rack\API\Interfaces\IReflection
      */
-    private $_reflection;
+    private IReflection $_reflection;
 
     /**
      * Инициализирует значения свойств объекта класса

@@ -31,7 +31,7 @@ class Factory {
      * Хранилище экземпляров объектов
      * @var array
      */
-    private static $_instances = [];
+    private static array $_instances = [];
 
     /**
      * Возвращает экземпляр объекта класса

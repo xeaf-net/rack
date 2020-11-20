@@ -68,19 +68,19 @@ class QueryParser implements IQueryParser {
      * Исходный код XQL запроса
      * @var string
      */
-    private $_xql = null;
+    private string $_xql;
 
     /**
      * Номер фазы разбора (alias, from, join, where, order)
      * @var int
      */
-    private $_phase = self::ALIAS_PHASE;
+    private int $_phase = self::ALIAS_PHASE;
 
     /**
      * Модель запроса
      * @var \XEAF\Rack\ORM\Models\QueryModel
      */
-    private $_queryModel = null;
+    private QueryModel $_queryModel;
 
     /**
      * @inheritDoc

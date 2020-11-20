@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Core;
 
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Models\EntityModel;
 use XEAF\Rack\ORM\Models\Properties\ArrayProperty;
 use XEAF\Rack\ORM\Models\Properties\BoolProperty;
@@ -49,25 +50,25 @@ abstract class Entity extends DataObject {
      * Ссылка на объект модели сущности
      * @var \XEAF\Rack\ORM\Models\EntityModel|null
      */
-    private $_model = null;
+    private ?EntityModel $_model = null;
 
     /**
      * Вычисленное значение первичного ключа
      * @var string|null
      */
-    private $_primaryKey = null;
+    private ?string $_primaryKey = null;
 
     /**
      * Значения свойств отношений
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_relationValues;
+    private IKeyValue $_relationValues;
 
     /**
      * Вычисленное значение ключа слежения
      * @var string|null
      */
-    private $_entityWatchingId = null;
+    private ?string $_entityWatchingId = null;
 
     /**
      * Конструктор класса

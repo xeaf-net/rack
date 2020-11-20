@@ -52,25 +52,25 @@ class RedisStorageConfig extends StorageConfig {
      * Имя хоста
      * @var string
      */
-    private $_host = 'localhost';
+    private string $_host = 'localhost';
 
     /**
      * Порт
      * @var int
      */
-    private $_port = self::DEFAULT_PORT;
+    private int $_port = self::DEFAULT_PORT;
 
     /**
      * Данные авторизации
      * @var string
      */
-    private $_auth = '';
+    private string $_auth = '';
 
     /**
      * Индекс базы данных
      * @var int
      */
-    private $_dbindex = self::DEFAULT_DBINDEX;
+    private int $_dbindex = self::DEFAULT_DBINDEX;
 
     /**
      * Возвращает имя хоста
@@ -115,9 +115,9 @@ class RedisStorageConfig extends StorageConfig {
         parent::parseConfigurationSection($data);
         $strings        = Strings::getInstance();
         $this->_host    = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port    = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_port    = (int) $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
         $this->_auth    = $data->{'auth'} ?? self::DEFAULT_AUTH;
-        $this->_dbindex = $strings->stringToInteger($data->{'dbindex'} ?? null, self::DEFAULT_DBINDEX);
+        $this->_dbindex = (int) $strings->stringToInteger($data->{'dbindex'} ?? null, self::DEFAULT_DBINDEX);
     }
 
     /**

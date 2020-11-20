@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Utils;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IFormatter;
 use XEAF\Rack\API\Interfaces\ILocale;
+use XEAF\Rack\API\Interfaces\ILocalization;
 
 /**
  * Реализует методы форматирования данных
@@ -32,7 +33,7 @@ class Formatter implements IFormatter {
      * Объект методов локализации
      * @var \XEAF\Rack\API\Interfaces\ILocalization
      */
-    private $_l10n;
+    private ILocalization $_l10n;
 
     /**
      * Конструктор класса

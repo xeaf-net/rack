@@ -31,7 +31,7 @@ class JsonResult extends CachedResult {
      * Массив возвращаемых данных
      * @var array
      */
-    protected $_data;
+    protected array $_data;
 
     /**
      * Конструктор класса

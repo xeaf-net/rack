@@ -30,19 +30,19 @@ abstract class RelationModel extends PropertyModel {
      * Тип отношения
      * @var int
      */
-    protected $_type;
+    protected int $_type;
 
     /**
      * Имя сущности
      * @var string
      */
-    protected $_entity;
+    protected string $_entity;
 
     /**
      * Свойства связи
      * @var array
      */
-    protected $_links;
+    protected array $_links;
 
     /**
      * Конструктор класса

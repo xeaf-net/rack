@@ -40,13 +40,13 @@ class Configuration implements IConfiguration {
      * Имя файла конфигурации
      * @var string
      */
-    private $_filePath;
+    private string $_filePath;
 
     /**
      * Разобранные данные файла конфигурации
-     * @var \XEAF\Rack\API\Core\DataObject
+     * @var object|null
      */
-    private $_data = null;
+    private ?object $_data = null;
 
     /**
      * Конструктор класса

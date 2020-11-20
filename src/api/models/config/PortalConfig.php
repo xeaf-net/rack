@@ -78,43 +78,43 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * URL портала
      * @var string
      */
-    private $_url = self::DEFAULT_URL;
+    private string $_url = self::DEFAULT_URL;
 
     /**
      * URL источника запросов
      * @var string
      */
-    private $_origin = self::DEFAULT_ORIGIN;
+    private string $_origin = self::DEFAULT_ORIGIN;
 
     /**
      * Идентификатор тип авторизации
      * @var string
      */
-    private $_bearer = self::DEFAULT_BEARER;
+    private string $_bearer = self::DEFAULT_BEARER;
 
     /**
      * Имя локали по умолчанию
      * @var string
      */
-    private $_locale = self::DEFAULT_LOCALE;
+    private string $_locale = self::DEFAULT_LOCALE;
 
     /**
      * Провайдер сессии
      * @var string
      */
-    private $_session = self::DEFAULT_SESSION;
+    private string $_session = self::DEFAULT_SESSION;
 
     /**
      * Директория временных файлов
      * @var string
      */
-    private $_tempPath = self::DEFAULT_TEMP_PATH;
+    private string $_tempPath = self::DEFAULT_TEMP_PATH;
 
     /**
      * Признак режима отладки
      * @var bool
      */
-    private $_debugMode = self::DEFAULT_DEBUG_MODE;
+    private bool $_debugMode = self::DEFAULT_DEBUG_MODE;
 
     /**
      * Конструктор класса

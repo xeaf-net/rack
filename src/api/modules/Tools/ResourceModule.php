@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Modules\Tools;
 use Throwable;
 use XEAF\Rack\API\Core\Module;
 use XEAF\Rack\API\Interfaces\IActionResult;
+use XEAF\Rack\API\Interfaces\IFileSystem;
 use XEAF\Rack\API\Models\Results\DataResult;
 use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
@@ -77,7 +78,7 @@ class ResourceModule extends Module {
      * Объект методов доступа к файловой системе
      * @var \XEAF\Rack\API\Interfaces\IFileSystem
      */
-    private $_fs;
+    private IFileSystem $_fs;
 
     /**
      * Конструктор класса

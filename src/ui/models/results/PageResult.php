@@ -32,19 +32,19 @@ class PageResult extends HtmlResult {
      * Заголовок страницы
      * @var string
      */
-    protected $_pageTitle = '';
+    protected string $_pageTitle = '';
 
     /**
      * Метаданные страницы
      * @var array
      */
-    protected $_pageMeta = [];
+    protected array $_pageMeta = [];
 
     /**
      * Имя шаблона
      * @var string|null
      */
-    protected $_templateName = null;
+    protected ?string $_templateName = null;
 
     /**
      * Конструктор класса

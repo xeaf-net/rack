@@ -37,37 +37,37 @@ class WithModel extends DataModel {
      * Псевдоним
      * @var string
      */
-    protected $_alias;
+    protected string $_alias;
 
     /**
      * Свойство
      * @var string
      */
-    protected $_property;
+    protected string $_property;
 
     /**
      * Тип разрешения
      * @var int
      */
-    protected $_resolveType;
+    protected int $_resolveType;
 
     /**
      * Модель отношения
      * @var \XEAF\Rack\ORM\Models\Properties\RelationModel|null
      */
-    protected $_relation = null;
+    protected ?RelationModel $_relation = null;
 
     /**
      * Запрос для выбора данных
      * @var \XEAF\Rack\ORM\Core\EntityQuery|null
      */
-    protected $_query = null;
+    protected ?EntityQuery $_query = null;
 
     /**
      * Параметры вызова основного запроса
      * @var array
      */
-    protected $_parameters = [];
+    protected array $_parameters = [];
 
     /**
      * Конструктор класса

@@ -30,13 +30,13 @@ class TableResult extends ListResult {
      * Общее количество записей
      * @var int
      */
-    protected $_recordsTotal = 0;
+    protected int $_recordsTotal = 0;
 
     /**
      * Количество отфильтрованных записей
      * @var int
      */
-    protected $_recordsFiltered = 0;
+    protected int $_recordsFiltered = 0;
 
     /**
      * Конструктор класса

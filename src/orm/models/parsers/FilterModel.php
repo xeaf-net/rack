@@ -59,31 +59,31 @@ class FilterModel extends DataModel {
      * Тип параметра
      * @var int
      */
-    protected $_type = DataTypes::DT_STRING;
+    protected int $_type = DataTypes::DT_STRING;
 
     /**
      * Псевдоним
      * @var string
      */
-    protected $_alias = '';
+    protected string $_alias = '';
 
     /**
      * Имя свойства
      * @var string
      */
-    protected $_property = '';
+    protected string $_property = '';
 
     /**
      * Имя параметра фильтрации
      * @var string
      */
-    protected $_parameter = '';
+    protected string $_parameter = '';
 
     /**
      * Тип фильтрации
      * @var int
      */
-    protected $_filterType = self::FILTER_LIKE;
+    protected int $_filterType = self::FILTER_LIKE;
 
     /**
      * Конструктор класса

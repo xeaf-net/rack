@@ -30,19 +30,19 @@ class TokenModel extends DataModel {
      * Тип лексемы
      * @var int
      */
-    protected $_type = TokenTypes::ID_UNKNOWN;
+    protected int $_type = TokenTypes::ID_UNKNOWN;
 
     /**
      * Текст
      * @var string
      */
-    protected $_text = '';
+    protected string $_text = '';
 
     /**
      * Позиция в строке
      * @var int
      */
-    protected $_position = 0;
+    protected int $_position = 0;
 
     /**
      * Конструктор класса

@@ -30,13 +30,13 @@ class FilterParser extends Parser {
      * Псевдоним
      * @var string
      */
-    private $_alias = '';
+    private string $_alias = '';
 
     /**
      * Имя свойства
      * @var string
      */
-    private $_property = '';
+    private string $_property = '';
 
     /**
      * Матрица состояний

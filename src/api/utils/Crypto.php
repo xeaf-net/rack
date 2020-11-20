@@ -66,13 +66,13 @@ class Crypto implements ICrypto {
      * Значение приватного ключа JWT
      * @var string
      */
-    private $_jwtPrivateKey = '';
+    private string $_jwtPrivateKey = '';
 
     /**
      * Значение публичного ключа JWT
      * @var string
      */
-    private $_jwtPublicKey = '';
+    private string $_jwtPublicKey = '';
 
     /**
      * Конструктор класса

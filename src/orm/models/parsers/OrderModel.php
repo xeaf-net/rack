@@ -30,19 +30,19 @@ class OrderModel extends DataModel {
      * Псевдоним
      * @var string
      */
-    protected $_alias = '';
+    protected string $_alias = '';
 
     /**
      * Имя свойства
      * @var string
      */
-    protected $_property = '';
+    protected string $_property = '';
 
     /**
      * Направление сортировки
      * @var int
      */
-    protected $_direction = TokenTypes::KW_ASCENDING;
+    protected int $_direction = TokenTypes::KW_ASCENDING;
 
     /**
      * Конструктор класса

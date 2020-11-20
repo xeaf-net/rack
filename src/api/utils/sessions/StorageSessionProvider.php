@@ -37,15 +37,15 @@ class StorageSessionProvider extends StaticSessionProvider {
 
     /**
      * Объект хранилища
-     * @var \XEAF\Rack\API\Interfaces\IStorage
+     * @var \XEAF\Rack\API\Interfaces\IStorage|null
      */
-    private $_storage = null;
+    private ?IStorage $_storage = null;
 
     /**
      * Признак использования JWT
      * @var bool
      */
-    private $_useJWT = false;
+    private bool $_useJWT = false;
 
     /**
      * @inheritDoc

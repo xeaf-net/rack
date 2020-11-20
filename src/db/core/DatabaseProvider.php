@@ -16,6 +16,7 @@ use PDO;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\StdObject;
+use XEAF\Rack\API\Interfaces\ILocalization;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
@@ -57,19 +58,19 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
      * Ресурс подключения к базе данных
      * @var \PDO|null
      */
-    protected $_dbh = null;
+    protected ?PDO $_dbh = null;
 
     /**
      * Параметры конфигурации подключения
      * @var \XEAF\Rack\Db\Models\Config\DatabaseConfig|null
      */
-    protected $_config = null;
+    protected ?DatabaseConfig $_config;
 
     /**
      * Объект методов локализации
-     * @var \XEAF\Rack\API\Utils\Localization|null
+     * @var \XEAF\Rack\API\Interfaces\ILocalization|null
      */
-    protected $_localization = null;
+    protected ?ILocalization $_localization;
 
     /**
      * Конструктор класса

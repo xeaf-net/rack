@@ -57,13 +57,13 @@ class Session implements ISession {
      * Провайдер сессии
      * @var \XEAF\Rack\API\Interfaces\ISessionProvider
      */
-    private $_provider;
+    private ISessionProvider $_provider;
 
     /**
      * Признак изменения переменных сессии
      * @var bool
      */
-    private $_modified = false;
+    private bool $_modified = false;
 
     /**
      * Конструктор класса

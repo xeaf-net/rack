@@ -76,13 +76,13 @@ class WhereParser extends Parser {
      * Модель данных
      * @var \XEAF\Rack\ORM\Models\Parsers\WhereModel
      */
-    private $_whereModel;
+    private WhereModel $_whereModel;
 
     /**
      * Счетчик скобок
      * @var int
      */
-    private $_brackets = 0;
+    private int $_brackets = 0;
 
     /**
      * Конструктор класса

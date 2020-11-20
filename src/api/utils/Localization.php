@@ -63,25 +63,25 @@ class Localization implements ILocalization {
      * Имя локали по умолчанию
      * @var string
      */
-    private $_defaultLocale = self::DEFAULT_LOCALE;
+    private string $_defaultLocale = self::DEFAULT_LOCALE;
 
     /**
      * Список языковых переменных
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_languageVars;
+    private IKeyValue $_languageVars;
 
     /**
      * Список уже загруженных файлов
      * @var array
      */
-    private $_languageFiles = [];
+    private array $_languageFiles = [];
 
     /**
      * Список классов для загрузки файлов языковых переменных
      * @var array
      */
-    private $_languageClasses = [];
+    private array $_languageClasses = [];
 
     /**
      * Конструктор класса

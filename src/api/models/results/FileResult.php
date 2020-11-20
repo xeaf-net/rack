@@ -35,37 +35,37 @@ class FileResult extends CachedResult {
      * Путь к файлу
      * @var string
      */
-    protected $_filePath = '';
+    protected string $_filePath = '';
 
     /**
      * Имя файла
      * @var string|null
      */
-    protected $_fileName = null;
+    protected ?string $_fileName = null;
 
     /**
      * Признак отправки файла как вложения
      * @var bool
      */
-    protected $_attachment = true;
+    protected bool $_attachment = true;
 
     /**
      * Тип MIME
      * @var string|null
      */
-    protected $_mimeType = null;
+    protected ?string $_mimeType = null;
 
     /**
      * Кодировка
      * @var string|null
      */
-    protected $_charSet = null;
+    protected ?string $_charSet = null;
 
     /**
      * Признак удаления после отправки
      * @var bool
      */
-    protected $_delete = false;
+    protected bool $_delete = false;
 
     /**
      * Конструктор класса

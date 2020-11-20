@@ -28,7 +28,7 @@ abstract class ActionResult extends DataModel implements IActionResult {
      * Код состояния HTTP
      * @var int
      */
-    protected $_statusCode = HttpResponse::OK;
+    protected int $_statusCode = HttpResponse::OK;
 
     /**
      * Конструктор класса

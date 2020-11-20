@@ -95,61 +95,61 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
      * Признак использования SMTP
      * @var bool
      */
-    private $_smtp = self::DEFAULT_SMTP;
+    private bool $_smtp = self::DEFAULT_SMTP;
 
     /**
      * Имя хоста по умолчанию
      * @var string
      */
-    private $_host = self::DEFAULT_HOST;
+    private string $_host = self::DEFAULT_HOST;
 
     /**
      * Номер порта по умолчанию
      * @var int
      */
-    private $_port = self::DEFAULT_PORT;
+    private int $_port = self::DEFAULT_PORT;
 
     /**
      * Признак необходимости авторизации
      * @var bool
      */
-    private $_auth = self::DEFAULT_AUTH;
+    private bool $_auth = self::DEFAULT_AUTH;
 
     /**
      * Способ защиты соединения
      * @var string
      */
-    private $_secure = self::DEFAULT_SECURE;
+    private string $_secure = self::DEFAULT_SECURE;
 
     /**
      * Имя пользователя
      * @var string
      */
-    private $_userName = self::DEFAULT_USERNAME;
+    private string $_userName = self::DEFAULT_USERNAME;
 
     /**
      * Пароль
      * @var string
      */
-    private $_password = self::DEFAULT_PASSWORD;
+    private string $_password = self::DEFAULT_PASSWORD;
 
     /**
      * Адрес отправителя
      * @var string
      */
-    private $_sendFrom = self::DEFAULT_SEND_FROM;
+    private string $_sendFrom = self::DEFAULT_SEND_FROM;
 
     /**
      * Имя отправителя
      * @var string
      */
-    private $_senderName = self::DEFAULT_SENDER_NAME;
+    private string $_senderName = self::DEFAULT_SENDER_NAME;
 
     /**
      * Набор символов
      * @var string
      */
-    private $_charSet = self::DEFAULT_CHARSET;
+    private string $_charSet = self::DEFAULT_CHARSET;
 
     /**
      * Конструктор класса
@@ -257,7 +257,7 @@ class MailerConfig extends ConfigModel implements IFactoryObject {
         $strings           = Strings::getInstance();
         $this->_smtp       = (bool)$data->{'smtp'} ?? self::DEFAULT_SMTP;
         $this->_host       = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port       = $strings->stringToInteger((string)$data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_port       = (int) $strings->stringToInteger((string)$data->{'port'} ?? null, self::DEFAULT_PORT);
         $this->_auth       = (bool)$data->{'auth'} ?? self::DEFAULT_AUTH;
         $this->_secure     = $data->{'secure'} ?? self::DEFAULT_SECURE;
         $this->_userName   = $data->{'userName'} ?? self::DEFAULT_USERNAME;

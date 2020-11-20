@@ -27,7 +27,7 @@ class BoolResult extends CachedResult {
      * Возвращаемое значение
      * @var bool
      */
-    protected $_value = false;
+    protected bool $_value = false;
 
     /**
      * Конструктор класса

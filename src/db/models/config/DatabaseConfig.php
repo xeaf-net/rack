@@ -79,43 +79,43 @@ class DatabaseConfig extends ConfigModel implements INamedObject {
      * Имя провайдера
      * @var string
      */
-    private $_provider = self::DEFAULT_PROVIDER;
+    private string $_provider = self::DEFAULT_PROVIDER;
 
     /**
      * Имя хоста
      * @var string
      */
-    private $_host = self::DEFAULT_HOST;
+    private string $_host = self::DEFAULT_HOST;
 
     /**
      * Номер порта
      * @var int
      */
-    private $_port = self::DEFAULT_PORT;
+    private int $_port = self::DEFAULT_PORT;
 
     /**
      * Имя базы данных
      * @var string
      */
-    private $_dbname = self::DEFAULT_DBNAME;
+    private string $_dbname = self::DEFAULT_DBNAME;
 
     /**
      * Имя пользователя
      * @var string
      */
-    private $_user = '';
+    private string $_user = '';
 
     /**
      * Пароль
      * @var string
      */
-    private $_password = '';
+    private string $_password = '';
 
     /**
      * Набор символов
      * @var string
      */
-    private $_charset = '';
+    private string $_charset = '';
 
     /**
      * Конструктор класса
@@ -198,7 +198,7 @@ class DatabaseConfig extends ConfigModel implements INamedObject {
         $strings         = Strings::getInstance();
         $this->_provider = $data->{'provider'} ?? self::DEFAULT_PROVIDER;
         $this->_host     = $data->{'host'} ?? self::DEFAULT_HOST;
-        $this->_port     = $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
+        $this->_port     = (int) $strings->stringToInteger($data->{'port'} ?? null, self::DEFAULT_PORT);
         $this->_dbname   = $data->{'dbname'} ?? self::DEFAULT_DBNAME;
         $this->_user     = $data->{'user'} ?? self::DEFAULT_USER;
         $this->_password = $data->{'password'} ?? self::DEFAULT_PASSWORD;

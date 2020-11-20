@@ -38,7 +38,7 @@ abstract class LoggerConfig extends ConfigModel implements INamedObject {
      * Уровень записей журнала
      * @var int
      */
-    private $_level = Logger::ERROR;
+    private int $_level = Logger::ERROR;
 
     /**
      * Конструктор класса

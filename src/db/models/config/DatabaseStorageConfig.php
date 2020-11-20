@@ -34,7 +34,7 @@ class DatabaseStorageConfig extends StorageConfig {
      * Имя подключения к базе данных
      * @var string
      */
-    private $_connection = self::DEFAULT_CONNECTION;
+    private string $_connection = self::DEFAULT_CONNECTION;
 
     /**
      * Возвращает имя подкючения к базе данных

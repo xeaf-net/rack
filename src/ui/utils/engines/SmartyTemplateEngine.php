@@ -17,6 +17,7 @@ use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\FileSystem;
@@ -126,37 +127,37 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * Объект шаблонизатора Smarty
      * @var \Smarty
      */
-    private $_smarty;
+    private Smarty $_smarty;
 
     /**
      * Набор зарегистрированных плагинов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_plugins;
+    private IKeyValue $_plugins;
 
     /**
      * Набор зарегистрированных шаблонов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_templates;
+    private IKeyValue $_templates;
 
     /**
      * Результат исполнения текущего действия
      * @var \XEAF\Rack\UI\Models\Results\HtmlResult|null
      */
-    private static $_currentActionResult = null;
+    private static ?HtmlResult $_currentActionResult = null;
 
     /**
      * Текущимй исполняемый объект шаблона
      * @var \XEAF\Rack\UI\Core\Template|null
      */
-    private static $_currentTemplate = null;
+    private static ?Template $_currentTemplate = null;
 
     /**
      * Текйщий выводимый контент страницы
      * @var string|null
      */
-    private static $_currentPageContent = null;
+    private static ?string $_currentPageContent = null;
 
     /**
      * Конструктор класса

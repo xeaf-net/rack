@@ -39,7 +39,7 @@ class TemplateEngine implements ITemplateEngine {
      * Объект провайдера шаблонизатора
      * @var \XEAF\Rack\UI\Interfaces\ITemplateEngineProvider
      */
-    private $_engine;
+    private ITemplateEngineProvider $_engine;
 
     /**
      * @inheritDoc

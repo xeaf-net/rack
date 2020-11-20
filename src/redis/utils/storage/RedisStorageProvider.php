@@ -16,6 +16,7 @@ use Redis;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ISerializer;
 use XEAF\Rack\API\Interfaces\IStorageProvider;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Serializer;
@@ -40,19 +41,19 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      * Подключение к серверу Redis
      * @var \Redis
      */
-    private $_redis;
+    private Redis $_redis;
 
     /**
      * Параметры конфигурации сервера Redis
      * @var \XEAF\Rack\Redis\Models\Config\RedisStorageConfig
      */
-    private $_config;
+    private RedisStorageConfig $_config;
 
     /**
      * Объект методов сериализации
      * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer;
+    private ISerializer $_serializer;
 
     /**
      * Конструктор класса

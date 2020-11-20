@@ -28,13 +28,13 @@ abstract class ConfigModel extends DataModel {
      * Имя секции
      * @var string
      */
-    protected $_section = '';
+    protected string $_section = '';
 
     /**
      * Имя подсекциии
      * @var string
      */
-    protected $_subsection = '';
+    protected string $_subsection = '';
 
     /**
      * Конструктор класса

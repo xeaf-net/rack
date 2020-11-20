@@ -13,6 +13,7 @@
 namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\Interfaces\IRestAPI;
+use XEAF\Rack\API\Interfaces\ISerializer;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Serializer;
@@ -28,25 +29,25 @@ class RestAPI implements IRestAPI {
      * Заголовки
      * @var array
      */
-    private $_headers;
+    private array $_headers;
 
     /**
      * Объект методов сериализации
-     * @var \XEAF\Rack\API\Utils\Serializer|null
+     * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer;
+    private ISerializer $_serializer;
 
     /**
      * Код статуса последнего обращения к API
      * @var int
      */
-    private $_statusCode = HttpResponse::OK;
+    private int $_statusCode = HttpResponse::OK;
 
     /**
      * Сообщение об ошибке
      * @var string
      */
-    private $_errorMessage = '';
+    private string $_errorMessage = '';
 
     /**
      * Конструктор класса

@@ -36,7 +36,7 @@ class Assets implements IAssets {
      * Список папок публичных ресурсов
      * @var array
      */
-    private $_publicFolders = [];
+    private array $_publicFolders = [];
 
     /**
      * @inheritDoc

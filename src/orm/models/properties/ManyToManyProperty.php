@@ -28,13 +28,13 @@ class ManyToManyProperty extends RelationModel {
      * Имя промежуточной сущности
      * @var string
      */
-    protected $_interEntity;
+    protected string $_interEntity;
 
     /**
      * Свойства связи промежуточной сущности
      * @var array
      */
-    protected $_interLinks;
+    protected array $_interLinks;
 
     /**
      * Конструктор класса

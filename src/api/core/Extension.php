@@ -31,15 +31,15 @@ class Extension extends StdObject {
 
     /**
      * Объект методов доступа к параметрам
-     * @var \XEAF\Rack\API\Interfaces\IActionArgs
+     * @var \XEAF\Rack\API\Interfaces\IActionArgs|null
      */
-    private $_args = null;
+    private ?IActionArgs $_args = null;
 
     /**
      * Объект методов проверки параметров
      * @var \XEAF\Rack\API\Interfaces\IValidator
      */
-    private $_validator;
+    private IValidator $_validator;
 
     /**
      * Конструктор класса

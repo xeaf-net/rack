@@ -32,7 +32,7 @@ class FileStorageConfig extends StorageConfig {
      * Путь к директории хранилища
      * @var string
      */
-    private $_path = self::DEFAULT_PATH;
+    private string $_path = self::DEFAULT_PATH;
 
     /**
      * @inheritDoc

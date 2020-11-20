@@ -29,43 +29,43 @@ class JoinParser extends Parser {
      * Тип объединения
      * @var int
      */
-    private $_join = TokenTypes::KW_LEFT;
+    private int $_join = TokenTypes::KW_LEFT;
 
     /**
      * Сушность
      * @var string
      */
-    private $_entity = '';
+    private string $_entity = '';
 
     /**
      * Псевдоним
      * @var string
      */
-    private $_alias = '';
+    private string $_alias = '';
 
     /**
      * Псевдоним сущности слева
      * @var string
      */
-    private $_leftAlias = '';
+    private string $_leftAlias = '';
 
     /**
      * Свойство сущности слева
      * @var string
      */
-    private $_leftProperty = '';
+    private string $_leftProperty = '';
 
     /**
      * Псевдоним сущности справа
      * @var string
      */
-    private $_rightAlias = '';
+    private string $_rightAlias = '';
 
     /**
      * Свойство сущности справа
      * @var string
      */
-    private $_rightProperty = '';
+    private string $_rightProperty = '';
 
     /**
      * Матрица состояний
