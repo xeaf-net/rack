@@ -30,13 +30,13 @@ class RelationValue extends DataModel {
      * Модель конструкции WITH
      * @var \XEAF\Rack\ORM\Models\Parsers\WithModel
      */
-    private $_withModel;
+    private WithModel $_withModel;
 
     /**
      * Признак установки реального значения
      * @var bool
      */
-    private $_resolved = false;
+    private bool $_resolved = false;
 
     /**
      * Реальное значение

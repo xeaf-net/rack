@@ -16,6 +16,7 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\RestAPI;
 use XEAF\Rack\API\Interfaces\INotificator;
+use XEAF\Rack\API\Interfaces\ISession;
 use XEAF\Rack\API\Models\Config\NotificatorConfig;
 
 /**
@@ -69,18 +70,18 @@ class Notificator extends RestAPI implements INotificator {
      * Параметры конфигурации
      * @var \XEAF\Rack\API\Models\Config\NotificatorConfig
      */
-    private $_config;
+    private NotificatorConfig $_config;
 
     /**
      * Объект методов доступа к сессии
      * @var \XEAF\Rack\API\Interfaces\ISession
      */
-    private $_session;
+    private ISession $_session;
 
     /**
      * Конструктор класса
      */
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
         $this->_config  = NotificatorConfig::getInstance();
         $this->_session = Session::getInstance();
@@ -120,7 +121,11 @@ class Notificator extends RestAPI implements INotificator {
                 self::TYPE_FIELD  => $type,
                 self::DATA_FIELD  => $json
             ];
-            $this->post($url, ['sender' => $this->_config->getKey()], $message);
+            $result  = $this->post($url, ['sender' => $this->_config->getKey()], $message);
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            }
         }
     }
 
@@ -129,13 +134,18 @@ class Notificator extends RestAPI implements INotificator {
      */
     public function registerUserSession(): void {
         if ($this->canUseService()) {
-            $url = $this->_config->getUrl() . '/' . self::LOGIN_PATH;
-            $this->post($url, [
+            $url    = $this->_config->getUrl() . '/' . self::LOGIN_PATH;
+            $result = $this->post($url, [
                 'sender'  => $this->_config->getKey(),
                 'session' => $this->_session->getId(),
                 'user'    => $this->_session->getUserId()
             ]);
-            self::setupNotificationCookie();
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            } else {
+                self::setupNotificationCookie();
+            }
         }
     }
 
@@ -144,11 +154,15 @@ class Notificator extends RestAPI implements INotificator {
      */
     public function unregisterUserSession(): void {
         if ($this->canUseService()) {
-            $url = $this->_config->getUrl() . '/' . self::LOGOUT_PATH;
-            $this->post($url, [
+            $url    = $this->_config->getUrl() . '/' . self::LOGOUT_PATH;
+            $result = $this->post($url, [
                 'sender'  => $this->_config->getKey(),
                 'session' => $this->_session->getId()
             ]);
+            if ($result === false) {
+                $logger = Logger::getInstance();
+                $logger->error($this->getErrorMessage());
+            }
         }
         self::cleanupNotificationCookie();
     }

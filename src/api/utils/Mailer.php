@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Utils;
 use PHPMailer\PHPMailer\PHPMailer;
 use Throwable;
 use XEAF\Rack\API\App\Factory;
+use XEAF\Rack\API\Interfaces\ILogger;
 use XEAF\Rack\API\Interfaces\IMailer;
 use XEAF\Rack\API\Models\Config\MailerConfig;
 
@@ -27,21 +28,21 @@ class Mailer implements IMailer {
 
     /**
      * Служба отправики сообщений
-     * @var \PHPMailer\PHPMailer\PHPMailer
+     * @var \PHPMailer\PHPMailer\PHPMailer|null
      */
-    private $_phpMailer = null;
+    private ?PHPMailer $_phpMailer = null;
 
     /**
      * Результат последней отправки
      * @var string|null
      */
-    private $_lastError = null;
+    private ?string $_lastError = null;
 
     /**
      * Объект методов журналирования
      * @var \XEAF\Rack\API\Interfaces\ILogger
      */
-    private $_logger;
+    private ILogger $_logger;
 
     /**
      * @inheritDoc

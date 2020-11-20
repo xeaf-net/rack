@@ -38,6 +38,18 @@ class Reflection implements IReflection {
     /**
      * @inheritDoc
      */
+    public function shortClassName(string $className): string {
+        try {
+            $ref = new ReflectionClass($className);
+            return $ref->getShortName();
+        } catch (ReflectionException $reason) {
+            throw CoreException::internalReflectionError($reason);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function classFileName(string $className): string {
         try {
             $ref = new ReflectionClass($className);

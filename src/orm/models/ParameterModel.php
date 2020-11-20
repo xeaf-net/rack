@@ -30,7 +30,7 @@ class ParameterModel extends DataModel {
      * Тип данных
      * @var int
      */
-    protected $_type = DataTypes::DT_STRING;
+    protected int$_type = DataTypes::DT_STRING;
 
     /**
      * Значение
@@ -42,7 +42,7 @@ class ParameterModel extends DataModel {
      * Признак параметра фильтрации
      * @var bool
      */
-    protected $_filter = false;
+    protected bool $_filter = false;
 
     /**
      * Конструктор класса

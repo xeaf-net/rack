@@ -32,13 +32,13 @@ class HtmlResult extends ActionResult {
      * Объект данных
      * @var \XEAF\Rack\API\Core\DataObject|null
      */
-    protected $_dataObject = null;
+    protected ?DataObject $_dataObject = null;
 
     /**
      * Имя файла разметки
      * @var string|null
      */
-    protected $_layoutFile = null;
+    protected ?string $_layoutFile = null;
 
     /**
      * Конструктор класса

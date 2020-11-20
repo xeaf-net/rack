@@ -34,7 +34,7 @@ class ProviderConfig extends ConfigModel implements INamedObject {
      * Идентификатор провайдера
      * @var string|null
      */
-    private $_provider = null;
+    private ?string $_provider = null;
 
     /**
      * Конструктор класса

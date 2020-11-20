@@ -14,11 +14,9 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\Interfaces\IActionArgs;
 use XEAF\Rack\API\Interfaces\ILogger;
-use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
-use XEAF\Rack\API\Utils\Validator;
 
 /**
  * Реализует базовые методы для всех расширений проекта
@@ -31,22 +29,14 @@ class Extension extends StdObject {
 
     /**
      * Объект методов доступа к параметрам
-     * @var \XEAF\Rack\API\Interfaces\IActionArgs
+     * @var \XEAF\Rack\API\Interfaces\IActionArgs|null
      */
-    private $_args;
-
-    /**
-     * Объект методов проверки параметров
-     * @var \XEAF\Rack\API\Interfaces\IValidator
-     */
-    private $_validator;
+    private ?IActionArgs $_args = null;
 
     /**
      * Конструктор класса
      */
     public function __construct() {
-        $this->_args      = Parameters::getInstance();
-        $this->_validator = Validator::getInstance();
         $this->loadLanguageFiles();
     }
 
@@ -70,16 +60,10 @@ class Extension extends StdObject {
      * @return \XEAF\Rack\API\Interfaces\IActionArgs
      */
     protected function args(): IActionArgs {
+        if (!$this->_args) {
+            $this->_args = Parameters::getInstance();
+        }
         return $this->_args;
-    }
-
-    /**
-     * Возвращает объект методов валидации параметров
-     *
-     * @return \XEAF\Rack\API\Interfaces\IValidator
-     */
-    protected function validator(): IValidator {
-        return $this->_validator;
     }
 
     /**

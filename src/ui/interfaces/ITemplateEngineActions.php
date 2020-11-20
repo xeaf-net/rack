@@ -113,30 +113,33 @@ interface ITemplateEngineActions {
      *
      * @param string                              $layoutFile Имя файла разметки
      * @param \XEAF\Rack\API\Core\DataObject|null $dataObject Объект данных
+     * @param string|null                         $locale     Локаль
      *
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    public function parse(string $layoutFile, DataObject $dataObject = null): string;
+    public function parse(string $layoutFile, DataObject $dataObject = null, string $locale = null): string;
 
     /**
      * Возвращает HTML код результата действия
      *
      * @param \XEAF\Rack\UI\Models\Results\HtmlResult $actionResult Результат исполнения действия
+     * @param string|null                             $locale       Локаль
      *
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    public function parseModule(HtmlResult $actionResult): string;
+    public function parseModule(HtmlResult $actionResult, string $locale = null): string;
 
     /**
      * Возвращает HTML код страницы
      *
      * @param \XEAF\Rack\UI\Core\Template $template    Объект шаблона страницы
      * @param string                      $pageContent Содержимое страницы
+     * @param string|null                 $locale      Локаль
      *
      * @return string
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      */
-    public function parseTemplate(Template $template, string $pageContent): string;
+    public function parseTemplate(Template $template, string $pageContent, string $locale = null): string;
 }

@@ -63,25 +63,25 @@ class Localization implements ILocalization {
      * Имя локали по умолчанию
      * @var string
      */
-    private $_defaultLocale = self::DEFAULT_LOCALE;
+    private string $_defaultLocale = self::DEFAULT_LOCALE;
 
     /**
      * Список языковых переменных
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_languageVars;
+    private IKeyValue $_languageVars;
 
     /**
      * Список уже загруженных файлов
      * @var array
      */
-    private $_languageFiles = [];
+    private array $_languageFiles = [];
 
     /**
      * Список классов для загрузки файлов языковых переменных
      * @var array
      */
-    private $_languageClasses = [];
+    private array $_languageClasses = [];
 
     /**
      * Конструктор класса
@@ -197,6 +197,24 @@ class Localization implements ILocalization {
     }
 
     /**
+     * Возвращает локализованную версию пути файла
+     *
+     * @param string      $filePath Путь к файлу
+     * @param string|null $ext      Расширение имени файла
+     * @param string|null $locale   Локаль
+     *
+     * @return string
+     */
+    public function localizedFilePath(string $filePath, string $ext = null, string $locale = null): string {
+        $fs   = FileSystem::getInstance();
+        $lang = $locale ? $locale : $this->_defaultLocale;
+        $type = $ext ? $ext : $fs->fileNameExt($filePath);
+        $dir  = $fs->fileDir($filePath) . '/' . self::LANG_FILE_DIR;
+        $file = $fs->fileName($filePath) . '.' . $lang . '.' . $type;
+        return $path = $dir . '/' . $file;
+    }
+
+    /**
      * Перезагружает файлы значений языковых переменных
      *
      * @param string $locale Имя локали
@@ -245,9 +263,12 @@ class Localization implements ILocalization {
             $fs   = FileSystem::getInstance();
             $ref  = Reflection::getInstance();
             $cf   = $ref->classFileName($className);
+            $path = $this->localizedFilePath($cf, self::LANG_FILE_EXT, $locale);
+            /*
             $dir  = $fs->fileDir($cf) . '/' . self::LANG_FILE_DIR;
             $file = $fs->fileName($cf) . '.' . $locale . '.' . self::LANG_FILE_EXT;
             $path = $dir . '/' . $file;
+            */
             if ($fs->fileExists($path)) {
                 $result = $path;
             }

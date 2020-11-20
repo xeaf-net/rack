@@ -33,37 +33,37 @@ class JoinModel extends DataModel {
      * Тип соединения
      * @var int
      */
-    protected $_type = TokenTypes::KW_LEFT;
+    protected int $_type = TokenTypes::KW_LEFT;
 
     /**
      * Имя связываемой сущности
      * @var string
      */
-    protected $_joinEntity = '';
+    protected string $_joinEntity = '';
 
     /**
      * Псевдоним связываемой сущности
      * @var string
      */
-    protected $_joinAlias = '';
+    protected string $_joinAlias = '';
 
     /**
      * Имя свойства связываемой сущности
      * @var string
      */
-    protected $_joinProperty = '';
+    protected string $_joinProperty = '';
 
     /**
      * Псевдоним внешней сущности
      * @var string
      */
-    protected $_linkAlias = '';
+    protected string $_linkAlias = '';
 
     /**
      * Свойство внешней сущности
      * @var string
      */
-    protected $_linkProperty = '';
+    protected string $_linkProperty = '';
 
     /**
      * Конструктор класса

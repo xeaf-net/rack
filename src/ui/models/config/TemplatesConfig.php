@@ -55,31 +55,31 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
      * Имя парзера шаблонов
      * @var string
      */
-    private $_engine = self::DEFAULT_ENGINE;
+    private string $_engine = self::DEFAULT_ENGINE;
 
     /**
      * Признак принудительной компиляции
      * @var bool
      */
-    private $_forceCompile = self::DEFAULT_FORCE_COMPILE;
+    private bool $_forceCompile = self::DEFAULT_FORCE_COMPILE;
 
     /**
      * Признак использования кеширования
      * @var bool
      */
-    private $_enableCaching = self::DEFAULT_ENABLE_CACHING;
+    private bool $_enableCaching = self::DEFAULT_ENABLE_CACHING;
 
     /**
      * Директория файлов кеша
      * @var string
      */
-    private $_cacheDir = '';
+    private string $_cacheDir = '';
 
     /**
      * Директория файлов компиляции
      * @var string
      */
-    private $_compileDir = '';
+    private string $_compileDir = '';
 
     /**
      * Конструктор класса
@@ -146,8 +146,8 @@ class TemplatesConfig extends ConfigModel implements IFactoryObject {
         $this->_engine        = $data->{'engine'} ?? self::DEFAULT_ENGINE;
         $this->_forceCompile  = (bool)($data->{'forceCompile'} ?? self::DEFAULT_FORCE_COMPILE);
         $this->_enableCaching = (bool)($data->{'enableCaching'} ?? self::DEFAULT_ENABLE_CACHING);
-        $this->_cacheDir      = $data->{'cacheDir'} ?? null;
-        $this->_compileDir    = $data->{'compileDir'} ?? null;
+        $this->_cacheDir      = $data->{'cacheDir'} ?? '';
+        $this->_compileDir    = $data->{'compileDir'} ?? '';
         if (!$this->_cacheDir) {
             $this->_cacheDir = $portalConfig->getTempPath();
         }

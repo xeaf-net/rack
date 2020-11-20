@@ -39,19 +39,19 @@ class Tokenizer implements ITokenizer {
      * Символы разобранного текста XQL запроса
      * @var array
      */
-    private $_chars = [];
+    private array $_chars = [];
 
     /**
      * Текущая позиция в массиве символов
      * @var int
      */
-    private $_charPos = 0;
+    private int $_charPos = 0;
 
     /**
      * Счетчик скобок
      * @var int
      */
-    private $_brackets = 0;
+    private int $_brackets = 0;
 
     /**
      * Конструктор класса

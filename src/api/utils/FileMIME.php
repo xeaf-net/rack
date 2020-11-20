@@ -41,7 +41,7 @@ class FileMIME implements IFileMIME {
     /**
      * Известные форматы файлов изображений
      */
-    private $_knownImages = [
+    private array $_knownImages = [
         'bmp'  => 'image/bmp',
         'gif'  => 'image/gif',
         'ico'  => 'image/x-icon',
@@ -55,14 +55,14 @@ class FileMIME implements IFileMIME {
     /**
      * Известные форматы аудиофайлов
      */
-    private $_knownAudio = [
+    private array $_knownAudio = [
         'mp3' => 'audio/mpeg3',
     ];
 
     /**
      * Известные форматы видеофайлов
      */
-    private $_knownVideo = [
+    private array $_knownVideo = [
         'avi' => 'video/x-msvideo',
         'mov' => 'video/quicktime',
         'mp4' => 'video/mp4',
@@ -71,7 +71,7 @@ class FileMIME implements IFileMIME {
     /**
      * Известные форматы файлов ресурсов
      */
-    private $_knownResources = [
+    private array $_knownResources = [
         'css'   => 'text/css',
         'eot'   => 'application/vnd.ms-fontobject',
         'js'    => 'application/x-javascript',
@@ -86,7 +86,7 @@ class FileMIME implements IFileMIME {
     /**
      * Прочие известные форматы файлов
      */
-    private $_knownOtherFiles = [
+    private array $_knownOtherFiles = [
         '7z'   => 'application/x-7z-compressed',
         'ai'   => 'application/illustrator',
         'dat'  => self::OCTET_STREAM,

@@ -14,12 +14,15 @@ namespace XEAF\Rack\Db\Utils\Storage;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\ILogger;
+use XEAF\Rack\API\Interfaces\ISerializer;
 use XEAF\Rack\API\Interfaces\IStorageProvider;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\Calendar;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\API\Utils\Storage;
+use XEAF\Rack\Db\Interfaces\IDatabase;
 use XEAF\Rack\Db\Models\Config\DatabaseStorageConfig;
 use XEAF\Rack\Db\Utils\Database;
 use XEAF\Rack\Db\Utils\Exceptions\DatabaseException;
@@ -42,24 +45,24 @@ class DatabaseStorageProvider extends KeyValue implements IStorageProvider {
      * Параметры конфигурации
      * @var \XEAF\Rack\Db\Models\Config\DatabaseStorageConfig
      */
-    private $_config;
+    private DatabaseStorageConfig $_config;
 
     /**
      * Подключение к базе данных
      * @var \XEAF\Rack\Db\Interfaces\IDatabase
      */
-    private $_database;
+    private IDatabase $_database;
 
     /**
      * Объект методов сериализации
      * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer;
+    private ISerializer $_serializer;
 
     /**
      * @var \XEAF\Rack\API\Interfaces\ILogger
      */
-    private $_logger;
+    private ILogger $_logger;
 
     /**
      * Конструктор класса

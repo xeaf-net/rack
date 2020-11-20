@@ -17,6 +17,7 @@ use Throwable;
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\DataObject;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Models\Config\PortalConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 use XEAF\Rack\API\Utils\FileSystem;
@@ -126,37 +127,37 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * Объект шаблонизатора Smarty
      * @var \Smarty
      */
-    private $_smarty;
+    private Smarty $_smarty;
 
     /**
      * Набор зарегистрированных плагинов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_plugins;
+    private IKeyValue $_plugins;
 
     /**
      * Набор зарегистрированных шаблонов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_templates;
+    private IKeyValue $_templates;
 
     /**
      * Результат исполнения текущего действия
      * @var \XEAF\Rack\UI\Models\Results\HtmlResult|null
      */
-    private static $_currentActionResult = null;
+    private static ?HtmlResult $_currentActionResult = null;
 
     /**
      * Текущимй исполняемый объект шаблона
      * @var \XEAF\Rack\UI\Core\Template|null
      */
-    private static $_currentTemplate = null;
+    private static ?Template $_currentTemplate = null;
 
     /**
      * Текйщий выводимый контент страницы
      * @var string|null
      */
-    private static $_currentPageContent = null;
+    private static ?string $_currentPageContent = null;
 
     /**
      * Конструктор класса
@@ -490,20 +491,21 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * @inheritDoc
      */
-    public function parse(string $layoutFile, DataObject $dataObject = null): string {
+    public function parse(string $layoutFile, DataObject $dataObject = null, string $locale = null): string {
+        $path = $this->localizeLocaleFile($layoutFile, $locale);
         try {
             $this->_smarty->assign(self::VAR_DATA_MODEL, $dataObject);
-            return $this->_smarty->fetch($layoutFile);
+            return $this->_smarty->fetch($path);
         } catch (Throwable $exception) {
-            throw TemplateException::templateProcessingError($layoutFile, $exception);
+            throw TemplateException::templateProcessingError($path, $exception);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function parseModule(HtmlResult $actionResult): string {
-        $layoutFile = $actionResult->getLayoutFile();
+    public function parseModule(HtmlResult $actionResult, string $locale = null): string {
+        $layoutFile = $this->localizeLocaleFile($actionResult->getLayoutFile(), $locale);
         try {
             self::$_currentActionResult = $actionResult;
             $this->_smarty->assign(self::VAR_ACTION_MODEL, self::$_currentActionResult->getDataObject());
@@ -516,8 +518,8 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
     /**
      * @inheritDoc
      */
-    public function parseTemplate(Template $template, string $pageContent): string {
-        $layoutFile = $template->getLayoutFile();
+    public function parseTemplate(Template $template, string $pageContent, string $locale = null): string {
+        $layoutFile = $this->localizeLocaleFile($template->getLayoutFile(), $locale);
         try {
             self::$_currentTemplate    = $template;
             self::$_currentPageContent = $pageContent;
@@ -529,5 +531,20 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
         } catch (Throwable $exception) {
             throw TemplateException::templateProcessingError($layoutFile, $exception);
         }
+    }
+
+    /**
+     * Уточняет имя файла разметки
+     *
+     * @param string      $filePath Путь к файлу
+     * @param string|null $locale   Имя локали
+     *
+     * @return string
+     */
+    protected function localizeLocaleFile(string $filePath, string $locale = null): string {
+        $fs      = FileSystem::getInstance();
+        $l10n    = Localization::getInstance();
+        $locPath = $l10n->localizedFilePath($filePath, self::FILE_NAME_EXT, $locale);
+        return $fs->fileExists($locPath) ? $locPath : $filePath;
     }
 }

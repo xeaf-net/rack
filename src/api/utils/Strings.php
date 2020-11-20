@@ -128,6 +128,14 @@ class Strings implements IStrings {
     /**
      * @inheritDoc
      */
+    public function isPhoneNumber(?string $buf): bool {
+        $len = strlen(preg_replace('/\D/', '', $buf));
+        return $len == 11 || $len == 10;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function isObjectId(?string $buf): bool {
         return $this->isUUID($buf) || $this->isInteger($buf);
     }

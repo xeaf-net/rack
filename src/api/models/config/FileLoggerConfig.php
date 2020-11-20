@@ -32,7 +32,7 @@ class FileLoggerConfig extends LoggerConfig {
      * Путь к директории файлов журнала
      * @var string
      */
-    private $_path = self::DEFAULT_PATH;
+    private string $_path = self::DEFAULT_PATH;
 
     /**
      * Префикс имени файла по умолчанию
@@ -43,7 +43,7 @@ class FileLoggerConfig extends LoggerConfig {
      * Префикс имени файла
      * @var string
      */
-    private $_prefix = self::DEFAULT_PREFIX;
+    private string $_prefix = self::DEFAULT_PREFIX;
 
     /**
      * @inheritDoc

@@ -29,13 +29,13 @@ class AliasModel extends DataModel {
      * Наименование псевдонима
      * @var string
      */
-    protected $_name = '';
+    protected string $_name = '';
 
     /**
      * Модель сущности
      * @var \XEAF\Rack\ORM\Models\EntityModel|null
      */
-    protected $_model = null;
+    protected ?EntityModel $_model = null;
 
     /**
      * Конструктор класса

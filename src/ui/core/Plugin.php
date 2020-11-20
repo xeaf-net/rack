@@ -23,15 +23,15 @@ abstract class Plugin extends Layout {
 
     /**
      * Объект шаблона
-     * @var \XEAF\Rack\UI\Core\Template
+     * @var \XEAF\Rack\UI\Core\Template|null
      */
-    protected $_template = null;
+    protected ?Template $_template = null;
 
     /**
      * Параметры вызова плагина
      * @var array
      */
-    protected $_params = [];
+    protected array $_params = [];
 
     /**
      * Конструктор класса

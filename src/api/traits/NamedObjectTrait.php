@@ -25,7 +25,7 @@ trait NamedObjectTrait {
      * Имя объекта
      * @var string
      */
-    private $_name = Factory::DEFAULT_NAME;
+    private string $_name = Factory::DEFAULT_NAME;
 
     /**
      * Конструктор класса

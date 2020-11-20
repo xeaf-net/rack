@@ -17,6 +17,7 @@ use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Core\Entity;
+use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
 use XEAF\Rack\ORM\Interfaces\IGenerator;
 use XEAF\Rack\ORM\Models\EntityModel;
@@ -44,21 +45,21 @@ class Generator implements IGenerator {
 
     /**
      * Менеджер сущностей
-     * @var \XEAF\Rack\ORM\Core\EntityManager
+     * @var \XEAF\Rack\ORM\Core\EntityManager|null
      */
-    private $_em = null;
+    private ?EntityManager $_em = null;
 
     /**
      * Хранилище разрешенных псевдонимов
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_aliases;
+    private IKeyValue $_aliases;
 
     /**
      * Хранилище моделей сущностей
-     * @var \XEAF\Rack\API\Interfaces\IKeyValue
+     * @var \XEAF\Rack\API\Interfaces\IKeyValue|null
      */
-    private $_entities = null;
+    private ?IKeyValue $_entities = null;
 
     /**
      * @inheritDoc

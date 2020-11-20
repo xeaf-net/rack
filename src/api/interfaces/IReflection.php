@@ -20,6 +20,16 @@ namespace XEAF\Rack\API\Interfaces;
 interface IReflection extends IFactoryObject {
 
     /**
+     * Возвращает сокращенное имя класса
+     *
+     * @param string $className Имя класса
+     *
+     * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\CoreException
+     */
+    public function shortClassName(string $className): string;
+
+    /**
      * Возвращает имя файла реализации класса
      *
      * @param string $className Имя класса

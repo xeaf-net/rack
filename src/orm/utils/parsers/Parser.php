@@ -45,37 +45,37 @@ abstract class Parser {
      * Код фазы
      * @var int
      */
-    protected $_phase = QueryParser::ALIAS_PHASE;
+    protected int $_phase = QueryParser::ALIAS_PHASE;
 
     /**
      * Модель запроса
      * @var \XEAF\Rack\ORM\Models\QueryModel
      */
-    protected $_queryModel = null;
+    protected QueryModel $_queryModel;
 
     /**
      * Матрица состояний
      * @var array
      */
-    protected $_matrix = [];
+    protected array $_matrix = [];
 
     /**
      * Код текущего состояния
      * @var string
      */
-    protected $_state = self::START;
+    protected string $_state = self::START;
 
     /**
      * Текущая разбираемая лексема
      * @var \XEAF\Rack\ORM\Models\TokenModel|null
      */
-    protected $_current = null;
+    protected ?TokenModel $_current = null;
 
     /**
      * Предыдучая разбираемая лексема
      * @var \XEAF\Rack\ORM\Models\TokenModel|null
      */
-    protected $_previous = null;
+    protected ?TokenModel $_previous = null;
 
     /**
      * Конструктор класса
@@ -102,7 +102,9 @@ abstract class Parser {
         while (!$tokens->isEmpty() && $this->_state != self::ERROR && $this->_state != self::STOP) {
             $this->_previous = $this->_current;
             try {
-                $this->_current = $tokens->pop();
+                $token = $tokens->pop();
+                assert($token instanceof TokenModel || $token === null);
+                $this->_current = $token;
             } catch (CollectionException $exception) {
                 throw EntityException::internalError($exception);
             }

@@ -31,7 +31,7 @@ class FormResult extends ErrorResult {
      * Тег
      * @var string|null
      */
-    private $_tag;
+    private ?string $_tag;
 
     /**
      * Конструктор класса

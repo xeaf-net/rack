@@ -27,13 +27,13 @@ class Cookie implements ICookies {
      * Текущая позиция итерации
      * @var int|null
      */
-    private $_position = null;
+    private ?int $_position = null;
 
     /**
      * Ключи позиций итерации
      * @var array
      */
-    private $_positionKeys = [];
+    private array $_positionKeys = [];
 
     /**
      * Конструктор класса

@@ -30,25 +30,25 @@ class UploadedFile extends DataModel {
      * Имя файла
      * @var string
      */
-    private $_name = '';
+    private string $_name = '';
 
     /**
      * MIME файла
      * @var string
      */
-    private $_mime = '';
+    private string $_mime = '';
 
     /**
      * Размер файла
      * @var int
      */
-    private $_size = 0;
+    private int $_size = 0;
 
     /**
      * Временное расположение файла
      * @var string
      */
-    private $_tempPath = '';
+    private string $_tempPath = '';
 
     /**
      * Возвразет имя файла

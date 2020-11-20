@@ -29,7 +29,7 @@ class RedirectResult extends ActionResult {
      * URL для перенаправления
      * @var string
      */
-    protected $_url = '';
+    protected string $_url = '';
 
     /**
      * Конструктор класса

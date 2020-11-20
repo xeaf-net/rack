@@ -39,7 +39,7 @@ class Storage implements IStorage {
      * Объект провайдера
      * @var \XEAF\Rack\API\Interfaces\IStorageProvider
      */
-    private $_provider;
+    private IStorageProvider $_provider;
 
     /**
      * Конструктор класса

@@ -22,6 +22,8 @@ use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\API\Utils\Exceptions\CollectionException;
 use XEAF\Rack\API\Utils\Exceptions\SerializerException;
 use XEAF\Rack\API\Utils\Serializer;
+use XEAF\Rack\ORM\Interfaces\IGenerator;
+use XEAF\Rack\ORM\Interfaces\IResolver;
 use XEAF\Rack\ORM\Models\ParameterModel;
 use XEAF\Rack\ORM\Models\Parsers\AliasModel;
 use XEAF\Rack\ORM\Models\Parsers\FilterModel;
@@ -52,27 +54,27 @@ class EntityQuery extends DataModel {
 
     /**
      * Модель запроса
-     * @var \XEAF\Rack\ORM\Models\QueryModel|null
+     * @var \XEAF\Rack\ORM\Models\QueryModel
      */
-    private $_model;
+    private QueryModel $_model;
 
     /**
      * Менеджер сущностей
      * @var \XEAF\Rack\ORM\Core\EntityManager
      */
-    private $_em;
+    private EntityManager $_em;
 
     /**
      * Объект методов генерации SQL команд
      * @var \XEAF\Rack\ORM\Interfaces\IGenerator
      */
-    private $_generator;
+    private IGenerator $_generator;
 
     /**
      * Объект методов разрешения связей
      * @var \XEAF\Rack\ORM\Interfaces\IResolver
      */
-    private $_resolver;
+    private IResolver $_resolver;
 
     /**
      * Конструктор класса

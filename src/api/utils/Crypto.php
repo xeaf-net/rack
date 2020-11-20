@@ -66,13 +66,13 @@ class Crypto implements ICrypto {
      * Значение приватного ключа JWT
      * @var string
      */
-    private $_jwtPrivateKey = '';
+    private string $_jwtPrivateKey = '';
 
     /**
      * Значение публичного ключа JWT
      * @var string
      */
-    private $_jwtPublicKey = '';
+    private string $_jwtPublicKey = '';
 
     /**
      * Конструктор класса
@@ -172,7 +172,10 @@ class Crypto implements ICrypto {
     /**
      * @inheritDoc
      */
-    public function verifyPassword(string $password, string $hash): bool {
+    public function verifyPassword(?string $password, ?string $hash): bool {
+        if ($password === null || $hash === null) {
+            return false;
+        }
         return password_verify($password, $hash);
     }
 

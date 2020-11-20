@@ -26,19 +26,19 @@ class Collection implements ICollection {
      * Хранилище объектов коллекции
      * @var array
      */
-    protected $_data = [];
+    protected array $_data = [];
 
     /**
      * Текущая позиция итерации
      * @var int|null
      */
-    private $_position = null;
+    private ?int $_position = null;
 
     /**
      * Признак возможности сохранять дубликаты
      * @var bool
      */
-    protected $_duplicates = true;
+    protected bool $_duplicates = true;
 
     /**
      * Конструктор класса

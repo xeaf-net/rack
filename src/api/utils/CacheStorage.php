@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\ICacheStorage;
+use XEAF\Rack\API\Interfaces\IStorage;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
 
 /**
@@ -39,13 +40,13 @@ class CacheStorage implements ICacheStorage {
      * Связки тегов и ключей
      * @var array
      */
-    private $_keyTags = [];
+    private array $_keyTags = [];
 
     /**
      * Хранилище значений
      * @var \XEAF\Rack\API\Interfaces\IStorage
      */
-    private $_storage;
+    private IStorage $_storage;
 
     /**
      * Конструктор класса

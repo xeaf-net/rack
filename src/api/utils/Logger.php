@@ -66,19 +66,19 @@ class Logger implements ILogger {
      * Провайдер журнала операций
      * @var ILoggerProvider
      */
-    private $_provider;
+    private ILoggerProvider $_provider;
 
     /**
      * Уровень записей журнала операций
      * @var int
      */
-    private $_level = self::ERROR;
+    private int $_level = self::ERROR;
 
     /**
      * Признак редима отладки
      * @var bool
      */
-    private $_debugMode;
+    private bool $_debugMode;
 
     /**
      * Конструктор класса

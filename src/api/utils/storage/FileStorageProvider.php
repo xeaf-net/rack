@@ -14,6 +14,8 @@ namespace XEAF\Rack\API\Utils\Storage;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyStorage;
+use XEAF\Rack\API\Interfaces\IFileSystem;
+use XEAF\Rack\API\Interfaces\ISerializer;
 use XEAF\Rack\API\Interfaces\IStorageProvider;
 use XEAF\Rack\API\Models\Config\FileStorageConfig;
 use XEAF\Rack\API\Traits\NamedObjectTrait;
@@ -44,19 +46,19 @@ class FileStorageProvider extends KeyStorage implements IStorageProvider {
      * Путь из файла конфигурации
      * @var string
      */
-    private $_path;
+    private string $_path;
 
     /**
      * Объект методов доступа к файловой системе
      * @var \XEAF\Rack\API\Interfaces\IFileSystem
      */
-    private $_fileSystem;
+    private IFileSystem $_fileSystem;
 
     /**
      * Объект метдов сериализации данных
      * @var \XEAF\Rack\API\Interfaces\ISerializer
      */
-    private $_serializer;
+    private ISerializer $_serializer;
 
     /**
      * Конструктор класса

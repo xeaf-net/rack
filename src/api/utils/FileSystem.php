@@ -42,7 +42,7 @@ class FileSystem implements IFileSystem {
      * Массив имен временных файлов
      * @var array
      */
-    private $_tempFileNames = [];
+    private array $_tempFileNames = [];
 
     /**
      * Конструктор класса

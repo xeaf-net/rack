@@ -77,4 +77,15 @@ interface IValidator extends IFactoryObject {
      */
     public function checkEmail($data, string $tag = null): void;
 
+    /**
+     * Проверяет адрес электронной почты
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkPhone($data, string $tag = null): void;
+
 }

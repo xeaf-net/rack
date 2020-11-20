@@ -39,61 +39,61 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * Имя метода
      * @var string
      */
-    protected $_methodName = '';
+    protected string $_methodName = '';
 
     /**
      * Имя узла действия
      * @var string
      */
-    protected $_actionNode = Router::ROOT_NODE;
+    protected string $_actionNode = Router::ROOT_NODE;
 
     /**
      * Путь действия
-     * @var string
+     * @var string|null
      */
-    protected $_actionPath = null;
+    protected ?string $_actionPath = null;
 
     /**
      * Режим вызова действия
      * @var string|null
      */
-    protected $_actionMode = null;
+    protected ?string $_actionMode = null;
 
     /**
      * Идентификатор объекта действия
      * @var string|null
      */
-    protected $_objectId = null;
+    protected ?string $_objectId = null;
 
     /**
      * Путь объекта действия
      * @var string|null
      */
-    protected $_objectPath = null;
+    protected ?string $_objectPath = null;
 
     /**
      * Полный URL вызова действия
      * @var string|null
      */
-    protected $_currentURL = null;
+    protected ?string $_currentURL = null;
 
     /**
      * Параметры вызова действия
      * @var array
      */
-    protected $_parameters = [];
+    protected array $_parameters = [];
 
     /**
      * Информация о переданных файлах
      * @var array
      */
-    protected $_files = [];
+    protected array $_files = [];
 
     /**
      * Параметры заголовков вызова
      * @var array
      */
-    protected $_headers = [];
+    protected array $_headers = [];
 
     /**
      * @inheritDoc

@@ -26,7 +26,7 @@ class EnumProperty extends PropertyModel {
      * Массив значений допустимых свойств
      * @var array
      */
-    private $_enums;
+    private array $_enums;
 
     /**
      * Конструктор класса

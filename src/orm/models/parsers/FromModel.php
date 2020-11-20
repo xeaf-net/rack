@@ -28,13 +28,13 @@ class FromModel extends DataModel {
      * Имя сущности
      * @var string
      */
-    protected $_entity = '';
+    protected string $_entity = '';
 
     /**
      * Псевдоним
      * @var string
      */
-    protected $_alias = '';
+    protected string $_alias = '';
 
     /**
      * Конструктор класса

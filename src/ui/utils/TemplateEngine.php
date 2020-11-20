@@ -39,7 +39,7 @@ class TemplateEngine implements ITemplateEngine {
      * Объект провайдера шаблонизатора
      * @var \XEAF\Rack\UI\Interfaces\ITemplateEngineProvider
      */
-    private $_engine;
+    private ITemplateEngineProvider $_engine;
 
     /**
      * @inheritDoc
@@ -141,22 +141,22 @@ class TemplateEngine implements ITemplateEngine {
     /**
      * @inheritDoc
      */
-    public function parse(string $layoutFile, DataObject $dataObject = null): string {
-        return $this->_engine->parse($layoutFile, $dataObject);
+    public function parse(string $layoutFile, DataObject $dataObject = null, string $locale = null): string {
+        return $this->_engine->parse($layoutFile, $dataObject, $locale);
     }
 
     /**
      * @inheritDoc
      */
-    public function parseModule(HtmlResult $actionResult): string {
-        return $this->_engine->parseModule($actionResult);
+    public function parseModule(HtmlResult $actionResult, string $locale = null): string {
+        return $this->_engine->parseModule($actionResult, $locale);
     }
 
     /**
      * @inheritDoc
      */
-    public function parseTemplate(Template $template, string $pageContent): string {
-        return $this->_engine->parseTemplate($template, $pageContent);
+    public function parseTemplate(Template $template, string $pageContent, string $locale = null): string {
+        return $this->_engine->parseTemplate($template, $pageContent, $locale);
     }
 
     /**

@@ -29,7 +29,7 @@ class ErrorResult extends StatusResult {
      * Текст сообщения об ошибке
      * @var string
      */
-    protected $_message = '';
+    protected string $_message;
 
     /**
      * Конструктор класса

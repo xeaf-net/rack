@@ -122,6 +122,15 @@ interface IStrings extends IFactoryObject {
     public function isEmail(?string $buf): bool;
 
     /**
+     * Провряет является ли переданная строка номером телефона
+     *
+     * @param string|null $buf Проверяемая строка
+     *
+     * @return bool
+     */
+    public function isPhoneNumber(?string $buf): bool;
+
+    /**
      * Проверяет является ли преданная строка идентификатором объекта
      *
      * @param string|null $buf Проверяемая строка

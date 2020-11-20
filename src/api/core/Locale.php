@@ -29,7 +29,7 @@ use XEAF\Rack\API\Interfaces\ILocale;
  *
  * @package  XEAF\Rack\API\Core
  */
-class Locale extends DataModel implements ILocale {
+abstract class Locale extends DataModel implements ILocale {
 
     /**
      * Направление слева направо
@@ -45,55 +45,55 @@ class Locale extends DataModel implements ILocale {
      * Имя локали
      * @var string
      */
-    protected $_name;
+    protected string $_name;
 
     /**
      * Язык
      * @var string
      */
-    protected $_language;
+    protected string $_language;
 
     /**
      * Сокращенное название языка
      * @var string
      */
-    protected $_lang;
+    protected string $_lang;
 
     /**
      * Направление письма
      * @var string
      */
-    protected $_dir;
+    protected string $_dir;
 
     /**
      * Формат даты
      * @var string
      */
-    protected $_dateFormat;
+    protected string $_dateFormat;
 
     /**
      * Формат времени
      * @var string
      */
-    protected $_timeFormat;
+    protected string $_timeFormat;
 
     /**
      * Формат даты и времени
      * @var string
      */
-    protected $_dateTimeFormat;
+    protected string $_dateTimeFormat;
 
     /**
      * Десятичная точка
      * @var string
      */
-    protected $_decimalPoint;
+    protected string $_decimalPoint;
 
     /**
      * Разделитель разрядов
      * @var string
      */
-    protected $_thousandsSeparator = '';
+    protected string $_thousandsSeparator = '';
 
     /**
      * @inheritDoc

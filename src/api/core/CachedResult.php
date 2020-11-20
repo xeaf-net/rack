@@ -29,10 +29,10 @@ abstract class CachedResult extends ActionResult {
     public const RESULT_PROPERTY = 'data';
 
     /**
-     * Признак исопльззования кеша
+     * Признак использования кеша
      * @var bool
      */
-    protected $_useCache = false;
+    protected bool $_useCache = false;
 
     /**
      * Конструктор класса
