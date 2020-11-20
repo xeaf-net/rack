@@ -18,7 +18,7 @@ use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
 use XEAF\Rack\API\Utils\Parameters;
-use XEAF\Rack\API\Utils\Validator;
+use XEAF\Rack\API\Utils\Validators\Validator;
 
 /**
  * Реализует базовые методы для всех расширений проекта

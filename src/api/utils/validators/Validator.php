@@ -10,16 +10,18 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\API\Utils;
+namespace XEAF\Rack\API\Utils\Validators;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Utils\Exceptions\FormException;
+use XEAF\Rack\API\Utils\Localization;
+use XEAF\Rack\API\Utils\Strings;
 
 /**
  * Реализует методы проверки параметров
  *
- * @package  XEAF\Rack\API\Utils
+ * @package  XEAF\Rack\API\Utils\Validators
  */
 class Validator implements IValidator {
 
