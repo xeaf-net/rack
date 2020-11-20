@@ -111,4 +111,15 @@ interface ILocalization extends IFactoryObject {
      * @return \XEAF\Rack\API\Interfaces\IKeyValue
      */
     public function getLanguageVars(string $locale = null): IKeyValue;
+
+    /**
+     * Возвращает локализованную версию пути файла
+     *
+     * @param string      $filePath Путь к файлу
+     * @param string|null $ext      Расширение имени файла
+     * @param string|null $locale   Локаль
+     *
+     * @return string
+     */
+    public function localizedFilePath(string $filePath, string $ext = null, string $locale = null): string;
 }
