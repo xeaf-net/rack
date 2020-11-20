@@ -26,22 +26,27 @@ class Validator implements IValidator {
     /**
      * Значение не модет быть пустым
      */
-    private const EMPTY_VALUE = 'validator.EMPTY_VALUE';
+    private const EMPTY_VALUE = 'Validator.EMPTY_VALUE';
 
     /**
      * Некорреткное значение
      */
-    private const INVALID_VALUE = 'validator.INVALID_VALUE';
+    private const INVALID_VALUE = 'Validator.INVALID_VALUE';
 
     /**
      * Некорреткный формат значения
      */
-    private const INVALID_FORMAT = 'validator.INVALID_FORMAT';
+    private const INVALID_FORMAT = 'Validator.INVALID_FORMAT';
 
     /**
      * Некорретный адрес электронной почты
      */
-    private const INVALID_EMAIL = 'validator.INVALID_EMAIL';
+    private const INVALID_EMAIL = 'Validator.INVALID_EMAIL';
+
+    /**
+     * Некорретный адрес электронной почты
+     */
+    private const INVALID_PHONE = 'Validator.INVALID_PHONE';
 
     /**
      * Объект методов работы со строками
@@ -101,6 +106,17 @@ class Validator implements IValidator {
         $this->checkNotEmpty($data, $tag);
         if (!$this->_strings->isEmail($test)) {
             throw FormException::badRequest(self::INVALID_EMAIL, [], $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkPhone($data, string $tag = null): void {
+        $test = (string)$data;
+        $this->checkNotEmpty($data, $tag);
+        if (!$this->_strings->isPhoneNumber($test)) {
+            throw FormException::badRequest(self::INVALID_PHONE, [], $tag);
         }
     }
 
