@@ -36,6 +36,16 @@ class Validator implements IValidator {
     private const INVALID_VALUE = 'Validator.INVALID_VALUE';
 
     /**
+     * Некорректный формат целого числа
+     */
+    private const INVALID_INTEGER = 'Validator.INVALID_INTEGER';
+
+    /**
+     * Некорректный формат числа
+     */
+    private const INVALID_NUMERIC = 'Validator.INVALID_NUMERIC';
+
+    /**
      * Некорреткный формат значения
      */
     private const INVALID_FORMAT = 'Validator.INVALID_FORMAT';
@@ -92,6 +102,34 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
+    public function checkIsInteger($data, string $tag = null): void {
+        if (!$this->_strings->isInteger((string)$data)) {
+            throw FormException::badRequest(self::INVALID_INTEGER, [], $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkIsNumber($data, string $tag = null): void {
+        if (!$this->_strings->isFloat((string)$data)) {
+            throw FormException::badRequest(self::INVALID_NUMERIC, [], $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkFormat($data, string $pattern, string $tag = null): void {
+        $test = (string)$data;
+        if (!preg_match($pattern, $test)) {
+            throw FormException::badRequest(self::INVALID_EMAIL, [], $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function checkUUID($data, string $tag = null): void {
         $test = (string)$data;
         $this->checkNotEmpty($data, $tag);
@@ -114,11 +152,29 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
+    public function checkNullOrEmail($data, string $tag = null): void {
+        if ($this->_strings->isEmpty($data)) {
+            $this->checkEmail($data, $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function checkPhone($data, string $tag = null): void {
         $test = (string)$data;
         $this->checkNotEmpty($data, $tag);
         if (!$this->_strings->isPhoneNumber($test)) {
             throw FormException::badRequest(self::INVALID_PHONE, [], $tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkNullOrPhone($data, string $tag = null): void {
+        if (!$this->_strings->isEmail($data)) {
+            $this->checkPhone($data, $tag);
         }
     }
 

@@ -44,6 +44,40 @@ interface IValidator extends IFactoryObject {
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void;
 
     /**
+     * Проверка соответствия формату целого числа
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkIsInteger($data, string $tag = null): void;
+
+    /**
+     * Проверка соответствия формату числового значения
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkIsNumber($data, string $tag = null): void;
+
+    /**
+     * Проверка корректности формата значения
+     *
+     * @param mixed       $data    Данные для проверки
+     * @param string      $pattern Регулярное выражение
+     * @param string|null $tag     Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkFormat($data, string $pattern, string $tag = null): void;
+
+    /**
      * Проверяет уникальный идентификатор
      *
      * @param mixed       $data Данные для проверки
@@ -78,7 +112,18 @@ interface IValidator extends IFactoryObject {
     public function checkEmail($data, string $tag = null): void;
 
     /**
-     * Проверяет адрес электронной почты
+     * Проверяет пустой или корректный адрес электронной почты
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkNullOrEmail($data, string $tag = null): void;
+
+    /**
+     * Проверяет формат номера телефона
      *
      * @param mixed       $data Данные для проверки
      * @param string|null $tag  Тег
@@ -87,5 +132,16 @@ interface IValidator extends IFactoryObject {
      * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
      */
     public function checkPhone($data, string $tag = null): void;
+
+    /**
+     * Проверяет пустой или корректный номер телефона
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkNullOrPhone($data, string $tag = null): void;
 
 }
