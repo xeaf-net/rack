@@ -61,6 +61,11 @@ class Validator implements IValidator {
     private const INVALID_PHONE = 'Validator.INVALID_PHONE';
 
     /**
+     * Такое значение уже существует
+     */
+    private const VALUE_EXISTS = 'Validator.VALUE_EXISTS';
+
+    /**
      * Объект методов работы со строками
      * @var \XEAF\Rack\API\Utils\Strings
      */
@@ -186,6 +191,21 @@ class Validator implements IValidator {
         $this->checkNotEmpty($data, $tag);
         if (!in_array($test, $values)) {
             throw FormException::badRequest(self::INVALID_VALUE, [], $tag);
+        }
+    }
+
+    /**
+     * Проверяет идентичность данных
+     *
+     * @param bool        $exp Логическое выражение
+     * @param string|null $tag Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     */
+    public function checkExists(bool $exp, string $tag = null): void {
+        if ($exp) {
+            throw FormException::badRequest(self::VALUE_EXISTS, [], $tag);
         }
     }
 
