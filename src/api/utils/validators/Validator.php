@@ -195,13 +195,7 @@ class Validator implements IValidator {
     }
 
     /**
-     * Проверяет идентичность данных
-     *
-     * @param bool        $exp Логическое выражение
-     * @param string|null $tag Тег
-     *
-     * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @inheritDoc
      */
     public function checkExists(bool $exp, string $tag = null): void {
         if ($exp) {
