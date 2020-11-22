@@ -52,10 +52,10 @@ class TasksModule extends Module {
 //        $query->withEager('userTasks_task', 'project');
 //        $query->withEager('projects', 'project');
 
-        $task = $query->getFirstEntity();
-        $em->reload($task);
-        return new EntityResult($task);
-        // $list = $query->get();
-        // return new EntityListResult($list, [], ['users']);
+//        $task = $query->getFirstEntity();
+//        $em->reload($task);
+//        return new EntityResult($task);
+        $list = $query->get();
+        return new EntityListResult($list, [], []);
     }
 }

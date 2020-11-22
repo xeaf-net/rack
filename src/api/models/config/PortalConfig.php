@@ -70,6 +70,11 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     private const DEFAULT_TEMP_PATH = '/tmp';
 
     /**
+     * Директория загружаемых файлов по умолчанию
+     */
+    private const DEFAULT_UPLOADS_PATH = '/tmp';
+
+    /**
      * Признак режима отладки по умолчанию
      */
     private const DEFAULT_DEBUG_MODE = false;
@@ -109,6 +114,12 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * @var string
      */
     private string $_tempPath = self::DEFAULT_TEMP_PATH;
+
+    /**
+     * Директория загружаемых файлов
+     * @var string
+     */
+    private string $_uploadsPath = self::DEFAULT_UPLOADS_PATH;
 
     /**
      * Признак режима отладки
@@ -190,6 +201,15 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
     }
 
     /**
+     * Возвращает директорию загружаемых файлов
+     *
+     * @return string
+     */
+    public function getUploadsPath(): string {
+        return $this->_uploadsPath;
+    }
+
+    /**
      * Возвращает признак режима отладки
      *
      * @return bool
@@ -202,13 +222,14 @@ class PortalConfig extends ConfigModel implements IFactoryObject {
      * @inheritDoc
      */
     public function parseConfigurationSection(object $data): void {
-        $this->_url       = $data->{'url'} ?? self::DEFAULT_URL;
-        $this->_origin    = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
-        $this->_bearer    = $data->{'bearer'} ?? self::DEFAULT_BEARER;
-        $this->_locale    = $data->{'locale'} ?? self::DEFAULT_LOCALE;
-        $this->_session   = $data->{'session'} ?? self::DEFAULT_SESSION;
-        $this->_tempPath  = $data->{'tempPath'} ?? self::DEFAULT_TEMP_PATH;
-        $this->_debugMode = (bool)($data->{'debugMode'} ?? self::DEFAULT_DEBUG_MODE);
+        $this->_url         = $data->{'url'} ?? self::DEFAULT_URL;
+        $this->_origin      = $data->{'origin'} ?? self::DEFAULT_ORIGIN;
+        $this->_bearer      = $data->{'bearer'} ?? self::DEFAULT_BEARER;
+        $this->_locale      = $data->{'locale'} ?? self::DEFAULT_LOCALE;
+        $this->_session     = $data->{'session'} ?? self::DEFAULT_SESSION;
+        $this->_tempPath    = $data->{'tempPath'} ?? self::DEFAULT_TEMP_PATH;
+        $this->_uploadsPath = $data->{'uploadsPath'} ?? self::DEFAULT_UPLOADS_PATH;
+        $this->_debugMode   = (bool)($data->{'debugMode'} ?? self::DEFAULT_DEBUG_MODE);
     }
 
     /**
