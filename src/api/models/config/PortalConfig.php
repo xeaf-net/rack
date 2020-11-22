@@ -21,14 +21,15 @@ use XEAF\Rack\API\Utils\Parameters;
 /**
  * Модель данных конфигурации портала
  *
- * @property-read string $url       URL портала
- * @property-read string $host      Имя хоста портала
- * @property-read string $origin    URL источника запросов
- * @property-read string $bearer    Идентификатор типа авторизации
- * @property-read string $session   Провайдер сессии
- * @property-read string $locale    Имя локали
- * @property-read string $tempPath  Директория временных файлов
- * @property-read bool   $debugMode Признак режима отладки
+ * @property-read string $url         URL портала
+ * @property-read string $host        Имя хоста портала
+ * @property-read string $origin      URL источника запросов
+ * @property-read string $bearer      Идентификатор типа авторизации
+ * @property-read string $session     Провайдер сессии
+ * @property-read string $locale      Имя локали
+ * @property-read string $tempPath    Директория временных файлов
+ * @property-read string $uploadsPath Директория загружаемых файлов
+ * @property-read bool   $debugMode   Признак режима отладки
  *
  * @package XEAF\Rack\API\Models\Config
  */
