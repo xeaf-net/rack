@@ -178,7 +178,7 @@ class Validator implements IValidator {
      * @inheritDoc
      */
     public function checkNullOrPhone($data, string $tag = null): void {
-        if (!$this->_strings->isEmail($data)) {
+        if (!$this->_strings->isEmpty($data)) {
             $this->checkPhone($data, $tag);
         }
     }
