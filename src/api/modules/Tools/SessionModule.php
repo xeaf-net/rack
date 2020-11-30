@@ -39,7 +39,7 @@ class SessionModule extends Module {
      * @return \XEAF\Rack\API\Interfaces\IActionResult|null
      */
     public function processGet(Localization $l10n, Session $session): ?IActionResult {
-        $locale = $this->args()->getNullOrString('locale');
+        $locale = $this->args()->getString('locale');
         if ($locale) {
             $session->setLocale($locale);
             $l10n->setDefaultLocale($locale);
