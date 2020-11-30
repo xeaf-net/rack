@@ -15,6 +15,7 @@ namespace XEAF\Rack\API\Models\Results;
 use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
+use XEAF\Rack\API\Utils\Politics;
 use XEAF\Rack\API\Utils\Serializer;
 use XEAF\Rack\API\Utils\Strings;
 
@@ -73,13 +74,18 @@ class FormResult extends ErrorResult {
      */
     public function processResult(): void {
         $strings  = Strings::getInstance();
+        $politics = Politics::getInstance();
         $result   = [
             'status'  => $this->getStatusCode(),
             'message' => $this->getMessage(),
             'tag'     => $this->getTag(),
         ];
         $response = HttpResponse::getInstance();
-        $response->responseCode(HttpResponse::OK);
+        if ($politics->forceFormResult200()) {
+            $response->responseCode(HttpResponse::OK);
+        } else {
+            $response->responseCode($this->getStatusCode());
+        }
         $response->contentJSON();
 
         if ($strings->isEmpty($result['message'])) {

@@ -28,10 +28,12 @@ use XEAF\Rack\API\Modules\Home\HomeModule;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Modules\Tools\SessionModule;
 use XEAF\Rack\API\Utils\Assets;
+use XEAF\Rack\API\Utils\Exceptions\PoliticException;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
+use XEAF\Rack\API\Utils\Politics;
 use XEAF\Rack\API\Utils\Reflection;
 use XEAF\Rack\API\Utils\Session;
 
@@ -64,6 +66,8 @@ class Application extends Extension {
      *
      * @param \XEAF\Rack\API\Interfaces\IConfiguration|null $configuration Параметры конфигурации
      * @param \XEAF\Rack\API\Interfaces\IActionArgs|null    $actionArgs    Параметры вызова
+     *
+     * @throws \XEAF\Rack\API\Utils\Exceptions\PoliticException
      */
     public function __construct(IConfiguration $configuration = null, IActionArgs $actionArgs = null) {
         parent::__construct();
@@ -82,14 +86,20 @@ class Application extends Extension {
      * Инициализация текущей сесси приложения
      *
      * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\PoliticException
      */
     protected function initialization(): void {
         $this->defineExtensions();
+        $config = PortalConfig::getInstance();
         $locale = Session::getInstance()->getLocale();
         if (!$locale) {
-            $locale = PortalConfig::getInstance()->getLocale();
+            $locale = $config->getLocale();
         }
         Localization::getInstance()->setDefaultLocale($locale);
+        $politics = Politics::getInstance();
+        if ($config->getDebugMode() && !$politics->allowDebugMode()) {
+            throw PoliticException::debugMode();
+        }
     }
 
     /**
