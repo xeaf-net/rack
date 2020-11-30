@@ -86,19 +86,22 @@ class Application extends Extension {
      * Инициализация текущей сесси приложения
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\PoliticException
      */
     protected function initialization(): void {
-        $this->defineExtensions();
-        $config = PortalConfig::getInstance();
-        $locale = Session::getInstance()->getLocale();
-        if (!$locale) {
-            $locale = $config->getLocale();
-        }
-        Localization::getInstance()->setDefaultLocale($locale);
-        $politics = Politics::getInstance();
-        if ($config->getDebugMode() && !$politics->allowDebugMode()) {
-            throw PoliticException::debugMode();
+        try {
+            $this->defineExtensions();
+            $config = PortalConfig::getInstance();
+            $locale = Session::getInstance()->getLocale();
+            if (!$locale) {
+                $locale = $config->getLocale();
+            }
+            Localization::getInstance()->setDefaultLocale($locale);
+            $politics = Politics::getInstance();
+            if ($config->getDebugMode() && !$politics->allowDebugMode()) {
+                throw PoliticException::debugMode();
+            }
+        } catch (PoliticException $pe) {
+            die($pe->getMessage());
         }
     }
 
@@ -250,6 +253,7 @@ class Application extends Extension {
      */
     protected function processException(Throwable $exception): IActionResult {
         $this->defaultLogger()->exception($exception);
+        $this->defaultLogger()->debugException($exception);
         return StatusResult::internalServerError();
     }
 

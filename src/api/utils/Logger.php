@@ -194,4 +194,23 @@ class Logger implements ILogger {
         assert($result instanceof ILogger);
         return $result;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function debugException(Throwable $exception): void {
+        $config = PortalConfig::getInstance();
+        if ($config->getDebugMode()) {
+            ob_clean();
+            print '<!DOCTYPE html>';
+            print '<html lang=en>';
+            print '<head><meta charset=utf-8><title>Error</title></head>';
+            print '<body><pre>';
+            print 'ERROR: ' . $exception->getMessage();
+            print '<hr/>';
+            print_r($exception);
+            print '</pre></body>';
+            print '</html>';
+        }
+    }
 }
