@@ -91,14 +91,26 @@ interface IActionArgs extends IFactoryObject {
     public function get(string $name, $defaultValue = null);
 
     /**
+     * Возвращает значение не пустого строкового параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     */
+    public function getString(string $name, string $defaultValue = '', string $tag = null): string;
+
+    /**
      * Возвращает значение строкового параметра
      *
      * @param string      $name         Имя параметра
      * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
      * @return string|null
      */
-    public function getString(string $name, string $defaultValue = null): ?string;
+    public function getNullOrString(string $name, string $defaultValue = null, string $tag = null): ?string;
 
     /**
      * Возвращает значение логического параметра
@@ -111,34 +123,114 @@ interface IActionArgs extends IFactoryObject {
     public function getBool(string $name, bool $defaultValue = false): bool;
 
     /**
+     * Возвращает значение не пустого целочисленного параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param int         $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return int
+     */
+    public function getInteger(string $name, int $defaultValue = 0, string $tag = null): int;
+
+    /**
      * Возвращает значение целочисленного параметра
      *
-     * @param string   $name         Имя параметра
-     * @param int|null $defaultValue Значение по умолчанию
+     * @param string      $name         Имя параметра
+     * @param int|null    $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
      * @return int|null
      */
-    public function getInteger(string $name, int $defaultValue = null): ?int;
+    public function getNullOrInteger(string $name, int $defaultValue = null, string $tag = null): ?int;
+
+    /**
+     * Возвращает значение не пустого действительного параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param float       $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return float
+     */
+    public function getNumeric(string $name, float $defaultValue = 0.00, string $tag = null): float;
 
     /**
      * Возвращает значение действительного параметра
      *
-     * @param string     $name         Имя параметра
-     * @param float|null $defaultValue Значение по умолчанию
+     * @param string      $name         Имя параметра
+     * @param float|null  $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
      * @return float|null
      */
-    public function getFloat(string $name, float $defaultValue = null): ?float;
+    public function getNullOrNumeric(string $name, float $defaultValue = null, string $tag = null): ?float;
+
+    /**
+     * Возвращает не пустое значение параметра идентификатора
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     */
+    public function getUUID(string $name, string $defaultValue, string $tag = null): string;
 
     /**
      * Возвращает значение параметра идентификатора
      *
      * @param string      $name         Имя параметра
      * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
      * @return string|null
      */
-    public function getUUID(string $name, string $defaultValue = null): ?string;
+    public function getNullOrUUID(string $name, string $defaultValue = null, string $tag = null): ?string;
+
+    /**
+     * Возвращает не пустое значение параметра адреса электронной почты
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     */
+    public function getEmail(string $name, string $defaultValue, string $tag = null): string;
+
+    /**
+     * Возвращает значение параметра адреса электронной почты
+     *
+     * @param string      $name         Имя параметра
+     * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string|null
+     */
+    public function getNullOrEmail(string $name, string $defaultValue = null, string $tag = null): ?string;
+
+    /**
+     * Возвращает не пустое значение параметра номера телефона
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     */
+    public function getPhoneNumber(string $name, string $defaultValue, string $tag = null): string;
+
+    /**
+     * Возвращает значение параметра номера телефона
+     *
+     * @param string      $name         Имя параметра
+     * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string|null
+     */
+    public function getNullOrPhone(string $name, string $defaultValue = null, string $tag = null): ?string;
 
     /**
      * Возвращает значение параметра типа массив
@@ -151,15 +243,16 @@ interface IActionArgs extends IFactoryObject {
     public function getArray(string $name, array $defaultValue = []): array;
 
     /**
-     * Возвращает значение целочисленного элемента из массива
+     * Возвращает значение не пустого строкового элемента из массива
      *
-     * @param string $name         Имя параметра массива
-     * @param string $element      Имя элемента
-     * @param int    $defaultValue Значение по умолчанию
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
-     * @return int
+     * @return string
      */
-    public function getArrayInt(string $name, string $element, int $defaultValue = 0): int;
+    public function getArrayString(string $name, string $element, string $defaultValue = '', string $tag = null): string;
 
     /**
      * Возвращает значение строкового элемента из массива
@@ -170,7 +263,67 @@ interface IActionArgs extends IFactoryObject {
      *
      * @return string|null
      */
-    public function getArrayString(string $name, string $element, string $defaultValue = null): ?string;
+    public function getArrayNullOrString(string $name, string $element, string $defaultValue = null): ?string;
+
+    /**
+     * Возвращает не пустое значение целочисленного элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param int         $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return int
+     */
+    public function getArrayInteger(string $name, string $element, int $defaultValue = 0, string $tag = null): int;
+
+    /**
+     * Возвращает значение целочисленного элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param int|null    $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return int|null
+     */
+    public function getArrayNullOrInteger(string $name, string $element, int $defaultValue = null, string $tag = null): ?int;
+
+    /**
+     * Возвращает не пустое значение числового элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param float       $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return float
+     */
+    public function getArrayNumeric(string $name, string $element, float $defaultValue = 0, string $tag = null): float;
+
+    /**
+     * Возвращает значение числового элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param float|null  $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return float|null
+     */
+    public function getArrayNullOrNumeric(string $name, string $element, float $defaultValue = null, string $tag = null): ?float;
+
+    /**
+     * Возвращает не пустое значение идентификатора из массива
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $element      Имя элемента
+     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     */
+    public function getArrayUUID(string $name, string $element, string $defaultValue, string $tag = null): string;
 
     /**
      * Возвращает значение идентификатора из массива
@@ -178,10 +331,11 @@ interface IActionArgs extends IFactoryObject {
      * @param string      $name         Имя параметра
      * @param string      $element      Имя элемента
      * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
      *
      * @return string|null
      */
-    public function getArrayUUID(string $name, string $element, string $defaultValue = null): ?string;
+    public function getArrayNullOrUUID(string $name, string $element, string $defaultValue = null, string $tag = null): ?string;
 
     /**
      * Возвращает информацию о загруженном файле

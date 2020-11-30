@@ -212,7 +212,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getFloat(string $name, float $defaultValue = null): ?float {
+    public function getNumeric(string $name, float $defaultValue = null): ?float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
             $value = $this->_strings->stringToFloat((string)$value, $defaultValue);
