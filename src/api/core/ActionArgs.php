@@ -14,6 +14,7 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
+use XEAF\Rack\API\Interfaces\IStrings;
 use XEAF\Rack\API\Models\UploadedFile;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
@@ -94,6 +95,22 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * @var array
      */
     protected array $_headers = [];
+
+    /**
+     * Мобъект методов работы со строками
+     * @var \XEAF\Rack\API\Interfaces\IStrings
+     */
+    private IStrings $_strings;
+
+    /**
+     * Конструктор класса
+     *
+     * @param array $data Данные инициализации
+     */
+    public function __construct(array $data = []) {
+        parent::__construct($data);
+        $this->_strings = Strings::getInstance();
+    }
 
     /**
      * @inheritDoc
@@ -187,8 +204,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getInteger(string $name, int $defaultValue = null): ?int {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            $value   = $strings->stringToInteger((string)$value, $defaultValue);
+            $value = $this->_strings->stringToInteger((string)$value, $defaultValue);
         }
         return $value;
     }
@@ -199,8 +215,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getFloat(string $name, float $defaultValue = null): ?float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            $value   = $strings->stringToFloat((string)$value, $defaultValue);
+            $value = $this->_strings->stringToFloat((string)$value, $defaultValue);
         }
         return $value;
     }
@@ -209,9 +224,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * @inheritDoc
      */
     public function getUUID(string $name, string $defaultValue = null): ?string {
-        $value   = $this->_parameters[$name] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        if (!$strings->isUUID((string)$value)) {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        if (!$this->_strings->isUUID((string)$value)) {
             $value = $defaultValue;
         }
         return $value;
@@ -232,10 +246,9 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * @inheritDoc
      */
     public function getArrayInt(string $name, string $element, int $defaultValue = 0): int {
-        $data    = $this->getArray($name);
-        $value   = $data[$element] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        return $strings->stringToInteger((string)$value, $defaultValue);
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        return $this->_strings->stringToInteger((string)$value, $defaultValue);
     }
 
     /**
@@ -256,8 +269,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayUUID(string $name, string $element, string $defaultValue = null): ?string {
         $value = $this->getArrayString($name, $element, $defaultValue);
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            if (!$strings->isUUID($value)) {
+            if (!$this->_strings->isUUID($value)) {
                 $value = $defaultValue;
             }
         }

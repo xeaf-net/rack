@@ -128,7 +128,7 @@ class Validator implements IValidator {
     public function checkFormat($data, string $pattern, string $tag = null): void {
         $test = (string)$data;
         if (!preg_match($pattern, $test)) {
-            throw FormException::badRequest(self::INVALID_EMAIL, [], $tag);
+            throw FormException::badRequest(self::INVALID_FORMAT, [], $tag);
         }
     }
 
