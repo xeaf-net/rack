@@ -18,7 +18,7 @@ use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Utils\Assets;
-use XEAF\Rack\API\Utils\Exceptions\FormException;
+use XEAF\Rack\API\Utils\Exceptions\ResultException;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\Parameters;
@@ -57,8 +57,8 @@ class Module extends Extension implements IModule {
                 try {
                     $result = $reflection->returnInjectable($this, $method);
                     assert($result instanceof IActionResult);
-                } catch (FormException $fe) {
-                    $result = $fe->getResult();
+                } catch (ResultException $re) {
+                    $result = $re->getResult();
                 }
                 $this->afterExecute();
             } elseif ($methodName == Parameters::GET_METHOD_NAME) {

@@ -12,8 +12,6 @@
  */
 namespace XEAF\Rack\API\Utils\Exceptions;
 
-use XEAF\Rack\API\Core\Exception;
-use XEAF\Rack\API\Interfaces\IActionResult;
 use XEAF\Rack\API\Models\Results\FormResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
@@ -23,17 +21,7 @@ use XEAF\Rack\API\Utils\Localization;
  *
  * @package  XEAF\Rack\API\Utils\Exceptions
  */
-class FormException extends Exception {
-
-    /**
-     * Код ошибки для исключения
-     */
-    private const ERROR_CODE = 'FORM';
-
-    /**
-     * Формат сообщения об ошибке
-     */
-    private const ERROR_FORMAT = 'Form verification error [%s].';
+class FormException extends ResultException {
 
     /**
      * Ошибка запроса
@@ -71,41 +59,17 @@ class FormException extends Exception {
     private const NOT_IMPLEMENTED = 'FormException.NOT_IMPLEMENTED';
 
     /**
-     * Результат исполнения
-     * @var \XEAF\Rack\API\Interfaces\IActionResult|null
-     */
-    private $_result;
-
-    /**
      * Конструктор класса
      *
      * @param int         $status  Код состояния
-     * @param string      $langVar Имя языковой переменной
+     * @param string      $message Имя языковой переменной
      * @param array       $args    Аргументы текста сообщения
      * @param string|null $tag     Тег
      */
-    public function __construct(int $status, string $langVar, array $args = [], string $tag = null) {
-        $code = self::ERROR_CODE . $status;
+    public function __construct(int $status, string $message, array $args = [], string $tag = null) {
         $this->registerLanguageClasses();
-        $this->_result = new FormResult($status, $langVar, $args, $tag);
-        parent::__construct($code);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getFormat(string $code): ?string {
-        $msg = $this->_result->getMessage();
-        return ($msg) ? $msg : vsprintf(self::ERROR_FORMAT, [$code]);
-    }
-
-    /**
-     * Возвращает результат исполнения действия
-     *
-     * @return \XEAF\Rack\API\Interfaces\IActionResult|null
-     */
-    public function getResult(): ?IActionResult {
-        return $this->_result;
+        $result = new FormResult($status, $message, $args, $tag);
+        parent::__construct($result);
     }
 
     /**
