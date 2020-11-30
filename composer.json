@@ -29,7 +29,6 @@
             "XEAF\\Rack\\API\\Utils\\Loggers\\"        : "src/api/utils/loggers",
             "XEAF\\Rack\\API\\Utils\\Sessions\\"       : "src/api/utils/sessions",
             "XEAF\\Rack\\API\\Utils\\Storage\\"        : "src/api/utils/storage",
-            "XEAF\\Rack\\API\\Utils\\Validators\\"     : "src/api/utils/validators",
             "XEAF\\Rack\\Db\\"                         : "src/db",
             "XEAF\\Rack\\Db\\Core\\"                   : "src/db/core",
             "XEAF\\Rack\\Db\\Interfaces\\"             : "src/db/interfaces",

@@ -1,9 +1,0 @@
-[Validator]
-EMPTY_VALUE     = "Value can not be empty."
-INVALID_VALUE   = "Invalid value."
-INVALID_INTEGER = "Invalid integer value."
-INVALID_NUMBER  = "Invalid numeric value."
-INVALID_FORMAT  = "Invalid format."
-INVALID_EMAIL   = "Invalid email."
-INVALID_PHONE   = "Invalid phone number."
-VALUE_EXISTS    = "Value already exists."

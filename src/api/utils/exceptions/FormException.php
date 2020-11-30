@@ -77,7 +77,7 @@ class FormException extends ResultException {
      *
      * @return void
      */
-    private function registerLanguageClasses(): void {
+    protected function registerLanguageClasses(): void {
         $l10n      = Localization::getInstance();
         $className = get_class($this);
         $l10n->registerLanguageClass(self::class);
