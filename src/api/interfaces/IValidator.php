@@ -63,7 +63,7 @@ interface IValidator extends IFactoryObject {
      * @return void
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function checkIsNumber($data, string $tag = null): void;
+    public function checkIsNumeric($data, string $tag = null): void;
 
     /**
      * Проверка корректности формата значения

@@ -72,7 +72,7 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
-    public function checkIsNumber($data, string $tag = null): void {
+    public function checkIsNumeric($data, string $tag = null): void {
         if (!$this->_strings->isFloat((string)$data)) {
             throw ValidatorException::invalidNumericFormat($tag);
         }

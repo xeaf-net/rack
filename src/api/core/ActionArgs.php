@@ -243,7 +243,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getNumeric(string $name, float $defaultValue, string $tag = null): float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         $value = $this->_strings->stringToFloat((string)$value);
-        $this->_validator->checkIsNumber($value, $tag);
+        $this->_validator->checkIsNumeric($value, $tag);
         return $value;
     }
 
@@ -254,7 +254,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
             $value = $this->_strings->stringToFloat((string)$value);
-            $this->_validator->checkIsNumber($value, $tag);
+            $this->_validator->checkIsNumeric($value, $tag);
         }
         return $value;
     }
@@ -381,7 +381,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayNumeric(string $name, string $element, float $defaultValue = 0, string $tag = null): float {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkIsNumber($value, $tag);
+        $this->_validator->checkIsNumeric($value, $tag);
         return (float)$value;
     }
 
@@ -392,7 +392,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkIsNumber($value, $tag);
+            $this->_validator->checkIsNumeric($value, $tag);
             $value = (float)$value;
         }
         return $value;
