@@ -75,7 +75,7 @@ class Strings implements IStrings {
      * @inheritDoc
      */
     public function stringToFloat(?string $buf, float $onError = null): ?float {
-        return $this->isFloat($buf) ? floatval($buf) : $onError;
+        return $this->isNumeric($buf) ? floatval($buf) : $onError;
     }
 
     /**
@@ -95,7 +95,7 @@ class Strings implements IStrings {
     /**
      * @inheritDoc
      */
-    public function isFloat(?string $buf): bool {
+    public function isNumeric(?string $buf): bool {
         return $this->isInteger($buf) || (filter_var($buf, FILTER_VALIDATE_FLOAT) !== false);
     }
 

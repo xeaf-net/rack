@@ -92,7 +92,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return bool
      */
-    public function isFloat(?string $buf): bool;
+    public function isNumeric(?string $buf): bool;
 
     /**
      * Проверяет содержит ли переданная строка дату и время
