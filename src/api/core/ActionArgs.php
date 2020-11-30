@@ -97,13 +97,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     protected array $_headers = [];
 
     /**
-     * Мобъект методов работы со строками
-     * @var \XEAF\Rack\API\Interfaces\IStrings
-     */
-//    private IStrings $_strings;
-
-    /**
-     * Объект проверки значений
+     * Объект методов проверки значений
      * @var \XEAF\Rack\API\Interfaces\IValidator
      */
     private IValidator $_validator;
