@@ -103,7 +103,7 @@ class StorageSessionProvider extends StaticSessionProvider {
             $sessionId = $crypto->requestHeaderBearer();
             if (!$strings->isUUID($sessionId)) {
                 $params    = Parameters::getInstance();
-                $encodedId = $params->getString(strtolower(Session::SESSION_ID));
+                $encodedId = $params->getNullOrString(strtolower(Session::SESSION_ID));
                 if ($encodedId) {
                     $sessionId = $crypto->base64Decode($encodedId);
                 }

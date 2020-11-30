@@ -26,7 +26,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkNotEmpty($data, string $tag = null): void;
 
@@ -39,7 +39,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag       Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void;
 
@@ -50,7 +50,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkIsInteger($data, string $tag = null): void;
 
@@ -61,7 +61,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkIsNumber($data, string $tag = null): void;
 
@@ -73,7 +73,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag     Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkFormat($data, string $pattern, string $tag = null): void;
 
@@ -84,7 +84,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkUUID($data, string $tag = null): void;
 
@@ -96,7 +96,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag    Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkEnum($data, array $values, string $tag = null): void;
 
@@ -107,7 +107,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkEmail($data, string $tag = null): void;
 
@@ -118,7 +118,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkNullOrEmail($data, string $tag = null): void;
 
@@ -129,7 +129,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkPhone($data, string $tag = null): void;
 
@@ -140,7 +140,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkNullOrPhone($data, string $tag = null): void;
 
@@ -151,7 +151,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkExists(bool $exp, string $tag = null): void;
 

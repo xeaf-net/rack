@@ -98,19 +98,19 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getString(string $name, string $defaultValue = '', string $tag = null): string;
+    public function getString(string $name, string $defaultValue, string $tag = null): string;
 
     /**
      * Возвращает значение строкового параметра
      *
      * @param string      $name         Имя параметра
      * @param string|null $defaultValue Значение по умолчанию
-     * @param string|null $tag          Тег
      *
      * @return string|null
      */
-    public function getNullOrString(string $name, string $defaultValue = null, string $tag = null): ?string;
+    public function getNullOrString(string $name, string $defaultValue = null): ?string;
 
     /**
      * Возвращает значение логического параметра
@@ -130,8 +130,9 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return int
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getInteger(string $name, int $defaultValue = 0, string $tag = null): int;
+    public function getInteger(string $name, int $defaultValue, string $tag = null): int;
 
     /**
      * Возвращает значение целочисленного параметра
@@ -141,6 +142,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return int|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getNullOrInteger(string $name, int $defaultValue = null, string $tag = null): ?int;
 
@@ -152,8 +154,9 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return float
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getNumeric(string $name, float $defaultValue = 0.00, string $tag = null): float;
+    public function getNumeric(string $name, float $defaultValue, string $tag = null): float;
 
     /**
      * Возвращает значение действительного параметра
@@ -163,6 +166,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return float|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getNullOrNumeric(string $name, float $defaultValue = null, string $tag = null): ?float;
 
@@ -174,6 +178,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getUUID(string $name, string $defaultValue, string $tag = null): string;
 
@@ -185,6 +190,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getNullOrUUID(string $name, string $defaultValue = null, string $tag = null): ?string;
 
@@ -196,6 +202,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getEmail(string $name, string $defaultValue, string $tag = null): string;
 
@@ -207,6 +214,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getNullOrEmail(string $name, string $defaultValue = null, string $tag = null): ?string;
 
@@ -218,8 +226,9 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getPhoneNumber(string $name, string $defaultValue, string $tag = null): string;
+    public function getPhone(string $name, string $defaultValue, string $tag = null): string;
 
     /**
      * Возвращает значение параметра номера телефона
@@ -229,6 +238,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getNullOrPhone(string $name, string $defaultValue = null, string $tag = null): ?string;
 
@@ -251,8 +261,9 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayString(string $name, string $element, string $defaultValue = '', string $tag = null): string;
+    public function getArrayString(string $name, string $element, string $defaultValue, string $tag = null): string;
 
     /**
      * Возвращает значение строкового элемента из массива
@@ -274,6 +285,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return int
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayInteger(string $name, string $element, int $defaultValue = 0, string $tag = null): int;
 
@@ -286,6 +298,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return int|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayNullOrInteger(string $name, string $element, int $defaultValue = null, string $tag = null): ?int;
 
@@ -298,6 +311,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return float
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayNumeric(string $name, string $element, float $defaultValue = 0, string $tag = null): float;
 
@@ -310,6 +324,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return float|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayNullOrNumeric(string $name, string $element, float $defaultValue = null, string $tag = null): ?float;
 
@@ -322,6 +337,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayUUID(string $name, string $element, string $defaultValue, string $tag = null): string;
 
@@ -334,6 +350,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return string|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getArrayNullOrUUID(string $name, string $element, string $defaultValue = null, string $tag = null): ?string;
 
