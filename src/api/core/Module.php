@@ -56,11 +56,9 @@ class Module extends Extension implements IModule {
                 $reflection = Reflection::getInstance();
                 try {
                     $result = $reflection->returnInjectable($this, $method);
+                    assert($result instanceof IActionResult);
                 } catch (FormException $fe) {
                     $result = $fe->getResult();
-                }
-                if ($result != null) {
-                    assert($result instanceof IActionResult);
                 }
                 $this->afterExecute();
             } elseif ($methodName == Parameters::GET_METHOD_NAME) {
