@@ -201,7 +201,7 @@ class Logger implements ILogger {
     public function debugException(Throwable $exception): void {
         $config = PortalConfig::getInstance();
         if ($config->getDebugMode()) {
-            ob_clean();
+            ob_end_clean();
             print '<!DOCTYPE html>';
             print '<html lang=en>';
             print '<head><meta charset=utf-8><title>Error</title></head>';
