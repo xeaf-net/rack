@@ -64,7 +64,7 @@ interface IStrings extends IFactoryObject {
      *
      * @return float|null
      */
-    public function stringToFloat(?string $buf, float $onError = null): ?float;
+    public function stringToNumeric(?string $buf, float $onError = null): ?float;
 
     /**
      * Преобразует строку в дату и время

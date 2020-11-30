@@ -14,12 +14,10 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
-use XEAF\Rack\API\Interfaces\IStrings;
 use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Models\UploadedFile;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
-use XEAF\Rack\API\Utils\Strings;
 use XEAF\Rack\API\Utils\Validator;
 
 /**
@@ -102,7 +100,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * Мобъект методов работы со строками
      * @var \XEAF\Rack\API\Interfaces\IStrings
      */
-    private IStrings $_strings;
+//    private IStrings $_strings;
 
     /**
      * Объект проверки значений
@@ -117,7 +115,6 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function __construct(array $data = []) {
         parent::__construct($data);
-        $this->_strings   = Strings::getInstance();
         $this->_validator = Validator::getInstance();
     }
 
@@ -243,8 +240,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getNumeric(string $name, float $defaultValue = null, string $tag = null): ?float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
-            $value = $this->_strings->stringToFloat((string)$value);
             $this->_validator->checkIsNumeric($value, $tag);
+            $value = (float)$value;
         }
         return $value;
     }
@@ -254,9 +251,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getNumericNN(string $name, float $defaultValue, string $tag = null): float {
         $value = $this->_parameters[$name] ?? $defaultValue;
-        $value = $this->_strings->stringToFloat((string)$value);
         $this->_validator->checkIsNumeric($value, $tag);
-        return $value;
+        return (float)$value;
     }
 
     /**

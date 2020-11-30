@@ -74,7 +74,7 @@ class Strings implements IStrings {
     /**
      * @inheritDoc
      */
-    public function stringToFloat(?string $buf, float $onError = null): ?float {
+    public function stringToNumeric(?string $buf, float $onError = null): ?float {
         return $this->isNumeric($buf) ? floatval($buf) : $onError;
     }
 
