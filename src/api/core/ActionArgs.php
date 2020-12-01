@@ -182,7 +182,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getString(string $name, string $defaultValue = null, bool $check = false, string $tag = null): ?string {
+    public function getString(string $name, string $defaultValue = null): ?string {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
             $value = (string)$value;
@@ -210,11 +210,12 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getInteger(string $name, int $defaultValue = null, string $tag = null): ?int {
+    public function getInteger(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): ?int {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
             $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
             $value = (int)$value;
+            $this->_validator->checkIntegerRange($value, $min, $max, $tag ? $tag : $name);
         }
         return $value;
     }
@@ -222,21 +223,24 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getIntegerNN(string $name, int $defaultValue = null, string $tag = null): int {
+    public function getIntegerNN(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): int {
         $value = $this->_parameters[$name] ?? $defaultValue;
         $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
         $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
-        return (int)$value;
+        $value = (int)$value;
+        $this->_validator->checkIntegerRange($value, $min, $max, $tag ? $tag : $name);
+        return $value;
     }
 
     /**
      * @inheritDoc
      */
-    public function getNumeric(string $name, float $defaultValue = null, string $tag = null): ?float {
+    public function getNumeric(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): ?float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
             $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
             $value = (float)$value;
+            $this->_validator->checkNumericRange($value, $min, $max);
         }
         return $value;
     }
@@ -244,11 +248,13 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getNumericNN(string $name, float $defaultValue = null, string $tag = null): float {
+    public function getNumericNN(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
         $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
-        return (float)$value;
+        $value = (float)$value;
+        $this->_validator->checkNumericRange($value, $min, $max);
+        return $value;
     }
 
     /**
@@ -270,6 +276,27 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
         $this->_validator->checkUUID($value, $tag ? $tag : $name);
         return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEnum(string $name, array $values, string $defaultValue = null, string $tag = null): ?string {
+        $data = $this->getString($name, $defaultValue);
+        if ($data !== null) {
+            $this->_validator->checkEnum($data, $values, $tag ? $tag : $name);
+            $data = (string)$data;
+        }
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEnumNN(string $name, array $values, string $defaultValue = null, string $tag = null): string {
+        $data = $this->getStringNN($name, $defaultValue);
+        $this->_validator->checkEnum($data, $values, $tag ? $tag : $name);
+        return $data;
     }
 
     /**

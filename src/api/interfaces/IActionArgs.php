@@ -127,48 +127,56 @@ interface IActionArgs extends IFactoryObject {
      *
      * @param string      $name         Имя параметра
      * @param int|null    $defaultValue Значение по умолчанию
+     * @param int|null    $min          Минимальное значение
+     * @param int|null    $max          Максимальное значение
      * @param string|null $tag          Тег
      *
      * @return int|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getInteger(string $name, int $defaultValue = null, string $tag = null): ?int;
+    public function getInteger(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): ?int;
 
     /**
      * Возвращает значение не пустого целочисленного параметра
      *
      * @param string      $name         Имя параметра
      * @param int|null    $defaultValue Значение по умолчанию
+     * @param int|null    $min          Минимальное значение
+     * @param int|null    $max          Максимальное значение
      * @param string|null $tag          Тег
      *
      * @return int
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getIntegerNN(string $name, int $defaultValue = null, string $tag = null): int;
+    public function getIntegerNN(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): int;
 
     /**
      * Возвращает значение действительного параметра
      *
      * @param string      $name         Имя параметра
      * @param float|null  $defaultValue Значение по умолчанию
+     * @param float|null  $min          Минимальное значение
+     * @param float|null  $max          Максимальное значение
      * @param string|null $tag          Тег
      *
      * @return float|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getNumeric(string $name, float $defaultValue = null, string $tag = null): ?float;
+    public function getNumeric(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): ?float;
 
     /**
      * Возвращает значение не пустого действительного параметра
      *
      * @param string      $name         Имя параметра
      * @param float|null  $defaultValue Значение по умолчанию
+     * @param float|null  $min          Минимальное значение
+     * @param float|null  $max          Максимальное значение
      * @param string|null $tag          Тег
      *
      * @return float
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getNumericNN(string $name, float $defaultValue = null, string $tag = null): float;
+    public function getNumericNN(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): float;
 
     /**
      * Возвращает значение параметра идентификатора
@@ -193,6 +201,32 @@ interface IActionArgs extends IFactoryObject {
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getUUIDNN(string $name, string $defaultValue = null, string $tag = null): string;
+
+    /**
+     * Возвращает значение перечислительного параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param array       $values       Возможоые значения
+     * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string|null
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function getEnum(string $name, array $values, string $defaultValue = null, string $tag = null): ?string;
+
+    /**
+     * Возвращает значение перечислительного параметра
+     *
+     * @param string      $name         Имя параметра
+     * @param array       $values       Возможоые значения
+     * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return string
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function getEnumNN(string $name, array $values, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение параметра адреса электронной почты

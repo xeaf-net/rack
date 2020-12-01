@@ -27,17 +27,22 @@ class ValidatorException extends FormException {
     private const EMPTY_VALUE = 'ValidatorException.EMPTY_VALUE';
 
     /**
-     * Некорреткное значение
+     * Некорректное значение
      */
     private const INVALID_VALUE = 'ValidatorException.INVALID_VALUE';
 
     /**
-     * Некорреткный формат значения
+     * Значение вне допустимого диапазона
+     */
+    private const INVALID_RANGE = 'ValidatorException.INVALID_RANGE';
+
+    /**
+     * Некорректный формат значения
      */
     private const INVALID_FORMAT = 'ValidatorException.INVALID_FORMAT';
 
     /**
-     * Некорреткная длина строки
+     * Некорректная длина строки
      */
     private const INVALID_STRING_LENGTH = 'ValidatorException.INVALID_STRING_LENGTH';
 
@@ -101,7 +106,18 @@ class ValidatorException extends FormException {
     }
 
     /**
-     * Некорреткный формат значения
+     * Значение вне допустимого диапазона
+     *
+     * @param string|null $tag Тег
+     *
+     * @return static
+     */
+    public static function invalidRange(string $tag = null): self {
+        return new self(HttpResponse::BAD_REQUEST, self::INVALID_RANGE, [], $tag);
+    }
+
+    /**
+     * Некорректный формат значения
      *
      * @param string|null $tag Тег
      *

@@ -1,6 +1,7 @@
 [ValidatorException]
 EMPTY_VALUE            = "Значение не может быть пустым."
 INVALID_VALUE          = "Некорректное значение."
+INVALID_RANGE          = "Значение вне допустимого диапазона."
 INVALID_FORMAT         = "Некорректный формат значения."
 INVALID_STRING_LENGTH  = "Некорреткная длина строки."
 INVALID_INTEGER_FORMAT = "Некорректный формат целого числа."

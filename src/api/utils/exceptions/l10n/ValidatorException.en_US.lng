@@ -1,6 +1,7 @@
 [ValidatorException]
 EMPTY_VALUE            = "Value can not be empty."
 INVALID_VALUE          = "Invalid value."
+INVALID_RANGE          = "Value is out of range."
 INVALID_FORMAT         = "Invalid format."
 INVALID_STRING_LENGTH  = "Invalid string length."
 INVALID_INTEGER_FORMAT = "Invalid integer value."

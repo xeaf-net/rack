@@ -72,9 +72,33 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
+    public function checkIntegerRange(int $data, int $min = null, int $max = null, string $tag=null): void {
+        if($min !== null && $data < $min) {
+            throw ValidatorException::invalidRange($tag);
+        }
+        if($max !== null && $data > $max) {
+            throw ValidatorException::invalidRange($tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function checkIsNumeric($data, string $tag = null): void {
         if (!$this->_strings->isNumeric((string)$data)) {
             throw ValidatorException::invalidNumericFormat($tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkNumericRange(float $data, float $min = null, float $max = null, string $tag=null): void {
+        if($min !== null && $data < $min) {
+            throw ValidatorException::invalidRange($tag);
+        }
+        if($max !== null && $data > $max) {
+            throw ValidatorException::invalidRange($tag);
         }
     }
 

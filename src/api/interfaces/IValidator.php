@@ -55,6 +55,19 @@ interface IValidator extends IFactoryObject {
     public function checkIsInteger($data, string $tag = null): void;
 
     /**
+     * Проверяет диапазон значений целого числа
+     *
+     * @param int         $data Данные для проверки
+     * @param int|null    $min  Минимальное значение
+     * @param int|null    $max  Максимальное значение
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkIntegerRange(int $data, int $min = null, int $max = null, string $tag = null): void;
+
+    /**
      * Проверка соответствия формату числового значения
      *
      * @param mixed       $data Данные для проверки
@@ -64,6 +77,19 @@ interface IValidator extends IFactoryObject {
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkIsNumeric($data, string $tag = null): void;
+
+    /**
+     * Проверяет диапазон числового значения
+     *
+     * @param float       $data Данные для проверки
+     * @param float|null  $min  Минимальное значение
+     * @param float|null  $max  Максимальное значение
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkNumericRange(float $data, float $min = null, float $max = null, string $tag = null): void;
 
     /**
      * Проверка корректности формата значения
