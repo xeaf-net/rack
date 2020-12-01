@@ -104,13 +104,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает значение не пустого строкового параметра
      *
      * @param string      $name         Имя параметра
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getStringNN(string $name, string $defaultValue, string $tag = null): string;
+    public function getStringNN(string $name, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение логического параметра
@@ -144,7 +144,7 @@ interface IActionArgs extends IFactoryObject {
      * @return int
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getIntegerNN(string $name, int $defaultValue, string $tag = null): int;
+    public function getIntegerNN(string $name, int $defaultValue = 0, string $tag = null): int;
 
     /**
      * Возвращает значение действительного параметра
@@ -168,7 +168,7 @@ interface IActionArgs extends IFactoryObject {
      * @return float
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getNumericNN(string $name, float $defaultValue, string $tag = null): float;
+    public function getNumericNN(string $name, float $defaultValue = 0.0, string $tag = null): float;
 
     /**
      * Возвращает значение параметра идентификатора
@@ -186,13 +186,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает не пустое значение параметра идентификатора
      *
      * @param string      $name         Имя параметра
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getUUIDNN(string $name, string $defaultValue, string $tag = null): string;
+    public function getUUIDNN(string $name, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение параметра адреса электронной почты
@@ -210,13 +210,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает не пустое значение параметра адреса электронной почты
      *
      * @param string      $name         Имя параметра
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getEmailNN(string $name, string $defaultValue, string $tag = null): string;
+    public function getEmailNN(string $name, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение параметра номера телефона
@@ -234,13 +234,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает не пустое значение параметра номера телефона
      *
      * @param string      $name         Имя параметра
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getPhoneNN(string $name, string $defaultValue, string $tag = null): string;
+    public function getPhoneNN(string $name, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение параметра типа массив
@@ -268,13 +268,13 @@ interface IActionArgs extends IFactoryObject {
      *
      * @param string      $name         Имя параметра массива
      * @param string      $element      Имя элемента
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayStringNN(string $name, string $element, string $defaultValue, string $tag = null): string;
+    public function getArrayStringNN(string $name, string $element, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает значение целочисленного элемента из массива
@@ -326,7 +326,7 @@ interface IActionArgs extends IFactoryObject {
      * @return float
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayNumericNN(string $name, string $element, float $defaultValue = 0, string $tag = null): float;
+    public function getArrayNumericNN(string $name, string $element, float $defaultValue = 0.00, string $tag = null): float;
 
     /**
      * Возвращает значение идентификатора из массива
@@ -346,13 +346,13 @@ interface IActionArgs extends IFactoryObject {
      *
      * @param string      $name         Имя параметра
      * @param string      $element      Имя элемента
-     * @param string      $defaultValue Значение по умолчанию
+     * @param string|null $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayUUIDNN(string $name, string $element, string $defaultValue, string $tag = null): string;
+    public function getArrayUUIDNN(string $name, string $element, string $defaultValue = null, string $tag = null): string;
 
     /**
      * Возвращает информацию о загруженном файле
