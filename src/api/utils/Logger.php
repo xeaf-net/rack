@@ -199,9 +199,9 @@ class Logger implements ILogger {
      * @inheritDoc
      */
     public function debugException(Throwable $exception): void {
+        ob_end_clean();
         $config = PortalConfig::getInstance();
         if ($config->getDebugMode()) {
-            ob_end_clean();
             print '<!DOCTYPE html>';
             print '<html lang=en>';
             print '<head><meta charset=utf-8><title>Error</title></head>';
@@ -211,6 +211,8 @@ class Logger implements ILogger {
             print_r($exception);
             print '</pre></body>';
             print '</html>';
+        } else {
+            print $exception->getMessage();
         }
     }
 }

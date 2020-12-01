@@ -66,8 +66,6 @@ class Application extends Extension {
      *
      * @param \XEAF\Rack\API\Interfaces\IConfiguration|null $configuration Параметры конфигурации
      * @param \XEAF\Rack\API\Interfaces\IActionArgs|null    $actionArgs    Параметры вызова
-     *
-     * @throws \XEAF\Rack\API\Utils\Exceptions\PoliticException
      */
     public function __construct(IConfiguration $configuration = null, IActionArgs $actionArgs = null) {
         parent::__construct();
@@ -88,9 +86,9 @@ class Application extends Extension {
      * @return void
      */
     protected function initialization(): void {
+        $config = PortalConfig::getInstance();
         try {
             $this->defineExtensions();
-            $config = PortalConfig::getInstance();
             $locale = Session::getInstance()->getLocale();
             if (!$locale) {
                 $locale = $config->getLocale();
@@ -101,7 +99,7 @@ class Application extends Extension {
                 throw PoliticException::debugMode();
             }
         } catch (PoliticException $pe) {
-            die($pe->getMessage());
+            Logger::fatalError($pe->getMessage());
         }
     }
 
