@@ -138,13 +138,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает значение не пустого целочисленного параметра
      *
      * @param string      $name         Имя параметра
-     * @param int         $defaultValue Значение по умолчанию
+     * @param int|null    $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return int
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getIntegerNN(string $name, int $defaultValue = 0, string $tag = null): int;
+    public function getIntegerNN(string $name, int $defaultValue = null, string $tag = null): int;
 
     /**
      * Возвращает значение действительного параметра
@@ -162,13 +162,13 @@ interface IActionArgs extends IFactoryObject {
      * Возвращает значение не пустого действительного параметра
      *
      * @param string      $name         Имя параметра
-     * @param float       $defaultValue Значение по умолчанию
+     * @param float|null  $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return float
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getNumericNN(string $name, float $defaultValue = 0.0, string $tag = null): float;
+    public function getNumericNN(string $name, float $defaultValue = null, string $tag = null): float;
 
     /**
      * Возвращает значение параметра идентификатора
@@ -294,13 +294,13 @@ interface IActionArgs extends IFactoryObject {
      *
      * @param string      $name         Имя параметра массива
      * @param string      $element      Имя элемента
-     * @param int         $defaultValue Значение по умолчанию
+     * @param int|null    $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return int
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayIntegerNN(string $name, string $element, int $defaultValue = 0, string $tag = null): int;
+    public function getArrayIntegerNN(string $name, string $element, int $defaultValue = null, string $tag = null): int;
 
     /**
      * Возвращает значение числового элемента из массива
@@ -320,13 +320,13 @@ interface IActionArgs extends IFactoryObject {
      *
      * @param string      $name         Имя параметра массива
      * @param string      $element      Имя элемента
-     * @param float       $defaultValue Значение по умолчанию
+     * @param float|null  $defaultValue Значение по умолчанию
      * @param string|null $tag          Тег
      *
      * @return float
      * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
-    public function getArrayNumericNN(string $name, string $element, float $defaultValue = 0.00, string $tag = null): float;
+    public function getArrayNumericNN(string $name, string $element, float $defaultValue = null, string $tag = null): float;
 
     /**
      * Возвращает значение идентификатора из массива
