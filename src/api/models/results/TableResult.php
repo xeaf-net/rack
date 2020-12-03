@@ -114,6 +114,7 @@ class TableResult extends ListResult {
             'recordsTotal'        => $this->getRecordsTotal(),
             'recordsFiltered'     => $this->getRecordsFiltered()
         ];
+        $data = $this->prepareDataResult($data);
         $headers->responseCode($this->getStatusCode());
         $headers->contentJSON();
         print $serializer->jsonArrayEncode($data);

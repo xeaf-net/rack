@@ -39,4 +39,18 @@ interface IPolitics extends IFactoryObject {
      * @return bool
      */
     public function forceFormResult200(): bool;
+
+    /**
+     * Добавление штампа даты и времени в ответ
+     *
+     * @return bool
+     */
+    public function dataResultTimestamp(): bool;
+
+    /**
+     * Штамп даты и времени в ответе передается в формате JS
+     *
+     * @return bool
+     */
+    public function dataResultJSTimestamp(): bool;
 }

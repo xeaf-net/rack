@@ -13,6 +13,7 @@
 namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\Utils\HttpResponse;
+use XEAF\Rack\API\Utils\Politics;
 
 /**
  * Реализует базовые методы кешируемого результата действия
@@ -27,6 +28,11 @@ abstract class CachedResult extends ActionResult {
      * Идентификатор свойства результата
      */
     public const RESULT_PROPERTY = 'data';
+
+    /**
+     * Идентификатор свойства штампа даты и времени
+     */
+    public const TIMESTAMP_PROPERTY = 'timestamp';
 
     /**
      * Признак использования кеша
@@ -63,5 +69,27 @@ abstract class CachedResult extends ActionResult {
      */
     public function setUseCache(bool $useCache): void {
         $this->_useCache = $useCache;
+    }
+
+    /**
+     * Подготавливает объект результата
+     *
+     * @param mixed $data Данные результата
+     *
+     * @return array
+     */
+    protected function prepareDataResult($data): array {
+        $politics = Politics::getInstance();
+        $result   = [
+            self::RESULT_PROPERTY => $data
+        ];
+        if ($politics->dataResultTimestamp()) {
+            $time = time();
+            if ($politics->dataResultJSTimestamp()) {
+                $time = $time * 1000;
+            }
+            $result[self::TIMESTAMP_PROPERTY] = $time;
+        }
+        return $result;
     }
 }

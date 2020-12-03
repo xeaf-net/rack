@@ -12,8 +12,8 @@
  */
 namespace XEAF\Rack\API\Utils;
 
+use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Interfaces\IPolitics;
-use XEAF\Rack\API\Traits\SingletonTrait;
 
 /**
  * Возвращает информацию о политике функционирования приложения
@@ -21,8 +21,6 @@ use XEAF\Rack\API\Traits\SingletonTrait;
  * @package  XEAF\Rack\API\Utils
  */
 class Politics implements IPolitics {
-
-    use SingletonTrait;
 
     /**
      * Конструктор класса
@@ -49,5 +47,30 @@ class Politics implements IPolitics {
      */
     public function forceFormResult200(): bool {
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dataResultTimestamp(): bool {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dataResultJSTimestamp(): bool {
+        return false;
+    }
+
+    /**
+     * Возвращает единичный экземпляр объекта
+     *
+     * @return \XEAF\Rack\API\Interfaces\IPolitics
+     */
+    public static function getInstance(): IPolitics {
+        $result = Factory::getFactoryObject(IPolitics::class);
+        assert($result instanceof IPolitics);
+        return $result;
     }
 }
