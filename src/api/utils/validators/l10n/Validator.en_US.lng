@@ -1,6 +1,0 @@
-[Validator]
-EMPTY_VALUE    = "Value can not be empty."
-INVALID_VALUE  = "Invalid value."
-INVALID_FORMAT = "Invalid format."
-INVALID_EMAIL  = "Invalid email."
-INVALID_PHONE  = "Invalid phone number."

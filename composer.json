@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.23",
+    "version"          : "1.0.24",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
@@ -29,7 +29,6 @@
             "XEAF\\Rack\\API\\Utils\\Loggers\\"        : "src/api/utils/loggers",
             "XEAF\\Rack\\API\\Utils\\Sessions\\"       : "src/api/utils/sessions",
             "XEAF\\Rack\\API\\Utils\\Storage\\"        : "src/api/utils/storage",
-            "XEAF\\Rack\\API\\Utils\\Validators\\"     : "src/api/utils/validators",
             "XEAF\\Rack\\Db\\"                         : "src/db",
             "XEAF\\Rack\\Db\\Core\\"                   : "src/db/core",
             "XEAF\\Rack\\Db\\Interfaces\\"             : "src/db/interfaces",

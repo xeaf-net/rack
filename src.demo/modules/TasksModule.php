@@ -39,7 +39,8 @@ class TasksModule extends Module {
     public function processGet(): ?IActionResult {
         $em = DemoEM::getInstance();
 
-        $xql   = "tasks from tasks";
+        $xql = "tasks from tasks where tasks.title == 'Промывка' && tasks.id == :id";
+        // $xql   = "tasks from tasks";
         $query = $em->query($xql);
         $query->withEager('tasks', 'users');
 
@@ -52,10 +53,10 @@ class TasksModule extends Module {
 //        $query->withEager('userTasks_task', 'project');
 //        $query->withEager('projects', 'project');
 
-        $task = $query->getFirstEntity();
-        $em->reload($task);
-        return new EntityResult($task);
-        // $list = $query->get();
-        // return new EntityListResult($list, [], ['users']);
+//        $task = $query->getFirstEntity();
+//        $em->reload($task);
+//        return new EntityResult($task);
+        $list = $query->get(['id' => '1aa1d868-0bdf-48f6-9681-d2f7fa47415d']);
+        return new EntityListResult($list, [], []);
     }
 }

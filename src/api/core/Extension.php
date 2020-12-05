@@ -94,7 +94,7 @@ class Extension extends StdObject {
     }
 
     /**
-     * Возращащает объекто методов журанлирования по умолчанию
+     * Возращащает объект методов журанлирования по умолчанию
      *
      * @return \XEAF\Rack\API\Interfaces\ILogger
      */

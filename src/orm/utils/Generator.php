@@ -16,6 +16,8 @@ use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
 use XEAF\Rack\API\Interfaces\ICollection;
 use XEAF\Rack\API\Interfaces\IKeyValue;
+use XEAF\Rack\API\Interfaces\IStrings;
+use XEAF\Rack\API\Utils\Strings;
 use XEAF\Rack\ORM\Core\Entity;
 use XEAF\Rack\ORM\Core\EntityManager;
 use XEAF\Rack\ORM\Core\EntityQuery;
@@ -34,6 +36,7 @@ use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 use XEAF\Rack\ORM\Utils\Lex\KeyWords;
+use XEAF\Rack\ORM\Utils\Lex\TokenChars;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 
 /**
@@ -62,10 +65,17 @@ class Generator implements IGenerator {
     private ?IKeyValue $_entities = null;
 
     /**
+     * Объект методов работы со строками
+     * @var \XEAF\Rack\API\Interfaces\IStrings
+     */
+    private IStrings $_strings;
+
+    /**
      * @inheritDoc
      */
     public function __construct() {
         $this->_aliases = new KeyValue();
+        $this->_strings = Strings::getInstance();
     }
 
     /**
@@ -81,6 +91,7 @@ class Generator implements IGenerator {
         $condition       = $this->selectSQLConditions($query, $useFilter);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
         $select          = !$distinct ? 'select' : 'select distinct';
+        // print "<pre>\n". $select . ' ' . $aliasSQL . ' ' . $condition;
         return $select . ' ' . $aliasSQL . ' ' . $condition;
     }
 
@@ -306,6 +317,7 @@ class Generator implements IGenerator {
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
     protected function generateWhereSQL(ICollection $whereModels, IKeyValue $parameters): string {
+        ///  where lower(tasks.title) == ('Проба пера')
         $result   = [];
         $alias    = '';
         $first    = true;
@@ -317,8 +329,10 @@ class Generator implements IGenerator {
             } else {
                 $first = false;
             }
-            $result[] = '(';
-            $tokens   = $whereModel->getTokens();
+            $result[]  = '(';
+            $tokens    = $whereModel->getTokens();
+            $tokenIdx  = 0;
+            $upperNext = false;
             foreach ($tokens as $token) {
                 assert($token instanceof TokenModel);
                 switch ($token->getType()) {
@@ -337,9 +351,23 @@ class Generator implements IGenerator {
                         $result[] = 'or';
                         break;
                     case TokenTypes::OP_EQ:
+                        if ($dataType == DataTypes::DT_STRING) {
+                            $result[count($result) - 1] = 'upper(' . $result[count($result) - 1] . ')';
+                        }
+                        $result[]  = '=';
+                        $upperNext = true;
+                        break;
+                    case TokenTypes::OP_EQE:
                         $result[] = '=';
                         break;
                     case TokenTypes::OP_NE:
+                        if ($dataType == DataTypes::DT_STRING) {
+                            $result[count($result) - 1] = 'upper(' . $result[count($result) - 1] . ')';
+                        }
+                        $result[]  = '<>';
+                        $upperNext = true;
+                        break;
+                    case TokenTypes::OP_ENE:
                         $result[] = '<>';
                         break;
                     case TokenTypes::OP_LIKE:
@@ -361,6 +389,12 @@ class Generator implements IGenerator {
                             $parameters->put($paramName, $paramModel);
                         }
                         $result[count($result) - 1] .= $paramName;
+                        if ($upperNext) {
+                            if ($dataType == DataTypes::DT_STRING) {
+                                $result[count($result) - 1] = 'upper(' . $result[count($result) - 1] . ')';
+                            }
+                            $upperNext = false;
+                        }
                         break;
                     case TokenTypes::ID_FALSE:
                         $result[] = '0';
@@ -378,9 +412,19 @@ class Generator implements IGenerator {
                         $result[] = $token->getText();
                         break;
                     default:
-                        $result[] = $token->getText();
+                        $text = $token->getText();
+                        if ($text !== TokenChars::CL) {
+                            if ($upperNext) {
+                                if (!$this->_strings->isNumeric($text) && !$this->_strings->isUUID($text)) {
+                                    $text = "upper($text)";
+                                }
+                                $upperNext = false;
+                            }
+                        }
+                        $result[] = $text;
                         break;
                 }
+                $tokenIdx++;
             }
             $result[] = ')';
         }

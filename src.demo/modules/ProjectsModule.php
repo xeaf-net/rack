@@ -40,8 +40,8 @@ class ProjectsModule extends Module {
         $xql   = "p from projects p";
         $query = $em->query($xql);
         // $query->select('u')->leftJoin('users', 'u', 'id', 'p', 'userId');
-        // $query->withLazy('p', 'user');
-        // $query->withLazy('p', 'tasks');
+        $query->withEager('p', 'user');
+        $query->withLazy('p', 'tasks');
         // $subquery = $query->subquery('p', 'tasks')->orderBy('tasks', 'status');
         // $subquery->andWhere("tasks.status == :status");
         $list = $query->get([

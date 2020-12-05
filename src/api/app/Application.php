@@ -28,10 +28,12 @@ use XEAF\Rack\API\Modules\Home\HomeModule;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Modules\Tools\SessionModule;
 use XEAF\Rack\API\Utils\Assets;
+use XEAF\Rack\API\Utils\Exceptions\PoliticException;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
 use XEAF\Rack\API\Utils\Logger;
+use XEAF\Rack\API\Utils\Politics;
 use XEAF\Rack\API\Utils\Reflection;
 use XEAF\Rack\API\Utils\Session;
 
@@ -84,12 +86,21 @@ class Application extends Extension {
      * @return void
      */
     protected function initialization(): void {
-        $this->defineExtensions();
-        $locale = Session::getInstance()->getLocale();
-        if (!$locale) {
-            $locale = PortalConfig::getInstance()->getLocale();
+        $config = PortalConfig::getInstance();
+        try {
+            $this->defineExtensions();
+            $locale = Session::getInstance()->getLocale();
+            if (!$locale) {
+                $locale = $config->getLocale();
+            }
+            Localization::getInstance()->setDefaultLocale($locale);
+            $politics = Politics::getInstance();
+            if ($config->getDebugMode() && !$politics->allowDebugMode()) {
+                throw PoliticException::debugMode();
+            }
+        } catch (PoliticException $pe) {
+            Logger::fatalError($pe->getMessage());
         }
-        Localization::getInstance()->setDefaultLocale($locale);
     }
 
     /**
@@ -240,6 +251,7 @@ class Application extends Extension {
      */
     protected function processException(Throwable $exception): IActionResult {
         $this->defaultLogger()->exception($exception);
+        $this->defaultLogger()->debugException($exception);
         return StatusResult::internalServerError();
     }
 

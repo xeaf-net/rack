@@ -185,34 +185,44 @@ class TokenTypes {
     public const OP_EQ = 310;
 
     /**
+     * Оператор Точно равно
+     */
+    public const OP_EQE = 311;
+
+    /**
      * Оператор Не равно
      */
-    public const OP_NE = 311;
+    public const OP_NE = 312;
+
+    /**
+     * Оператор Точно не равно
+     */
+    public const OP_ENE = 313;
 
     /**
      * Оператор Больше
      */
-    public const OP_GT = 312;
+    public const OP_GT = 314;
 
     /**
      * Больше или равно
      */
-    public const OP_GE = 313;
+    public const OP_GE = 315;
 
     /**
      * Оператор меньше
      */
-    public const OP_LT = 314;
+    public const OP_LT = 316;
 
     /**
      * Оператор Меньше или равно
      */
-    public const OP_LE = 315;
+    public const OP_LE = 317;
 
     /**
      * Оператор Как
      */
-    public const OP_LIKE = 316;
+    public const OP_LIKE = 318;
 
     /**
      * Разделитель Точка
@@ -267,7 +277,9 @@ class TokenTypes {
         TokenOperators::BOOL_OR          => self::OP_OR,
         TokenOperators::BOOL_NOT         => self::OP_NOT,
         TokenOperators::BOOL_EQ          => self::OP_EQ,
+        TokenOperators::BOOL_EQE         => self::OP_EQE,
         TokenOperators::BOOL_NE          => self::OP_NE,
+        TokenOperators::BOOL_ENE         => self::OP_ENE,
         TokenOperators::BOOL_GT          => self::OP_GT,
         TokenOperators::BOOL_GE          => self::OP_GE,
         TokenOperators::BOOL_LT          => self::OP_LT,

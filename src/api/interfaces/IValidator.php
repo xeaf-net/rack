@@ -26,7 +26,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkNotEmpty($data, string $tag = null): void;
 
@@ -39,9 +39,69 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag       Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void;
+
+    /**
+     * Проверка соответствия формату целого числа
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkIsInteger($data, string $tag = null): void;
+
+    /**
+     * Проверяет диапазон значений целого числа
+     *
+     * @param int         $data Данные для проверки
+     * @param int|null    $min  Минимальное значение
+     * @param int|null    $max  Максимальное значение
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkIntegerRange(int $data, int $min = null, int $max = null, string $tag = null): void;
+
+    /**
+     * Проверка соответствия формату числового значения
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkIsNumeric($data, string $tag = null): void;
+
+    /**
+     * Проверяет диапазон числового значения
+     *
+     * @param float       $data Данные для проверки
+     * @param float|null  $min  Минимальное значение
+     * @param float|null  $max  Максимальное значение
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkNumericRange(float $data, float $min = null, float $max = null, string $tag = null): void;
+
+    /**
+     * Проверка корректности формата значения
+     *
+     * @param mixed       $data    Данные для проверки
+     * @param string      $pattern Регулярное выражение
+     * @param string|null $tag     Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkFormat($data, string $pattern, string $tag = null): void;
 
     /**
      * Проверяет уникальный идентификатор
@@ -50,7 +110,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkUUID($data, string $tag = null): void;
 
@@ -62,7 +122,7 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag    Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkEnum($data, array $values, string $tag = null): void;
 
@@ -73,19 +133,52 @@ interface IValidator extends IFactoryObject {
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkEmail($data, string $tag = null): void;
 
     /**
-     * Проверяет адрес электронной почты
+     * Проверяет пустой или корректный адрес электронной почты
      *
      * @param mixed       $data Данные для проверки
      * @param string|null $tag  Тег
      *
      * @return void
-     * @throws \XEAF\Rack\API\Utils\Exceptions\FormException
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkNullOrEmail($data, string $tag = null): void;
+
+    /**
+     * Проверяет формат номера телефона
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function checkPhone($data, string $tag = null): void;
+
+    /**
+     * Проверяет пустой или корректный номер телефона
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkNullOrPhone($data, string $tag = null): void;
+
+    /**
+     * Проверяет идентичность данных
+     *
+     * @param bool        $exp Логическое выражение
+     * @param string|null $tag Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkExists(bool $exp, string $tag = null): void;
 
 }

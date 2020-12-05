@@ -1,0 +1,11 @@
+[ValidatorException]
+EMPTY_VALUE            = "Значение не может быть пустым."
+INVALID_VALUE          = "Некорректное значение."
+INVALID_RANGE          = "Значение вне допустимого диапазона."
+INVALID_FORMAT         = "Некорректный формат значения."
+INVALID_STRING_LENGTH  = "Некорреткная длина строки."
+INVALID_INTEGER_FORMAT = "Некорректный формат целого числа."
+INVALID_NUMBER_FORMAT  = "Некорректный формат числа."
+INVALID_EMAIL_FORMAT   = "Некорректный формат адреса электронной почты."
+INVALID_PHONE_FORMAT   = "Некорректный формат номера телефона."
+VALUE_ALREADY_EXISTS   = "Такое значение уже существует."

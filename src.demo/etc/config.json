@@ -1,12 +1,13 @@
 {
     "portal"     : {
-        "url"      : "https://rack.xeaf.space",
-        "origin"   : "*",
-        "bearer"   : "rackAPI",
-        "locale"   : "en_GB",
-        "session"  : "native",
-        "tempPath" : "/tmp",
-        "debugMode": "true"
+        "url"        : "https://rack.xeaf.space",
+        "origin"     : "*",
+        "bearer"     : "rackAPI",
+        "locale"     : "en_GB",
+        "session"    : "native",
+        "tempPath"   : "/tmp",
+        "uploadsPath": "/tmp",
+        "debugMode"  : "true"
     },
     "storage"    : {
         "default": "file:path=/var/www/hosting.space/rack/tmp",

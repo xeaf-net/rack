@@ -108,9 +108,10 @@ class StorageSessionProvider extends StaticSessionProvider {
                     $sessionId = $crypto->base64Decode($encodedId);
                 }
             }
-            if (!$strings->isEmpty($sessionId)) {
-                $this->setId($sessionId);
+            if (!$sessionId || !$strings->isUUID($sessionId)) {
+                $sessionId = $crypto->generateUUIDv4();
             }
+            $this->setId($sessionId);
         } else {
             $this->resolveJWT();
         }

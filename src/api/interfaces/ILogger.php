@@ -85,4 +85,13 @@ interface ILogger extends INamedObject, IProviderFactory {
      * @return void
      */
     public function exception(Throwable $exception): void;
+
+    /**
+     * Выводит отладочную информацию об исключении
+     *
+     * @param \Throwable $exception Объект исключения
+     *
+     * @return void
+     */
+    public function debugException(Throwable $exception): void;
 }

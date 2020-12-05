@@ -12,7 +12,10 @@
  */
 namespace XEAF\Rack\API\Utils\Sessions;
 
+use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Utils\Crypto;
+use XEAF\Rack\API\Utils\Exceptions\PoliticException;
+use XEAF\Rack\API\Utils\Politics;
 use XEAF\Rack\API\Utils\Session;
 
 /**
@@ -26,6 +29,19 @@ class NativeSessionProvider extends StorageSessionProvider {
      * Имя провайдера
      */
     public const PROVIDER_NAME = 'native';
+
+    /**
+     * @inheritDoc
+     *
+     * @throws \XEAF\Rack\API\Utils\Exceptions\PoliticException
+     */
+    public function __construct(string $name = Factory::DEFAULT_NAME) {
+        parent::__construct($name);
+        $politics = Politics::getInstance();
+        if (!$politics->allowNativeSession()) {
+            throw PoliticException::nativeSession();
+        }
+    }
 
     /**
      * @inheritDoc
@@ -69,7 +85,7 @@ class NativeSessionProvider extends StorageSessionProvider {
      * Получает значение переменной сессии
      *
      * @return void
-     *             
+     *
      * @noinspection PhpMissingParentCallCommonInspection
      */
     protected function resolveSessionId(): void {

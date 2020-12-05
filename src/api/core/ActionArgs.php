@@ -14,10 +14,11 @@ namespace XEAF\Rack\API\Core;
 
 use XEAF\Rack\API\App\Router;
 use XEAF\Rack\API\Interfaces\IActionArgs;
+use XEAF\Rack\API\Interfaces\IValidator;
 use XEAF\Rack\API\Models\UploadedFile;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\HttpResponse;
-use XEAF\Rack\API\Utils\Strings;
+use XEAF\Rack\API\Utils\Validator;
 
 /**
  * Реализует методы контейнера параметров вызова приложения
@@ -94,6 +95,22 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      * @var array
      */
     protected array $_headers = [];
+
+    /**
+     * Объект методов проверки значений
+     * @var \XEAF\Rack\API\Interfaces\IValidator
+     */
+    private IValidator $_validator;
+
+    /**
+     * Конструктор класса
+     *
+     * @param array $data Данные инициализации
+     */
+    public function __construct(array $data = []) {
+        parent::__construct($data);
+        $this->_validator = Validator::getInstance();
+    }
 
     /**
      * @inheritDoc
@@ -176,6 +193,15 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
+    public function getStringNN(string $name, string $defaultValue = null, string $tag = null): string {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        return (string)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getBool(string $name, bool $defaultValue = false): bool {
         $value = $this->_parameters[$name] ?? $defaultValue;
         return (bool)$value;
@@ -184,11 +210,12 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getInteger(string $name, int $defaultValue = null): ?int {
+    public function getInteger(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): ?int {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            $value   = $strings->stringToInteger((string)$value, $defaultValue);
+            $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+            $value = (int)$value;
+            $this->_validator->checkIntegerRange($value, $min, $max, $tag ? $tag : $name);
         }
         return $value;
     }
@@ -196,11 +223,24 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getFloat(string $name, float $defaultValue = null): ?float {
+    public function getIntegerNN(string $name, int $defaultValue = null, int $min = null, int $max = null, string $tag = null): int {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+        $value = (int)$value;
+        $this->_validator->checkIntegerRange($value, $min, $max, $tag ? $tag : $name);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNumeric(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): ?float {
         $value = $this->_parameters[$name] ?? $defaultValue;
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            $value   = $strings->stringToFloat((string)$value, $defaultValue);
+            $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+            $value = (float)$value;
+            $this->_validator->checkNumericRange($value, $min, $max);
         }
         return $value;
     }
@@ -208,12 +248,95 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getUUID(string $name, string $defaultValue = null): ?string {
-        $value   = $this->_parameters[$name] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        if (!$strings->isUUID((string)$value)) {
-            $value = $defaultValue;
+    public function getNumericNN(string $name, float $defaultValue = null, float $min = null, float $max = null, string $tag = null): float {
+        $value = $this->_parameters[$name] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+        $value = (float)$value;
+        $this->_validator->checkNumericRange($value, $min, $max);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUUID(string $name, string $defaultValue = null, string $tag = null): ?string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        if ($value !== null) {
+            $this->_validator->checkUUID($value, $tag ? $tag : $name);
         }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUUIDNN(string $name, string $defaultValue = null, string $tag = null): string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkUUID($value, $tag ? $tag : $name);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEnum(string $name, array $values, string $defaultValue = null, string $tag = null): ?string {
+        $data = $this->getString($name, $defaultValue);
+        if ($data !== null) {
+            $this->_validator->checkEnum($data, $values, $tag ? $tag : $name);
+            $data = (string)$data;
+        }
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEnumNN(string $name, array $values, string $defaultValue = null, string $tag = null): string {
+        $data = $this->getStringNN($name, $defaultValue);
+        $this->_validator->checkEnum($data, $values, $tag ? $tag : $name);
+        return $data;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEmail(string $name, string $defaultValue = null, string $tag = null): ?string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        if ($value !== null) {
+            $this->_validator->checkEmail($value, $tag ? $tag : $name);
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEmailNN(string $name, string $defaultValue = null, string $tag = null): string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        $this->_validator->checkEmail($value, $tag);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPhone(string $name, string $defaultValue = null, string $tag = null): ?string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        if ($value !== null) {
+            $this->_validator->checkPhone($value, $tag);
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPhoneNN(string $name, string $defaultValue = null, string $tag = null): string {
+        $value = (string)($this->_parameters[$name] ?? $defaultValue);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkPhone($value, $tag ? $tag : $name);
         return $value;
     }
 
@@ -231,16 +354,6 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getArrayInt(string $name, string $element, int $defaultValue = 0): int {
-        $data    = $this->getArray($name);
-        $value   = $data[$element] ?? $defaultValue;
-        $strings = Strings::getInstance();
-        return $strings->stringToInteger((string)$value, $defaultValue);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getArrayString(string $name, string $element, string $defaultValue = null): ?string {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
@@ -253,14 +366,82 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
-    public function getArrayUUID(string $name, string $element, string $defaultValue = null): ?string {
-        $value = $this->getArrayString($name, $element, $defaultValue);
+    public function getArrayStringNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayInteger(string $name, string $element, int $defaultValue = null, string $tag = null): ?int {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $strings = Strings::getInstance();
-            if (!$strings->isUUID($value)) {
-                $value = $defaultValue;
-            }
+            $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+            $value = (int)$value;
         }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayIntegerNN(string $name, string $element, int $defaultValue = null, string $tag = null): int {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+        return (int)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayNumeric(string $name, string $element, float $defaultValue = null, string $tag = null): ?float {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        if ($value !== null) {
+            $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+            $value = (float)$value;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayNumericNN(string $name, string $element, float $defaultValue = null, string $tag = null): float {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+        return (float)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayUUID(string $name, string $element, string $defaultValue = null, string $tag = null): ?string {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        if ($value !== null) {
+            $this->_validator->checkUUID($value, $tag ? $tag : $name);
+            $value = (string)$value;
+        }
+        return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayUUIDNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
+        $data  = $this->getArray($name);
+        $value = (string)($data[$element] ?? $defaultValue);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkUUID($value, $tag ? $tag : $name);
         return $value;
     }
 

@@ -1,12 +1,13 @@
 {
     "portal"     : {
-        "url"      : "http://localhost",
-        "origin"   : "*",
-        "bearer"   : "rackAPI",
-        "locale"   : "en_US",
-        "session"  : "native",
-        "tempPath" : "/tmp",
-        "debugMode": "true"
+        "url"        : "http://localhost",
+        "origin"     : "*",
+        "bearer"     : "rackAPI",
+        "locale"     : "en_US",
+        "session"    : "native",
+        "tempPath"   : "/tmp",
+        "uploadsPath": "/var/www/hosting.space/brandbook/uploads",
+        "debugMode"  : true
     },
     "storage"    : {
         "default": "file:path=/tmp",

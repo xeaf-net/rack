@@ -174,7 +174,7 @@ class Notificator extends RestAPI implements INotificator {
      */
     protected function canUseService(): bool {
         $strings = Strings::getInstance();
-        return $this->_config->getEnabled() && !$strings->isEmpty($this->_config->getKey());
+        return $this->_session->isAuthorized() && $this->_config->getEnabled() && !$strings->isEmpty($this->_config->getKey());
     }
 
     /**
