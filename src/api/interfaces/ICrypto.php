@@ -133,8 +133,6 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
-     *
-     * @since 1.0.4
      */
     public function jwtPrivateKey(): string;
 
@@ -143,8 +141,6 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string
      * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
-     *
-     * @since 1.0.4
      */
     public function jwtPublicKey(): string;
 
@@ -163,8 +159,6 @@ interface ICrypto extends IFactoryObject {
      *
      * @return string|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
-     *
-     * @since 1.0.4
      */
     public function encodeJWT(JsonWebToken $jwt, string $privateKey = null, string $algo = Crypto::JWT_DEFAULT_ALGO): ?string;
 
@@ -177,8 +171,6 @@ interface ICrypto extends IFactoryObject {
      *
      * @return \XEAF\Rack\API\Models\JsonWebToken|null
      * @throws \XEAF\Rack\API\Utils\Exceptions\CryptoException
-     *
-     * @since 1.0.4
      */
     public function decodeJWT(string $encodedJWT, string $publicKey = null, string $algo = Crypto::JWT_DEFAULT_ALGO): ?JsonWebToken;
 

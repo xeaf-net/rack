@@ -23,8 +23,6 @@ abstract class DataModel extends DataObject {
 
     /**
      * @inheritDoc
-     *
-     * @since 1.0.3
      */
     public function __construct(array $data = []) {
         $values     = $data;

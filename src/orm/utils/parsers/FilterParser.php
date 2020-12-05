@@ -21,8 +21,6 @@ use XEAF\Rack\ORM\Utils\QueryParser;
  * Реализует методы разбора фазы FILTER
  *
  * @package XEAF\Rack\ORM\Utils\Parsers
- *
- * @since 1.0.2
  */
 class FilterParser extends Parser {
 

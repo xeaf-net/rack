@@ -245,8 +245,6 @@ class EntityQuery extends DataModel {
      * @param int    $filterType Тип фильтрации
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
-     *
-     * @since 1.0.2
      */
     public function filterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
         $this->_model->getFilterModels()->clear();
@@ -262,8 +260,6 @@ class EntityQuery extends DataModel {
      * @param int    $filterType Тип фильтрации
      *
      * @return \XEAF\Rack\ORM\Core\EntityQuery
-     *
-     * @since 1.0.2
      */
     public function andFilterBy(string $alias, string $property, string $parameter = FilterModel::FILTER_PARAMETER, $filterType = FilterModel::FILTER_LIKE): EntityQuery {
         $filterModel = new FilterModel($alias, $property, $parameter, $filterType);

@@ -438,8 +438,6 @@ class Generator implements IGenerator {
      *
      * @return string
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
-     *
-     * @since 1.0.2
      */
     protected function generateFilterSQL(EntityQuery $query): string {
         $result       = [];
@@ -478,8 +476,6 @@ class Generator implements IGenerator {
      * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
      *
      * @return string
-     *
-     * @since 1.0.2
      */
     protected function processLikeFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters): string {
         $db = $this->_em->getDb();

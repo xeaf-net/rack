@@ -92,8 +92,6 @@ interface IFileSystem extends IFactoryObject {
      * @param string $filePath Путьк файлу
      *
      * @return bool
-     *
-     * @since 1.0.2
      */
     public function minimizedFileExists(string $filePath): bool;
 

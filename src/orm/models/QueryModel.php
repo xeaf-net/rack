@@ -188,8 +188,6 @@ class QueryModel extends DataModel {
      * Возвращает коллекцию моделей данных конструкции FILTER
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
-     *
-     * @since 1.0.2
      */
     public function getFilterModels(): ICollection {
         return $this->_filterModels;
@@ -201,8 +199,6 @@ class QueryModel extends DataModel {
      * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель конструкции WHERE
      *
      * @return void
-     *
-     * @since 1.0.2
      */
     public function addFilterModel(FilterModel $filterModel): void {
         $this->_whereModels->push($filterModel);

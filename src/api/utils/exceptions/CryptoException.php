@@ -19,8 +19,6 @@ use XEAF\Rack\API\Core\Exception;
  * Исключения при работе методов шифрования данных
  *
  * @package XEAF\Rack\API\Utils\Exceptions
- *
- * @since 1.0.4
  */
 class CryptoException extends Exception {
 
