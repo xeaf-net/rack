@@ -114,7 +114,15 @@ class Database implements IDatabase {
      * @inheritDoc
      */
     public function select(string $sql, array $params = [], int $count = 0, int $offset = 0): array {
-        return $this->_provider->select($sql, $params, $count, $offset);
+
+        print "<pre>";
+        print "select SQL: $sql ";
+        print_r($params);
+        print "Z1";
+        $result = $this->_provider->select($sql, $params, $count, $offset);
+        print "Z2";
+        die();
+        return $result;
     }
 
     /**

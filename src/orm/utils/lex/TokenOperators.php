@@ -70,9 +70,19 @@ class TokenOperators {
     public const BOOL_EQ = '==';
 
     /**
+     * Логическое Точно равно
+     */
+    public const BOOL_EQE = '===';
+
+    /**
      * Логическое Не равно
      */
     public const BOOL_NE = '!=';
+
+    /**
+     * Логическое Точно не равно
+     */
+    public const BOOL_ENE = '!==';
 
     /**
      * Логичесоке Больше

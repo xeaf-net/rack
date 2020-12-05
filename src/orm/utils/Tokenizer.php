@@ -165,7 +165,7 @@ class Tokenizer implements ITokenizer {
                     $text = TokenChars::EX . TokenChars::EQ;
                     $this->_charPos++;
                     // !==
-                    if ($this->_chars[$this->_charPos] == TokenChars::EQ) {
+                    if ($this->_chars[$this->_charPos + 1] == TokenChars::EQ) {
                         $text .= TokenChars::EQ;
                         $this->_charPos++;
                     }
@@ -176,7 +176,7 @@ class Tokenizer implements ITokenizer {
                     $text = TokenChars::EQ . TokenChars::EQ;
                     $this->_charPos++;
                     // ===
-                    if ($this->_chars[$this->_charPos] == TokenChars::EQ) {
+                    if ($this->_chars[$this->_charPos + 1] == TokenChars::EQ) {
                         $text .= TokenChars::EQ;
                         $this->_charPos++;
                     }
