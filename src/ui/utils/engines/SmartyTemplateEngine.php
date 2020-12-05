@@ -205,9 +205,9 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @throws \SmartyException
      */
     protected static function initSmartyPlugins(Smarty $smarty): void {
-        $smarty->registerPlugin("function", self::CONTENT_PLUGIN_NAME, self::class . "::printPageContent");
-        $smarty->registerPlugin("function", self::TAG_PLUGIN_NAME, self::class . "::printPluginContent");
-        $smarty->registerPlugin("function", self::TAG_PLUGIN_ALIAS, self::class . "::printPluginContent");
+        $smarty->registerPlugin('function', self::CONTENT_PLUGIN_NAME, self::class . '::printPageContent');
+        $smarty->registerPlugin('function', self::TAG_PLUGIN_NAME, self::class . '::printPluginContent');
+        $smarty->registerPlugin('function', self::TAG_PLUGIN_ALIAS, self::class . '::printPluginContent');
     }
 
     /**
@@ -219,12 +219,12 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @throws \SmartyException
      */
     protected static function initSmartyModifiers(Smarty $smarty): void {
-        $smarty->registerPlugin("modifier", "lang", self::class . "::printLangModifier");
-        $smarty->registerPlugin("modifier", "int", self::class . "::printIntModifier");
-        $smarty->registerPlugin("modifier", "number", self::class . "::printNumberModifier");
-        $smarty->registerPlugin("modifier", "date", self::class . "::printDateModifier");
-        $smarty->registerPlugin("modifier", "time", self::class . "::printTimeModifier");
-        $smarty->registerPlugin("modifier", "dt", self::class . "::printDateTimeModifier");
+        $smarty->registerPlugin('modifier', 'lang', self::class . '::printLangModifier');
+        $smarty->registerPlugin('modifier', 'int', self::class . '::printIntModifier');
+        $smarty->registerPlugin('modifier', 'number', self::class . '::printNumberModifier');
+        $smarty->registerPlugin('modifier', 'date', self::class . '::printDateModifier');
+        $smarty->registerPlugin('modifier', 'time', self::class . '::printTimeModifier');
+        $smarty->registerPlugin('modifier', 'dt', self::class . '::printDateTimeModifier');
     }
 
     /**

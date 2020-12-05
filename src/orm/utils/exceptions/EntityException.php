@@ -104,13 +104,13 @@ class EntityException extends Exception {
         $result = '';
         switch ($code) {
             case self::SYNTAX_ERROR:
-                $result = "Syntax error at position [%d].";
+                $result = 'Syntax error at position [%d].';
                 break;
             case self::UNPAIRED_BRACKET:
-                $result = "Unpaired bracket at position [%d].";
+                $result = 'Unpaired bracket at position [%d].';
                 break;
             case self::UNCLOSED_SINGLE_QUOTE:
-                $result = "Unclosed single quote at position [%d].";
+                $result = 'Unclosed single quote at position [%d].';
                 break;
             case self::INVALID_JOIN_ALIAS:
                 $result = 'Invalid JOIN alias [%s].';
@@ -143,7 +143,7 @@ class EntityException extends Exception {
                 $result = 'Could not reload entity.';
                 break;
             case self::UNSUPPORTED_FEATURE:
-                $result = "Unsupported feature.";
+                $result = 'Unsupported feature.';
                 break;
             case self::INTERNAL_ERROR:
                 $result = 'Internal ORM error.';

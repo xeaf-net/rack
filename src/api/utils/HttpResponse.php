@@ -222,7 +222,7 @@ class HttpResponse implements IHttpResponse {
         $cacheSecs = Calendar::SECONDS_PER_HOUR;
         $cacheTime = $formatter->formatCacheDateTime(time() + $cacheSecs);
         header("Expires: $cacheTime");
-        header("Pragma: cache");
+        header('Pragma: cache');
         header("Cache-Control: max-age=$cacheSecs");
     }
 
@@ -232,7 +232,7 @@ class HttpResponse implements IHttpResponse {
      * @return bool
      */
     protected function isIE(): bool {
-        return strpos($_SERVER ['HTTP_USER_AGENT'], "MSIE") !== false;
+        return strpos($_SERVER ['HTTP_USER_AGENT'], 'MSIE') !== false;
     }
 
     /**

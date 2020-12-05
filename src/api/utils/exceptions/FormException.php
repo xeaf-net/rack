@@ -12,6 +12,7 @@
  */
 namespace XEAF\Rack\API\Utils\Exceptions;
 
+use XEAF\Rack\API\Core\ResultException;
 use XEAF\Rack\API\Models\Results\FormResult;
 use XEAF\Rack\API\Utils\HttpResponse;
 use XEAF\Rack\API\Utils\Localization;
@@ -66,7 +67,7 @@ class FormException extends ResultException {
      * @param array       $args    Аргументы текста сообщения
      * @param string|null $tag     Тег
      */
-    public function __construct(int $status, string $message, array $args = [], string $tag = null) {
+    protected function __construct(int $status, string $message, array $args = [], string $tag = null) {
         $this->registerLanguageClasses();
         $result = new FormResult($status, $message, $args, $tag);
         parent::__construct($result);

@@ -135,8 +135,8 @@ class Parameters extends ActionArgs {
         $serverOrigin = $_SERVER['HTTP_ORIGIN'] ?? null;
         if ($configOrigin == self::ORIGIN_ALL || $configOrigin == $serverOrigin) {
             header("Access-Control-Allow-Origin: $serverOrigin");
-            header("Access-Control-Allow-Credentials: true");
-            header("Access-Control-Max-Age: " . self::ORIGIN_AGE);
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: ' . self::ORIGIN_AGE);
         }
     }
 
@@ -238,7 +238,7 @@ class Parameters extends ActionArgs {
     protected function processOptionsHeaders(): void {
         if ($this->methodName == self::OPTIONS_METHOD_NAME) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-                header("Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS");
+                header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
             }
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
                 header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");

@@ -39,6 +39,6 @@ class RussianLocale extends Locale {
         $this->_timeFormat         = 'H:i:s';
         $this->_dateTimeFormat     = 'd.m.Y H:i:s';
         $this->_decimalPoint       = ',';
-        $this->_thousandsSeparator = " ";
+        $this->_thousandsSeparator = ' ';
     }
 }

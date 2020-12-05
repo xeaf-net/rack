@@ -92,11 +92,11 @@ class FileSystem implements IFileSystem {
         if ($this->folderExists($folderPath)) {
             $objects = scandir($folderPath);
             foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($folderPath . "/" . $object) && !is_link($folderPath . "/" . $object)) {
-                        $this->deleteFolder($folderPath . "/" . $object);
+                if ($object != '.' && $object != '..') {
+                    if (is_dir($folderPath . '/' . $object) && !is_link($folderPath . '/' . $object)) {
+                        $this->deleteFolder($folderPath . '/' . $object);
                     } else {
-                        unlink($folderPath . "/" . $object);
+                        unlink($folderPath . '/' . $object);
                     }
                 }
             }
@@ -204,7 +204,7 @@ class FileSystem implements IFileSystem {
      */
     public function readFileChunks(string $filePath, int $chunkSize = self::CHUNK_SIZE): void {
         if (self::fileExists($filePath)) {
-            $handle = fopen($filePath, "rb");
+            $handle = fopen($filePath, 'rb');
             while (!feof($handle)) {
                 $chunk = fread($handle, $chunkSize);
                 print $chunk;

@@ -193,7 +193,7 @@ class Strings implements IStrings {
      */
     public function parseKeyValue(string $data, string $separator): array {
         $result = [];
-        parse_str(str_replace($separator, "&", $data), $result);
+        parse_str(str_replace($separator, '&', $data), $result);
         return $result;
     }
 
