@@ -36,6 +36,7 @@ use XEAF\Rack\ORM\Utils\Exceptions\EntityException;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 use XEAF\Rack\ORM\Utils\Lex\KeyWords;
+use XEAF\Rack\ORM\Utils\Lex\TokenChars;
 use XEAF\Rack\ORM\Utils\Lex\TokenTypes;
 
 /**
@@ -90,7 +91,7 @@ class Generator implements IGenerator {
         $condition       = $this->selectSQLConditions($query, $useFilter);
         $aliasSQL        = $this->generateAliasSQL($model->getAliasModels());
         $select          = !$distinct ? 'select' : 'select distinct';
-        print  $select . ' ' . $aliasSQL . ' ' . $condition;
+        // print "<pre>\n". $select . ' ' . $aliasSQL . ' ' . $condition;
         return $select . ' ' . $aliasSQL . ' ' . $condition;
     }
 
@@ -388,12 +389,12 @@ class Generator implements IGenerator {
                             $parameters->put($paramName, $paramModel);
                         }
                         $result[count($result) - 1] .= $paramName;
-//                        if ($upperNext) {
-//                            if ($dataType == DataTypes::DT_STRING) {
-//                                $result[count($result) - 1] .= 'upper(' . $result[count($result) - 1] . ')';
-//                            }
-//                            $upperNext = false;
-//                        }
+                        if ($upperNext) {
+                            if ($dataType == DataTypes::DT_STRING) {
+                                $result[count($result) - 1] .= 'upper(' . $result[count($result) - 1] . ')';
+                            }
+                            $upperNext = false;
+                        }
                         break;
                     case TokenTypes::ID_FALSE:
                         $result[] = '0';
@@ -412,11 +413,13 @@ class Generator implements IGenerator {
                         break;
                     default:
                         $text = $token->getText();
-                        if ($upperNext) {
-                            if (!$this->_strings->isNumeric($text) && !$this->_strings->isUUID($text)) {
-                                $text = "upper($text)";
+                        if ($text !== TokenChars::CL) {
+                            if ($upperNext) {
+                                if (!$this->_strings->isNumeric($text) && !$this->_strings->isUUID($text)) {
+                                    $text = "upper($text)";
+                                }
+                                $upperNext = false;
                             }
-                            $upperNext = false;
                         }
                         $result[] = $text;
                         break;
