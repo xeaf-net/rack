@@ -391,7 +391,7 @@ class Generator implements IGenerator {
                         $result[count($result) - 1] .= $paramName;
                         if ($upperNext) {
                             if ($dataType == DataTypes::DT_STRING) {
-                                $result[count($result) - 1] .= 'upper(' . $result[count($result) - 1] . ')';
+                                $result[count($result) - 1] = 'upper(' . $result[count($result) - 1] . ')';
                             }
                             $upperNext = false;
                         }
