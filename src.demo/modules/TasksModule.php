@@ -39,7 +39,7 @@ class TasksModule extends Module {
     public function processGet(): ?IActionResult {
         $em = DemoEM::getInstance();
 
-        $xql   = "tasks from tasks";
+        $xql   = "tasks from tasks where tasks.title === 'ПРОМЫВКА'";
         $query = $em->query($xql);
         $query->withEager('tasks', 'users');
 
