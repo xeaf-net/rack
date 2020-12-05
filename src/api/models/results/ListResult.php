@@ -29,9 +29,9 @@ class ListResult extends CachedResult {
 
     /**
      * Список объектов данных
-     * @var \XEAF\Rack\API\Core\Collection|null
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_list = null;
+    protected ?ICollection $_list = null;
 
     /**
      * Конструктор класса
@@ -48,20 +48,20 @@ class ListResult extends CachedResult {
     /**
      * Возвращает список объектов данных
      *
-     * @return \XEAF\Rack\API\Core\Collection|null
+     * @return \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    public function getList(): ?Collection {
+    public function getList(): ?ICollection {
         return $this->_list;
     }
 
     /**
      * Задает список объектов данных
      *
-     * @param \XEAF\Rack\API\Core\Collection|null $list Список объектов данных
+     * @param \XEAF\Rack\API\Interfaces\ICollection|null $list Список объектов данных
      *
      * @return void
      */
-    public function setList(?Collection $list): void {
+    public function setList(?ICollection $list): void {
         $this->_list = $list;
     }
 
