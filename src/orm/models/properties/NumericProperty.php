@@ -38,7 +38,7 @@ class NumericProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): float {
         return 0.0;
     }
 }

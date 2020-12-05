@@ -99,7 +99,7 @@ abstract class EntityManager {
      * @return \XEAF\Rack\ORM\Models\EntityModel
      * @throws \XEAF\Rack\ORM\Utils\Exceptions\EntityException
      */
-    public function __get(string $name) {
+    public function __get(string $name): ?EntityModel {
         $result = $this->getEntityModel($name);
         if (!$result) {
             throw EntityException::unknownEntity($name);

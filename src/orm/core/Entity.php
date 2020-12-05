@@ -538,7 +538,7 @@ abstract class Entity extends DataObject {
      *
      * @return \XEAF\Rack\ORM\Models\Properties\ManyToManyProperty
      */
-    protected static function manyToMany(string $entity, string $interEntity, array $links = [], array $interLinks = []) {
+    protected static function manyToMany(string $entity, string $interEntity, array $links = [], array $interLinks = []): ManyToManyProperty {
         return new ManyToManyProperty($entity, $interEntity, $links, $interLinks);
     }
 

@@ -705,10 +705,10 @@ class EntityQuery extends DataModel {
             $db = $this->_em->getDb();
             switch ($property->getDataType()) {
                 case DataTypes::DT_INTEGER:
-                    $result = $value === null ? null : (int)$value;
+                    $result = (int)$value;
                     break;
                 case DataTypes::DT_NUMERIC:
-                    $result = $value === null ? null : (float)$value;
+                    $result = (float)$value;
                     break;
                 case DataTypes::DT_BOOL:
                     $result = $db->sqlBool($value);

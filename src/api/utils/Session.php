@@ -233,7 +233,7 @@ class Session implements ISession {
     /**
      * @inheritDoc
      */
-    public function valid() {
+    public function valid(): bool {
         return $this->_provider->valid();
     }
 

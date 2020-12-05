@@ -151,7 +151,7 @@ class Cookie implements ICookies {
     /**
      * @inheritDoc
      */
-    public function valid() {
+    public function valid(): bool {
         return $this->_position !== null && $this->_position < count($_COOKIE);
     }
 

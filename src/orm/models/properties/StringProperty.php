@@ -12,7 +12,6 @@
  */
 namespace XEAF\Rack\ORM\Models\Properties;
 
-use XEAF\Rack\API\Utils\Strings;
 use XEAF\Rack\ORM\Utils\Lex\AccessTypes;
 use XEAF\Rack\ORM\Utils\Lex\DataTypes;
 
@@ -38,7 +37,7 @@ class StringProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
-        return Strings::EMPTY;
+    public function getDefaultValue(): ?string {
+        return null;
     }
 }

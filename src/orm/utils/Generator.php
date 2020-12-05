@@ -513,10 +513,8 @@ class Generator implements IGenerator {
      * @param \XEAF\Rack\API\Interfaces\IKeyValue       $parameters  Набор параметров запроса
      *
      * @return string
-     *
-     * @since 1.0.2
      */
-    protected function processBetweenFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters) {
+    protected function processBetweenFilterModel(string $field, int $dataType, FilterModel $filterModel, IKeyValue $parameters): string {
         $filterModel->setType($dataType);
         $minParameter = FilterModel::MIN_FILTER_PREFIX . $filterModel->getParameter();
         $maxParameter = FilterModel::MAX_FILTER_PREFIX . $filterModel->getParameter();

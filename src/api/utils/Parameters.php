@@ -146,7 +146,6 @@ class Parameters extends ActionArgs {
      * @return void
      */
     protected function processRequestHeaders(): void {
-        /** @noinspection PhpComposerExtensionStubsInspection */
         $this->_headers = getallheaders();
     }
 

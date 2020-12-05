@@ -123,6 +123,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function badRequest(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::BAD_REQUEST, $langVar, $args, $tag);
@@ -138,6 +139,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function unauthorized(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::UNAUTHORIZED, $langVar, $args, $tag);
@@ -153,6 +155,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function forbidden(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::FORBIDDEN, $langVar, $args, $tag);
@@ -168,6 +171,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function notFound(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::NOT_FOUND, $langVar, $args, $tag);
@@ -183,6 +187,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function conflict(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::CONFLICT, $langVar, $args, $tag);
@@ -198,6 +203,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function internalServerError(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::FATAL_ERROR, $langVar, $args, $tag);
@@ -213,6 +219,7 @@ class FormResult extends ErrorResult {
      * @return \XEAF\Rack\API\Interfaces\IActionResult
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
     public static function notImplemented(string $langVar = '', array $args = [], string $tag = null): IActionResult {
         return new FormResult(HttpResponse::NOT_IMPLEMENTED, $langVar, $args, $tag);

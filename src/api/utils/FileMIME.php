@@ -106,7 +106,7 @@ class FileMIME implements IFileMIME {
      * Список всех известных типов
      * @var array
      */
-    private $_allKnownTypes;
+    private array $_allKnownTypes;
 
     /**
      * Конструктор класса

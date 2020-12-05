@@ -147,7 +147,7 @@ class Storage implements IStorage {
     /**
      * @inheritDoc
      */
-    public function valid() {
+    public function valid(): bool {
         return $this->_provider->valid();
     }
 
