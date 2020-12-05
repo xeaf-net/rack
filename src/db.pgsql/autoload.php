@@ -10,7 +10,7 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\Db\PgQL;
+namespace XEAF\Rack\Db\PgSQL;
 
 use Throwable;
 use XEAF\Rack\API\Utils\Logger;
