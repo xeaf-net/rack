@@ -119,7 +119,7 @@ class KeyValue implements IKeyValue {
     /**
      * @inheritDoc
      */
-    public function next() {
+    public function next(): void {
         if ($this->_position !== null) {
             $this->_position++;
         }
@@ -135,14 +135,14 @@ class KeyValue implements IKeyValue {
     /**
      * @inheritDoc
      */
-    public function valid() {
+    public function valid(): bool {
         return $this->_position !== null && $this->_position < count($this->_values);
     }
 
     /**
      * @inheritDoc
      */
-    public function rewind() {
+    public function rewind(): void {
         $this->_positionKeys = $this->keys();
         $this->_position     = count($this->_values) > 0 ? 0 : null;
     }

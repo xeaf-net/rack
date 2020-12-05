@@ -253,7 +253,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printLangModifier(string $name = null, $locale = null) {
+    public static function printLangModifier(string $name = null, $locale = null): string {
         $l10n = Localization::getInstance();
         return $l10n->getLanguageVar($name, $locale);
     }
@@ -266,7 +266,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printIntModifier(string $text = null, $locale = null) {
+    public static function printIntModifier(string $text = null, $locale = null): string {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
@@ -284,7 +284,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printNumberModifier($text = null, $dec = 0, $locale = null) {
+    public static function printNumberModifier($text = null, $dec = 0, $locale = null): string {
         $fmt = Formatter::getInstance();
         if (is_numeric($text) && is_numeric($dec)) {
             return $fmt->formatNumeric($text, $dec, $locale);
@@ -300,7 +300,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printDateModifier(string $text = null, $locale = null) {
+    public static function printDateModifier(string $text = null, $locale = null): string {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
@@ -317,7 +317,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printTimeModifier(string $text = null, $locale = null) {
+    public static function printTimeModifier(string $text = null, $locale = null): string {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
@@ -334,7 +334,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      *
      * @return string
      */
-    public static function printDateTimeModifier(string $text = null, $locale = null) {
+    public static function printDateTimeModifier(string $text = null, $locale = null): string {
         $str = Strings::getInstance();
         $fmt = Formatter::getInstance();
         if ($str->isInteger($text)) {
@@ -352,7 +352,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @return string
      * @noinspection PhpUnusedParameterInspection
      */
-    public static function printPageContent($params, $smarty) {
+    public static function printPageContent($params, $smarty): ?string {
         return self::$_currentPageContent;
     }
 
@@ -366,7 +366,7 @@ class SmartyTemplateEngine implements ITemplateEngineProvider {
      * @throws \XEAF\Rack\UI\Utils\Exceptions\TemplateException
      * @noinspection PhpUnusedParameterInspection
      */
-    public static function printPluginContent($params, $smarty) {
+    public static function printPluginContent($params, $smarty): string {
         $result     = '';
         $pluginName = (string)$params['name'] ?? null;
         if (!empty($pluginName)) {

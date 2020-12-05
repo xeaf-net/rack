@@ -35,7 +35,7 @@ class ArrayProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): array {
         return [];
     }
 }
