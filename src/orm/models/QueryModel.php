@@ -43,51 +43,51 @@ class QueryModel extends DataModel {
 
     /**
      * Псевдонимы
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_aliasModels = null;
+    protected ?ICollection $_aliasModels = null;
 
     /**
      * Сущности конструкции FROM
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_fromModels = null;
+    protected ?ICollection $_fromModels = null;
 
     /**
      * Сущности конструкции JOIN
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_joinModels = null;
+    protected ?ICollection $_joinModels = null;
 
     /**
      * Сущности конструкции WHERE
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_whereModels = null;
+    protected ?ICollection $_whereModels = null;
 
     /**
      * Сущности конструкции FILTER
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_filterModels = null;
+    protected ?ICollection $_filterModels = null;
 
     /**
      * Сущности конструкции ORDER
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_orderModels = null;
+    protected ?ICollection $_orderModels = null;
 
     /**
      * Модели разрешения связей
-     * @var \XEAF\Rack\API\Interfaces\ICollection
+     * @var \XEAF\Rack\API\Interfaces\ICollection|null
      */
-    protected $_withModels = null;
+    protected ?ICollection $_withModels = null;
 
     /**
      * Определения параметров
-     * @var \XEAF\Rack\API\Interfaces\IKeyValue
+     * @var \XEAF\Rack\API\Interfaces\IKeyValue|null
      */
-    protected $_parameters = null;
+    protected ?IKeyValue $_parameters = null;
 
     /**
      * Конструктор класса
@@ -188,8 +188,6 @@ class QueryModel extends DataModel {
      * Возвращает коллекцию моделей данных конструкции FILTER
      *
      * @return \XEAF\Rack\API\Interfaces\ICollection
-     *
-     * @since 1.0.2
      */
     public function getFilterModels(): ICollection {
         return $this->_filterModels;
@@ -201,8 +199,6 @@ class QueryModel extends DataModel {
      * @param \XEAF\Rack\ORM\Models\Parsers\FilterModel $filterModel Модель конструкции WHERE
      *
      * @return void
-     *
-     * @since 1.0.2
      */
     public function addFilterModel(FilterModel $filterModel): void {
         $this->_whereModels->push($filterModel);

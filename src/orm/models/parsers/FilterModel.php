@@ -25,8 +25,6 @@ use XEAF\Rack\ORM\Utils\Lex\DataTypes;
  * @property-read int    $filterType Тип фильтрации
  *
  * @package XEAF\Rack\ORM\Models\Parsers
- *
- * @since   1.0.2
  */
 class FilterModel extends DataModel {
 

@@ -37,7 +37,7 @@ class DateProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): int {
         $calendar = Calendar::getInstance();
         return $calendar->today();
     }

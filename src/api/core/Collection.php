@@ -265,14 +265,14 @@ class Collection implements ICollection {
     /**
      * @inheritDoc
      */
-    public function valid() {
+    public function valid(): bool {
         return $this->_position !== null && $this->_position < $this->count();
     }
 
     /**
      * @inheritDoc
      */
-    public function rewind() {
+    public function rewind(): void {
         $this->_position = $this->count() > 0 ? 0 : null;
     }
 }

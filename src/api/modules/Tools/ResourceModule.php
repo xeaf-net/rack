@@ -269,7 +269,7 @@ class ResourceModule extends Module {
      */
     protected function sendResourceFile(string $fileName): IActionResult {
         $result   = null;
-        $fileMIME = FileMIME::getInsance();
+        $fileMIME = FileMIME::getInstance();
         $fileType = $this->_fs->fileNameExt($fileName);
         if ($fileMIME->isExtensionResource($fileType)) {
             if ($fileType != self::EXTERNAL_LANG_TYPE) {

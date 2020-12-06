@@ -163,8 +163,6 @@ interface ICalendar extends IFactoryObject {
     /**
      * Возвращает нормализованное представления даты
      *
-     * @since 1.0.2
-     *
      * @param int|null $date Дата
      *
      * @return string
@@ -173,8 +171,6 @@ interface ICalendar extends IFactoryObject {
 
     /**
      * Возвращает нормализованное представления даты и времени
-     *
-     * @since 1.0.2
      *
      * @param int|null $dateTime Дата и время
      *

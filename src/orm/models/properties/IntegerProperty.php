@@ -37,7 +37,7 @@ class IntegerProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): int {
         return 0;
     }
 }

@@ -79,7 +79,7 @@ class ValidatorException extends FormException {
      * @param array       $args    Аргументы текста сообщения
      * @param string|null $tag     Тег
      */
-    public function __construct(int $status, string $message, array $args = [], string $tag = null) {
+    protected function __construct(int $status, string $message, array $args = [], string $tag = null) {
         parent::__construct($status, $message, $args, $tag);
     }
 

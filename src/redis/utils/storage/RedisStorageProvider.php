@@ -110,10 +110,11 @@ class RedisStorageProvider extends KeyValue implements IStorageProvider {
      * @param string      $key          Ключ
      * @param string|null $defaultValue Значение по умолчанию
      *
-     * @return mixed
+     * @return mixed|null
      * @throws \XEAF\Rack\Redis\Utils\Exceptions\RedisException
      *
      * @noinspection PhpMissingParentCallCommonInspection
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function get(string $key, $defaultValue = null) {
         try {

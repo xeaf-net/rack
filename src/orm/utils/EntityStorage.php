@@ -14,6 +14,7 @@ namespace XEAF\Rack\ORM\Utils;
 
 use XEAF\Rack\API\App\Factory;
 use XEAF\Rack\API\Core\KeyValue;
+use XEAF\Rack\API\Interfaces\IKeyValue;
 use XEAF\Rack\ORM\Interfaces\IEntityStorage;
 use XEAF\Rack\ORM\Models\EntityModel;
 
@@ -28,25 +29,25 @@ class EntityStorage implements IEntityStorage {
      * Хранилище моделей сущностей
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_models;
+    private IKeyValue $_models;
 
     /**
      * Хранилище SQL команд вставки записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_insertSQL;
+    private IKeyValue $_insertSQL;
 
     /**
      * Хранилище SQL команд изменения записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_updateSQL;
+    private IKeyValue $_updateSQL;
 
     /**
      * Хранилище SQL команд удаления записи
      * @var \XEAF\Rack\API\Interfaces\IKeyValue
      */
-    private $_deleteSQL;
+    private IKeyValue $_deleteSQL;
 
     /**
      * @inheritDoc

@@ -23,8 +23,6 @@ abstract class DataModel extends DataObject {
 
     /**
      * @inheritDoc
-     *
-     * @since 1.0.3
      */
     public function __construct(array $data = []) {
         $values     = $data;
@@ -42,7 +40,7 @@ abstract class DataModel extends DataObject {
      *
      * @noinspection PhpMissingParentCallCommonInspection
      */
-    public function undefinedSetter(string $name, $value): void {
+    protected function undefinedSetter(string $name, $value): void {
         throw CoreException::propertyIsNotWritable($this->getClassName(), $name);
     }
 }

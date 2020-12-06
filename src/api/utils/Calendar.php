@@ -25,12 +25,12 @@ class Calendar implements ICalendar {
     /**
      * Идентификатор времени по Гринвичу
      */
-    public const GMT = "GMT";
+    public const GMT = 'GMT';
 
     /**
      * Идентификатор всемирного координированного времени
      */
-    public const UTC = "UTC";
+    public const UTC = 'UTC';
 
     /**
      * Количество секунд в часе

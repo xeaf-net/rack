@@ -37,7 +37,7 @@ class UUIDProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): string {
         $crypto = Crypto::getInstance();
         return $crypto->generateUUIDv4();
     }

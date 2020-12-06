@@ -106,8 +106,6 @@ interface IFileMIME extends IFactoryObject {
      * @param string $fileType Тип файла
      *
      * @return bool
-     *
-     * @since 1.0.2
      */
     public function isExtensionResource(string $fileType): bool;
 

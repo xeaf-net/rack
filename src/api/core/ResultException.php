@@ -10,15 +10,14 @@
  *
  * @license   Apache 2.0
  */
-namespace XEAF\Rack\API\Utils\Exceptions;
+namespace XEAF\Rack\API\Core;
 
-use XEAF\Rack\API\Core\Exception;
 use XEAF\Rack\API\Interfaces\IActionResult;
 
 /**
  * Исключения с результатом исполнения действия
  *
- * @package  XEAF\Rack\API\Utils\Exceptions
+ * @package  XEAF\Rack\API\Core
  */
 class ResultException extends Exception {
 
@@ -38,7 +37,7 @@ class ResultException extends Exception {
      *
      * @param IActionResult $result Результат исполнения приложения
      */
-    public function __construct(IActionResult $result) {
+    protected function __construct(IActionResult $result) {
         parent::__construct(self::ERROR_CODE);
         $this->_result = $result;
     }

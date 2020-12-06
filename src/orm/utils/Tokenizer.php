@@ -33,7 +33,7 @@ class Tokenizer implements ITokenizer {
      * Список лексем
      * @var \XEAF\Rack\API\Interfaces\ICollection
      */
-    private $_tokens;
+    private ICollection $_tokens;
 
     /**
      * Символы разобранного текста XQL запроса

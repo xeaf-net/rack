@@ -18,7 +18,6 @@ use XEAF\Rack\API\Models\Results\FileResult;
 use XEAF\Rack\API\Models\Results\StatusResult;
 use XEAF\Rack\API\Modules\Tools\ResourceModule;
 use XEAF\Rack\API\Utils\Assets;
-use XEAF\Rack\API\Utils\Exceptions\ResultException;
 use XEAF\Rack\API\Utils\FileMIME;
 use XEAF\Rack\API\Utils\FileSystem;
 use XEAF\Rack\API\Utils\Parameters;
@@ -122,7 +121,7 @@ class Module extends Extension implements IModule {
                     $fileName = $fs->changeFileNameExt($moduleFile, $type);
                     break;
                 default:
-                    $mime     = FileMIME::getInsance();
+                    $mime     = FileMIME::getInstance();
                     $path     = $this->args()->getObjectPath();
                     $dir      = $fs->fileDir($moduleFile);
                     $fileName = $dir . '/' . $type;

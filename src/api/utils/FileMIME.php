@@ -1,5 +1,4 @@
-<?php /** @noinspection SpellCheckingInspection */
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 /**
  * FileMIME.php
@@ -106,7 +105,7 @@ class FileMIME implements IFileMIME {
      * Список всех известных типов
      * @var array
      */
-    private $_allKnownTypes;
+    private array $_allKnownTypes;
 
     /**
      * Конструктор класса
@@ -257,7 +256,7 @@ class FileMIME implements IFileMIME {
      *
      * @return \XEAF\Rack\API\Interfaces\IFileMIME
      */
-    public static function getInsance(): IFileMIME {
+    public static function getInstance(): IFileMIME {
         $result = Factory::getFactoryObject(self::class);
         assert($result instanceof IFileMIME);
         return $result;

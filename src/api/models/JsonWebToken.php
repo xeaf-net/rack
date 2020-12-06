@@ -30,8 +30,6 @@ use XEAF\Rack\API\Utils\Crypto;
  * @property array  $payload Массив данных полезной нагрузки
  *
  * @package  XEAF\Rack\API\Models
- *
- * @since 1.0.4
  */
 class JsonWebToken extends DataModel {
 

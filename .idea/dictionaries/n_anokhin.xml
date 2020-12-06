@@ -4,14 +4,21 @@
       <w>algo</w>
       <w>browserify</w>
       <w>dbindex</w>
+      <w>fontobject</w>
       <w>insertable</w>
       <w>mbstring</w>
+      <w>msvideo</w>
+      <w>msword</w>
+      <w>officedocument</w>
+      <w>officedocumentwordprocessingmldocument</w>
+      <w>openxmlformats</w>
       <w>outform</w>
       <w>pgsql</w>
       <w>phpmailer</w>
       <w>postgre</w>
       <w>pubout</w>
       <w>smtp</w>
+      <w>spreadsheetml</w>
       <w>subquery</w>
       <w>tsify</w>
       <w>unpop</w>
@@ -20,6 +27,7 @@
       <w>unserialize</w>
       <w>updatable</w>
       <w>uuidnn</w>
+      <w>vndopenxmlformats</w>
       <w>webmanifest</w>
     </words>
   </dictionary>

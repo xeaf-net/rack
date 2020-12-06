@@ -36,7 +36,7 @@ class BoolProperty extends PropertyModel {
     /**
      * @inheritDoc
      */
-    public function getDefaultValue() {
+    public function getDefaultValue(): bool {
         return false;
     }
 }
