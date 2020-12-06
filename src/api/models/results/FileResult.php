@@ -131,7 +131,7 @@ class FileResult extends CachedResult {
      */
     public function getMimeType(): string {
         if (!$this->_mimeType) {
-            $fm              = FileMIME::getInsance();
+            $fm              = FileMIME::getInstance();
             $fs              = FileSystem::getInstance();
             $fileType        = $fs->fileNameExt($this->_filePath);
             $this->_mimeType = $fm->getMIME($fileType);

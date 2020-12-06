@@ -187,7 +187,7 @@ class HttpResponse implements IHttpResponse {
      * @inheritDoc
      */
     public function contentJSON(): void {
-        $mimeType = FileMIME::getInsance()->getMIME('json');
+        $mimeType = FileMIME::getInstance()->getMIME('json');
         $this->contentType($mimeType, self::UTF8);
     }
 

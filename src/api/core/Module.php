@@ -121,7 +121,7 @@ class Module extends Extension implements IModule {
                     $fileName = $fs->changeFileNameExt($moduleFile, $type);
                     break;
                 default:
-                    $mime     = FileMIME::getInsance();
+                    $mime     = FileMIME::getInstance();
                     $path     = $this->args()->getObjectPath();
                     $dir      = $fs->fileDir($moduleFile);
                     $fileName = $dir . '/' . $type;

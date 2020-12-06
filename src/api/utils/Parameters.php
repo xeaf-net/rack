@@ -217,7 +217,7 @@ class Parameters extends ActionArgs {
         if (count($_FILES) > 0) {
             return;
         }
-        $fileMIME   = FileMIME::getInsance();
+        $fileMIME   = FileMIME::getInstance();
         $fileSystem = FileSystem::getInstance();
         if ($fileMIME->isSupportedMIME($mime)) {
             $fileName = $this->get(self::FILE_PARAMETER_NAME, $this->getHeader(self::HEADER_FILE_NAME));
