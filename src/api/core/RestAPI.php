@@ -103,7 +103,8 @@ class RestAPI implements IRestAPI {
     protected function post(string $url, array $args = [], array $postArgs = []) {
         $api      = curl_init();
         $apiURL   = $this->buildURL($url, $args);
-        $json     = $this->_serializer->jsonArrayEncode($postArgs);
+        // $json     = $this->_serializer->jsonArrayEncode($postArgs);
+        $json     = http_build_query($postArgs);
         $header   = $this->_headers;
         $header[] = 'Content-Type: ' . FileMIME::APPLICATION_JSON;
         $header[] = 'Content-Length: ' . strlen($json);
