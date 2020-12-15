@@ -98,7 +98,6 @@ class RestAPI implements IRestAPI {
      * @param array  $postArgs Агрументы метода POST
      *
      * @return string|bool
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
     protected function post(string $url, array $args = [], array $postArgs = []) {
         $api      = curl_init();
@@ -129,13 +128,13 @@ class RestAPI implements IRestAPI {
      * @param array  $postArgs Агрументы метода POST
      *
      * @return string|bool
-     * @throws \XEAF\Rack\API\Utils\Exceptions\SerializerException
      */
     protected function delete(string $url, array $args = [], array $postArgs = []) {
         $api      = curl_init();
         $apiURL   = $this->buildURL($url, $args);
         $header   = $this->_headers;
-        $json     = $this->_serializer->jsonArrayEncode($postArgs);
+//        $json     = $this->_serializer->jsonArrayEncode($postArgs);
+        $json     = http_build_query($postArgs);
         $header[] = 'Content-Type: ' . FileMIME::APPLICATION_JSON;
         $header[] = 'Content-Length: ' . strlen($json);
         curl_setopt_array($api, [
