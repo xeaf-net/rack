@@ -222,6 +222,7 @@ class FileResult extends CachedResult {
         } elseif ($this->getUseCache()) {
             $headers->fileCacheHeader();
         }
+        $headers->contentLength($fileSystem->fileSize($this->getFilePath()));
         if (!$this->_headersOnly) {
             $fileSystem->readFileChunks($this->getFilePath());
         }

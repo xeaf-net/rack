@@ -48,6 +48,15 @@ interface IHttpResponse extends IFactoryObject {
     public function contentType(string $mimeType, ?string $charset = ''): void;
 
     /**
+     * Добавляет заголовок для длины отправляемого контента
+     *
+     * @param int $length Длина отправляемого контента
+     *
+     * @return void
+     */
+    public function contentLength(int $length): void;
+
+    /**
      * Добавляет заголовок отправки данных в формате JSON
      *
      * @return void
