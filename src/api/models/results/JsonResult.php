@@ -78,7 +78,9 @@ class JsonResult extends CachedResult {
         if ($this->getUseCache()) {
             $headers->fileCacheHeader();
         }
-        print $serializer->jsonArrayEncode($this->_data);
+        if (!$this->_headersOnly) {
+            print $serializer->jsonArrayEncode($this->_data);
+        }
     }
 
     /**

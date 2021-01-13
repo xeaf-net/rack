@@ -95,7 +95,9 @@ class FormResult extends ErrorResult {
             unset($result['tag']);
         }
 
-        print Serializer::getInstance()->jsonArrayEncode($result);
+        if (!$this->_headersOnly) {
+            print Serializer::getInstance()->jsonArrayEncode($result);
+        }
     }
 
     /**

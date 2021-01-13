@@ -54,7 +54,9 @@ class BoolResult extends CachedResult {
         if ($this->getUseCache()) {
             $headers->fileCacheHeader();
         }
-        print $serializer->jsonArrayEncode($this->prepareDataResult($this->_value));
+        if (!$this->_headersOnly) {
+            print $serializer->jsonArrayEncode($this->prepareDataResult($this->_value));
+        }
     }
 
     /**
