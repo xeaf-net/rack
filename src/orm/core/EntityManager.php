@@ -394,8 +394,8 @@ abstract class EntityManager {
             assert($property instanceof PropertyModel);
             if ($property->getIsInsertable()) {
                 $parameters[$name] = $this->parameterValue($name, $entity);
-            } elseif ($property->getPrimaryKey() && $property->getDataType() == DataTypes::DT_INTEGER) {
-                $autoIncrement = $name; // Только если PK && INT
+            } elseif ($property->getAutoIncrement()) {
+                $autoIncrement = $name;
             }
         }
         $this->_db->execute($sql, $parameters);

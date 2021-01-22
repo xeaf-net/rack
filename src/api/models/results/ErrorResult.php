@@ -85,7 +85,9 @@ class ErrorResult extends StatusResult {
             unset($result['message']);
         }
 
-        print Serializer::getInstance()->jsonArrayEncode($result);
+        if (!$this->_headersOnly) {
+            print Serializer::getInstance()->jsonArrayEncode($result);
+        }
     }
 
     /**

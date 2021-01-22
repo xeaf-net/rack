@@ -186,6 +186,13 @@ class HttpResponse implements IHttpResponse {
     /**
      * @inheritDoc
      */
+    public function contentLength(int $length): void {
+        header('Content-Length: ' . $length);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function contentJSON(): void {
         $mimeType = FileMIME::getInstance()->getMIME('json');
         $this->contentType($mimeType, self::UTF8);

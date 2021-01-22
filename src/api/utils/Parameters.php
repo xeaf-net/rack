@@ -33,6 +33,11 @@ class Parameters extends ActionArgs {
     public const GET_METHOD_NAME = 'GET';
 
     /**
+     * Идентификатор HTTP метода HEAD
+     */
+    public const HEAD_METHOD_NAME = 'HEAD';
+
+    /**
      * Идентификатор HTTP метода POST
      */
 
@@ -90,6 +95,7 @@ class Parameters extends ActionArgs {
         $this->processRequestHeaders();
         switch ($this->_methodName) {
             case self::GET_METHOD_NAME:
+            case self::HEAD_METHOD_NAME:
             case self::DELETE_METHOD_NAME:
                 $this->processRequestParameters($_GET);
                 break;
@@ -238,7 +244,7 @@ class Parameters extends ActionArgs {
     protected function processOptionsHeaders(): void {
         if ($this->methodName == self::OPTIONS_METHOD_NAME) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-                header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
+                header('Access-Control-Allow-Methods: GET, HEAD, POST, PATCH, DELETE, OPTIONS');
             }
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
                 header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");

@@ -117,6 +117,8 @@ class TableResult extends ListResult {
         $data = $this->prepareDataResult($data);
         $headers->responseCode($this->getStatusCode());
         $headers->contentJSON();
-        print $serializer->jsonArrayEncode($data);
+        if (!$this->_headersOnly) {
+            print $serializer->jsonArrayEncode($data);
+        }
     }
 }

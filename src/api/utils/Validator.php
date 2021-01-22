@@ -41,7 +41,7 @@ class Validator implements IValidator {
      */
     public function checkNotEmpty($data, string $tag = null): void {
         $test = (string)$data;
-        if (!$test) {
+        if ($this->_strings->isEmpty($test)) {
             throw ValidatorException::emptyValue($tag);
         }
     }
@@ -72,11 +72,11 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
-    public function checkIntegerRange(int $data, int $min = null, int $max = null, string $tag=null): void {
-        if($min !== null && $data < $min) {
+    public function checkIntegerRange(int $data, int $min = null, int $max = null, string $tag = null): void {
+        if ($min !== null && $data < $min) {
             throw ValidatorException::invalidRange($tag);
         }
-        if($max !== null && $data > $max) {
+        if ($max !== null && $data > $max) {
             throw ValidatorException::invalidRange($tag);
         }
     }
@@ -93,11 +93,11 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
-    public function checkNumericRange(float $data, float $min = null, float $max = null, string $tag=null): void {
-        if($min !== null && $data < $min) {
+    public function checkNumericRange(float $data, float $min = null, float $max = null, string $tag = null): void {
+        if ($min !== null && $data < $min) {
             throw ValidatorException::invalidRange($tag);
         }
-        if($max !== null && $data > $max) {
+        if ($max !== null && $data > $max) {
             throw ValidatorException::invalidRange($tag);
         }
     }
