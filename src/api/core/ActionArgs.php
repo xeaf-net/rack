@@ -315,7 +315,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getEmailNN(string $name, string $defaultValue = null, string $tag = null): string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
-        $this->_validator->checkEmail($value, $tag);
+        $this->_validator->checkEmail($value,  $tag ? $tag : $name);
         return $value;
     }
 
@@ -325,7 +325,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getPhone(string $name, string $defaultValue = null, string $tag = null): ?string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
         if ($value !== null && $value !== '') {
-            $this->_validator->checkPhone($value, $tag);
+            $this->_validator->checkPhone($value,  $tag ? $tag : $name);
         }
         return $value;
     }
