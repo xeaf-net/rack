@@ -315,7 +315,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getEmailNN(string $name, string $defaultValue = null, string $tag = null): string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
-        $this->_validator->checkEmail($value,  $tag ? $tag : $name);
+        $this->_validator->checkEmail($value, $tag ? $tag : $name);
         return $value;
     }
 
@@ -325,7 +325,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getPhone(string $name, string $defaultValue = null, string $tag = null): ?string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
         if ($value !== null && $value !== '') {
-            $this->_validator->checkPhone($value,  $tag ? $tag : $name);
+            $this->_validator->checkPhone($value, $tag ? $tag : $name);
         }
         return $value;
     }
@@ -432,6 +432,23 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
             $value = (string)$value;
         }
         return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUUIDArray(string $name, string $element, string $defaultValue = null, string $tag = null): array {
+        $result = [];
+        $data   = $this->getArray($name);
+        foreach ($data as $item) {
+            $value = $item[$element] ?? $defaultValue;
+            if ($value !== null) {
+                $this->_validator->checkUUID($value, $tag ? $tag : $name);
+                $value    = (string)$value;
+                $result[] = $value;
+            }
+        }
+        return $result;
     }
 
     /**

@@ -376,6 +376,18 @@ interface IActionArgs extends IFactoryObject {
     public function getArrayUUID(string $name, string $element, string $defaultValue = null, string $tag = null): ?string;
 
     /**
+     * Возвращает массив идентификаторов UUID
+     *
+     * @param string      $name         Имя параметра
+     * @param string      $element      Имя элемента
+     * @param string|null $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return array
+     */
+    public function getUUIDArray(string $name, string $element, string $defaultValue = null, string $tag = null): array;
+
+    /**
      * Возвращает не пустое значение идентификатора из массива
      *
      * @param string      $name         Имя параметра
