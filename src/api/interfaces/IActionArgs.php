@@ -311,6 +311,19 @@ interface IActionArgs extends IFactoryObject {
     public function getArrayStringNN(string $name, string $element, string $defaultValue = null, string $tag = null): string;
 
     /**
+     * Возвращает значение логического элемента из массива
+     *
+     * @param string      $name         Имя параметра массива
+     * @param string      $element      Имя элемента
+     * @param bool        $defaultValue Значение по умолчанию
+     * @param string|null $tag          Тег
+     *
+     * @return bool
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function getArrayBool(string $name, string $element, bool $defaultValue = false, string $tag = null): bool;
+
+    /**
      * Возвращает значение целочисленного элемента из массива
      *
      * @param string      $name         Имя параметра массива
@@ -384,6 +397,7 @@ interface IActionArgs extends IFactoryObject {
      * @param string|null $tag          Тег
      *
      * @return array
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
      */
     public function getUUIDArray(string $name, string $element, string $defaultValue = null, string $tag = null): array;
 

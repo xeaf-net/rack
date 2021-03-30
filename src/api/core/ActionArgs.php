@@ -376,6 +376,20 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
+    public function getArrayBool(string $name, string $element, bool $defaultValue = false, string $tag = null): bool {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? null;
+        if ($value !== null) {
+            $this->_validator->checkIsBoolean($value, $tag ? $tag : $name);
+        } else {
+            $value = $defaultValue;
+        }
+        return (bool)$value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getArrayInteger(string $name, string $element, int $defaultValue = null, string $tag = null): ?int {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;

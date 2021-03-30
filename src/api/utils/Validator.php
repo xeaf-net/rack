@@ -63,6 +63,15 @@ class Validator implements IValidator {
     /**
      * @inheritDoc
      */
+    public function checkIsBoolean($data, string $tag = null): void {
+        if (!$this->_strings->isBoolean((string)$data)) {
+            throw ValidatorException::invalidIntegerFormat($tag);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function checkIsInteger($data, string $tag = null): void {
         if (!$this->_strings->isInteger((string)$data)) {
             throw ValidatorException::invalidIntegerFormat($tag);

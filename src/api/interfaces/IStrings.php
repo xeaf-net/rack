@@ -77,6 +77,15 @@ interface IStrings extends IFactoryObject {
     public function stringToDateTime(?string $buf, int $onError = null): ?int;
 
     /**
+     * Проверяет содержит ли переданная строка логическое значение
+     *
+     * @param string|null $buf Проверяемая строка
+     *
+     * @return bool
+     */
+    public function isBoolean(?string $buf): bool;
+
+    /**
      * Проверяет содержит ли переданная строка целое число
      *
      * @param string|null $buf Проверяемая строка
