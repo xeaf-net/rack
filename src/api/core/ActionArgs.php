@@ -369,7 +369,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayStringNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
         return $value;
     }
 
@@ -380,7 +380,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? null;
         if ($value !== null) {
-            $this->_validator->checkIsBoolean($value, $tag ? $tag : $name);
+            $this->_validator->checkIsBoolean($value, $tag ? $tag : "$name.$element");
         } else {
             $value = $defaultValue;
         }
@@ -394,7 +394,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+            $this->_validator->checkIsInteger($value, $tag ? $tag : "$name.$element");
             $value = (int)$value;
         }
         return $value;
@@ -406,8 +406,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayIntegerNN(string $name, string $element, int $defaultValue = null, string $tag = null): int {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkIsInteger($value, $tag ? $tag : "$name.$element");
         return (int)$value;
     }
 
@@ -418,7 +418,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+            $this->_validator->checkIsNumeric($value, $tag ? $tag : "$name.$element");
             $value = (float)$value;
         }
         return $value;
@@ -430,8 +430,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayNumericNN(string $name, string $element, float $defaultValue = null, string $tag = null): float {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkIsNumeric($value, $tag ? $tag : "$name.$element");
         return (float)$value;
     }
 
@@ -442,7 +442,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkUUID($value, $tag ? $tag : $name);
+            $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
             $value = (string)$value;
         }
         return $value;
@@ -457,7 +457,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         foreach ($data as $item) {
             $value = $item[$element] ?? $defaultValue;
             if ($value !== null) {
-                $this->_validator->checkUUID($value, $tag ? $tag : $name);
+                $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
                 $value    = (string)$value;
                 $result[] = $value;
             }
@@ -471,8 +471,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayUUIDNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
         $data  = $this->getArray($name);
         $value = (string)($data[$element] ?? $defaultValue);
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkUUID($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
         return $value;
     }
 
