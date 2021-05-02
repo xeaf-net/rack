@@ -111,6 +111,19 @@ class Resolver implements IResolver {
         }
         switch ($withModel->getRelation()->getType()) {
             case RelationTypes::ONE_TO_MANY:
+                $links = $withModel->getRelation()->links;
+                $keys  = $entity->getModel()->getPrimaryKeyNames();
+                foreach ($links as $num => $link) {
+                    $param = "__$link";
+                    if (in_array($param, $params)) {
+                        $prop = $keys[$num];
+                        if ($entity->getModel()->propertyExists($prop)) {
+                            $query->parameter($param, $entity->{$prop});
+                        }
+                    }
+                }
+                $data = $query->get($withModel->getParameters());
+                break;
             case RelationTypes::MANY_TO_MANY:
                 $data = $query->get($withModel->getParameters());
                 break;
