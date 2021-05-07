@@ -47,6 +47,11 @@ class ValidatorException extends FormException {
     private const INVALID_STRING_LENGTH = 'ValidatorException.INVALID_STRING_LENGTH';
 
     /**
+     * Некорректный формат логического выражения
+     */
+    private const INVALID_BOOLEAN_FORMAT = 'ValidatorException.INVALID_BOOLEAN_FORMAT';
+
+    /**
      * Некорректный формат целого числа
      */
     private const INVALID_INTEGER_FORMAT = 'ValidatorException.INVALID_INTEGER_FORMAT';
@@ -136,6 +141,17 @@ class ValidatorException extends FormException {
      */
     public static function invalidStringLength(string $tag = null): self {
         return new self(HttpResponse::BAD_REQUEST, self::INVALID_STRING_LENGTH, [], $tag);
+    }
+
+    /**
+     * Некорректный формат логического выражения
+     *
+     * @param string|null $tag Тег
+     *
+     * @return static
+     */
+    public static function invalidBooleanFormat(string $tag = null): self {
+        return new self(HttpResponse::BAD_REQUEST, self::INVALID_BOOLEAN_FORMAT, [], $tag);
     }
 
     /**

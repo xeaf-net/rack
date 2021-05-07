@@ -269,7 +269,7 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
     }
 
     /**
-     * Строит массив дполнительных параметров подключений
+     * Строит массив дополнительных параметров подключений
      *
      * @return array
      */
@@ -304,10 +304,9 @@ abstract class DatabaseProvider extends StdObject implements IDatabaseProvider {
      * @return array
      */
     protected function defaultOptions(): array {
-        $result                    = [];
-        $result[PDO::ATTR_CASE]    = PDO::CASE_NATURAL;
-        $result[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-        // $result[PDO::ATTR_ORACLE_NULLS]       = PDO::NULL_TO_STRING;
+        $result                               = [];
+        $result[PDO::ATTR_CASE]               = PDO::CASE_NATURAL;
+        $result[PDO::ATTR_ERRMODE]            = PDO::ERRMODE_EXCEPTION;
         $result[PDO::ATTR_DEFAULT_FETCH_MODE] = PDO::FETCH_ASSOC;
         $result[PDO::MYSQL_ATTR_FOUND_ROWS]   = true;
         return $result;

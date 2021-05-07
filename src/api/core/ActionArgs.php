@@ -304,7 +304,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getEmail(string $name, string $defaultValue = null, string $tag = null): ?string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
-        if ($value !== null) {
+        if ($value !== null && $value !== '') {
             $this->_validator->checkEmail($value, $tag ? $tag : $name);
         }
         return $value;
@@ -315,7 +315,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getEmailNN(string $name, string $defaultValue = null, string $tag = null): string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
-        $this->_validator->checkEmail($value, $tag);
+        $this->_validator->checkEmail($value, $tag ? $tag : $name);
         return $value;
     }
 
@@ -324,8 +324,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
      */
     public function getPhone(string $name, string $defaultValue = null, string $tag = null): ?string {
         $value = (string)($this->_parameters[$name] ?? $defaultValue);
-        if ($value !== null) {
-            $this->_validator->checkPhone($value, $tag);
+        if ($value !== null && $value !== '') {
+            $this->_validator->checkPhone($value, $tag ? $tag : $name);
         }
         return $value;
     }
@@ -369,8 +369,17 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayStringNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
         return $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArrayBool(string $name, string $element, bool $defaultValue = false, string $tag = null): bool {
+        $data  = $this->getArray($name);
+        $value = $data[$element] ?? $defaultValue;
+        return (bool)$value;
     }
 
     /**
@@ -380,7 +389,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+            $this->_validator->checkIsInteger($value, $tag ? $tag : "$name.$element");
             $value = (int)$value;
         }
         return $value;
@@ -392,8 +401,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayIntegerNN(string $name, string $element, int $defaultValue = null, string $tag = null): int {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkIsInteger($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkIsInteger($value, $tag ? $tag : "$name.$element");
         return (int)$value;
     }
 
@@ -404,7 +413,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+            $this->_validator->checkIsNumeric($value, $tag ? $tag : "$name.$element");
             $value = (float)$value;
         }
         return $value;
@@ -416,8 +425,8 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     public function getArrayNumericNN(string $name, string $element, float $defaultValue = null, string $tag = null): float {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkIsNumeric($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkIsNumeric($value, $tag ? $tag : "$name.$element");
         return (float)$value;
     }
 
@@ -428,7 +437,7 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
         $data  = $this->getArray($name);
         $value = $data[$element] ?? $defaultValue;
         if ($value !== null) {
-            $this->_validator->checkUUID($value, $tag ? $tag : $name);
+            $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
             $value = (string)$value;
         }
         return $value;
@@ -437,11 +446,28 @@ abstract class ActionArgs extends DataModel implements IActionArgs {
     /**
      * @inheritDoc
      */
+    public function getUUIDArray(string $name, string $element, string $defaultValue = null, string $tag = null): array {
+        $result = [];
+        $data   = $this->getArray($name);
+        foreach ($data as $item) {
+            $value = $item[$element] ?? $defaultValue;
+            if ($value !== null) {
+                $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
+                $value    = (string)$value;
+                $result[] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getArrayUUIDNN(string $name, string $element, string $defaultValue = null, string $tag = null): string {
         $data  = $this->getArray($name);
         $value = (string)($data[$element] ?? $defaultValue);
-        $this->_validator->checkNotEmpty($value, $tag ? $tag : $name);
-        $this->_validator->checkUUID($value, $tag ? $tag : $name);
+        $this->_validator->checkNotEmpty($value, $tag ? $tag : "$name.$element");
+        $this->_validator->checkUUID($value, $tag ? $tag : "$name.$element");
         return $value;
     }
 

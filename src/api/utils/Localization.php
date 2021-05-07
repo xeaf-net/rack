@@ -116,6 +116,7 @@ class Localization implements ILocalization {
      */
     public function setDefaultLocale(string $name): void {
         $this->_defaultLocale = $name;
+        setlocale(LC_ALL, $name);
     }
 
     /**

@@ -3,7 +3,7 @@
     "description"      : "Каркас для быстрой разработки приложений на PHP",
     "type"             : "library",
     "minimum-stability": "stable",
-    "version"          : "1.0.26",
+    "version"          : "1.0.27",
     "license"          : "Apache-2.0",
     "authors"          : [
         {
@@ -107,7 +107,7 @@
         "ext-imagick"        : "*",
         "ext-zip"            : "*",
         "firebase/php-jwt"   : "5.0.*",
-        "smarty/smarty"      : "3.1.*",
-        "phpmailer/phpmailer": "6.1.*"
+        "smarty/smarty"      : "3.1.39",
+        "phpmailer/phpmailer": "6.4.1"
     }
 }

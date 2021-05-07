@@ -38,6 +38,16 @@ class Strings implements IStrings {
     private const UUID_PATTERN = '/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i';
 
     /**
+     * Стрококвое представление FALSE
+     */
+    private const STR_FALSE = 'false';
+
+    /**
+     * Строковое представление TRUE
+     */
+    private const STR_TRUE='true';
+
+    /**
      * Конструктор класса
      */
     public function __construct() {
@@ -83,6 +93,13 @@ class Strings implements IStrings {
      */
     public function stringToDateTime(?string $buf, int $onError = null): ?int {
         return $this->isDateTime($buf) ? strtotime($buf) : $onError;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBoolean(?string $buf): bool {
+        return ($buf === self::STR_TRUE || $buf === self::STR_FALSE);
     }
 
     /**

@@ -44,6 +44,17 @@ interface IValidator extends IFactoryObject {
     public function checkLength($data, int $minLength = 0, int $maxLength = 0, string $tag = null): void;
 
     /**
+     * Проверка соотвествия формату логического значения
+     *
+     * @param mixed       $data Данные для проверки
+     * @param string|null $tag  Тег
+     *
+     * @return void
+     * @throws \XEAF\Rack\API\Utils\Exceptions\ValidatorException
+     */
+    public function checkIsBoolean($data, string $tag = null): void;
+
+    /**
      * Проверка соответствия формату целого числа
      *
      * @param mixed       $data Данные для проверки
